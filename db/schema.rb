@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_08_013156) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_09_131749) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,14 +52,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_013156) do
   end
 
   create_table "perfumes", force: :cascade do |t|
-    t.string "model"
     t.string "nome"
     t.string "marca"
     t.string "descricao"
     t.string "categoria"
-    t.decimal "preco"
+    t.string "tamanho"
+    t.string "fragancia"
+    t.string "intensidade"
+    t.string "momento"
+    t.decimal "preco", precision: 10, scale: 2
     t.integer "estoque"
-    t.string "tipo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
