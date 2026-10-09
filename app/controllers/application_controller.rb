@@ -7,23 +7,19 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  helper_method :usuario_logado
-
   protected
 
-  def usuario_logado
-    current_usuario
-  end
-
   def exigir_admin
-    redirect_to root_path, alert: "Acesso negado" unless current_usuario&.admin?
+    authenticate_usuario!
+    redirect_to root_path, alert: "Acesso negado" unless current_usuario.admin?
   end
 
   def after_sign_in_path_for(usuario)
-    usuario.admin? ? admin_path : perfil_path
+    stored_location_for(usuario) || (usuario.admin? ? admin_path : perfil_path)
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:nome, :telefone]) # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[nome telefone])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[nome telefone])
   end
 end

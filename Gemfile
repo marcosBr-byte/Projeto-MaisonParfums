@@ -72,7 +72,9 @@ group :development, :test do
   gem "dotenv-rails"
 end
 
-
+group :development do
+  gem "letter_opener"
+end
 
 
 gem "tailwindcss-rails", "~> 4.6"
@@ -80,3 +82,4 @@ gem "tailwindcss-rails", "~> 4.6"
 gem "devise", "~> 5.0"
 
 gem "devise-argon2", "~> 2.0"
+
