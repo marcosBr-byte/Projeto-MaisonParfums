@@ -5,7 +5,7 @@
   <h1 class="font-serif text-3xl text-marinho my-6">Decants Masculinos</h1>
 
   <div id="produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-    <%= render partial: "home/produto", collection: @produtos, as: :produto %>
+    <%= render partial: "produto/produtos", collection: @produtos, as: :produto %>
     <p class="hidden only:block col-span-full text-stone-500">Nenhum produto cadastrado ainda.</p>
   </div>
 </div>

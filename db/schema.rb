@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_20_021536) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_20_011309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_021536) do
     t.integer "estoque_ml", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "item_pedidos", force: :cascade do |t|
+    t.bigint "pedido_id", null: false
+    t.bigint "perfume_id", null: false
+    t.integer "quantidade"
+    t.decimal "preco_unitario"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pedido_id"], name: "index_item_pedidos_on_pedido_id"
+    t.index ["perfume_id"], name: "index_item_pedidos_on_perfume_id"
   end
 
   create_table "itens_carrinhos", force: :cascade do |t|
@@ -56,6 +67,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_021536) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["usuario_id"], name: "index_pedidos_on_usuario_id"
+  end
+
+  create_table "perfumes", force: :cascade do |t|
+    t.string "model"
+    t.string "nome"
+    t.string "marca"
+    t.string "descricao"
+    t.string "categoria"
+    t.decimal "preco"
+    t.integer "estoque"
+    t.string "tipo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "produtos", force: :cascade do |t|
@@ -91,6 +115,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_20_021536) do
   end
 
   add_foreign_key "carrinhos", "usuarios"
+  add_foreign_key "item_pedidos", "perfumes"
   add_foreign_key "itens_carrinhos", "carrinhos"
   add_foreign_key "itens_carrinhos", "produtos"
   add_foreign_key "itens_pedidos", "pedidos"
