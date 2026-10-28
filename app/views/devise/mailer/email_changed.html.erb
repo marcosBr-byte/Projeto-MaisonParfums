@@ -2,17 +2,14 @@
 
   <div style="width: 100%; max-width: 560px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px 16px; text-align: center; box-sizing: border-box;">
 
-    <!-- Título -->
     <h1 style="font-size: 22px; line-height: 1.3; font-weight: 600; color: #111827; margin: 0 0 16px;">
       Atualização de e-mail
     </h1>
 
-    <!-- Saudação -->
     <p style="font-size: 15px; line-height: 1.5; color: #6b7280; margin: 0 0 16px;">
       Olá, <strong style="color: #111827;"><%= @email %></strong>!
     </p>
 
-    <!-- Mensagem condicional -->
     <% if @resource.try(:unconfirmed_email?) %>
 
       <p style="font-size: 15px; line-height: 1.6; color: #6b7280; margin: 0 0 20px;">
@@ -39,7 +36,6 @@
 
     <% end %>
 
-     <!-- Aviso de segurança -->
     <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 14px 12px; margin: 0 0 24px;">
 
       <p style="font-size: 14px; line-height: 1.6; color: #374151; margin: 0;">
@@ -48,7 +44,6 @@
 
     </div>
 
-    <!-- Rodapé -->
     <p style="font-size: 12px; line-height: 1.5; color: #9ca3af; margin: 0; border-top: 1px solid #e5e7eb; padding-top: 16px;">
       Maison de Parfum —  A essência do luxo em cada gota.
     </p>

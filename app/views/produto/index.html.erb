@@ -1,0 +1,88 @@
+<div class="min-h-screen bg-[#F7F7F5] text-[#485057] px-4 py-10 sm:px-8">
+  <div class="max-w-7xl mx-auto">
+    <div class="bg-[#E5E6E7] rounded-2xl p-6 sm:p-8 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+      <div>
+        <p class="text-sm uppercase tracking-[0.25em] text-[#748A9C] mb-2">Maison Parfum</p>
+        <h1 class="text-3xl sm:text-4xl font-serif text-[#485057]">Gerenciar produtos</h1>
+        <p class="text-[#485057]/80 mt-2">Consulte e gerencie os perfumes da sua loja.</p>
+      </div>
+      <%= link_to "＋ Novo produto", new_produto_path, class: "inline-flex justify-center items-center rounded-xl bg-[#B8BDC3] text-[#485057] px-5 py-3 font-medium hover:bg-[#748A9C] hover:text-white transition duration-300" %>
+    </div>
+
+    <% if @produtos.any? %>
+      <div class="bg-white rounded-2xl border border-[#E5E6E7] overflow-hidden shadow-sm">
+        <div class="p-5 sm:p-6 border-b border-[#E5E6E7]">
+          <h2 class="text-xl font-serif text-[#485057]">Produtos cadastrados</h2>
+          <p class="text-sm text-[#748A9C] mt-1">Total: <%= @produtos.size %> produto(s)</p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-[#E5E6E7] text-[#485057]">
+              <tr>
+                <th class="p-4 font-medium">Produto</th>
+                <th class="p-4 font-medium">Tamanhos e preços</th>
+                <th class="p-4 font-medium">Ações</th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-[#E5E6E7]">
+              <% @produtos.each do |produto| %>
+                <tr class="hover:bg-[#F7F7F5] transition">
+                  <td class="p-4">
+                    <div class="flex items-center gap-4 min-w-[220px]">
+                      <% if produto.imagem.attached? %>
+                        <%= image_tag produto.imagem, class: "w-16 h-16 object-cover rounded-xl border border-[#E5E6E7]" %>
+                      <% else %>
+                        <div class="w-16 h-16 rounded-xl bg-[#E5E6E7] flex items-center justify-center">
+                          <span class="text-xs text-[#748A9C]">Sem foto</span>
+                        </div>
+                      <% end %>
+
+                      <div>
+                        <p class="font-medium text-[#485057]"><%= produto.nome %></p>
+                        <p class="text-sm text-[#748A9C]">Código: #<%= produto.id %></p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="p-4">
+                    <div class="flex flex-wrap gap-2 min-w-[200px]">
+                      <% produto.variantes.sort_by { |v| v.preco || 0 }.each do |v| %>
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-[#F7F7F5] border border-[#E5E6E7] px-3 py-1 text-xs text-[#485057] whitespace-nowrap">
+                          <span class="font-medium"><%= Variante.tamanhos[v.tamanho] %></span>
+                          <span><%= number_to_currency(v.preco, unit: "R$ ", separator: ",", delimiter: ".") %></span>
+                        </span>
+                      <% end %>
+                    </div>
+                  </td>
+
+                  <td class="p-4">
+                    <div class="flex items-center gap-4 whitespace-nowrap">
+                      <%= link_to "Editar", edit_produto_path(produto), class: "text-[#748A9C] hover:text-[#485057] font-medium underline underline-offset-4" %>
+
+                      <%= button_to "Excluir", produto_path(produto),
+                                    method: :delete,
+                                    class: "text-red-700 hover:text-red-900 font-medium bg-transparent border-0 cursor-pointer",
+                                    form: { data: { turbo_confirm: "Deseja realmente excluir este produto?" } } %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% else %>
+      <div class="bg-white border border-[#E5E6E7] rounded-2xl p-10 text-center shadow-sm">
+        <h2 class="text-2xl font-serif text-[#485057] mb-3">Sua vitrine está esperando</h2>
+        <p class="text-[#748A9C] mb-6">Você ainda não cadastrou nenhum produto.</p>
+        <%= link_to "Cadastrar primeiro produto", new_produto_path, class: "inline-flex bg-[#B8BDC3] text-[#485057] px-5 py-3 rounded-xl font-medium hover:bg-[#748A9C] hover:text-white transition" %>
+      </div>
+    <% end %>
+
+    <div class="mt-8">
+      <%= link_to "← Voltar ao início", root_path, class: "text-[#748A9C] hover:text-[#485057] transition" %>
+    </div>
+  </div>
+</div>

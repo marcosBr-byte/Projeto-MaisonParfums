@@ -1,0 +1,26 @@
+<div class="bg-[#F7F7F5]">
+  <% if produtos.any? %>
+    <% produtos.each do |produto| %>
+      <%= link_to produto_path(produto), class: "flex items-center gap-3 px-4 py-3 hover:bg-[#F0F1F2] border-b border-[#D9DADD] transition" do %>
+        <% if produto.imagem.attached? %>
+          <%= image_tag produto.imagem, alt: produto.nome, class: "w-14 h-14 rounded-lg object-cover shrink-0 bg-white" %>
+        <% else %>
+          <span class="w-14 h-14 rounded-lg bg-white flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[#748A9C]">water_drop</span>
+          </span>
+        <% end %>
+
+        <span class="flex-1 min-w-0">
+          <span class="block text-sm text-[#485057] truncate"><%= produto.nome %></span>
+          <span class="block text-sm font-semibold text-[#343A40]">
+            <%= number_to_currency(produto.preco, unit: "R$ ", separator: ",", delimiter: ".") %>
+          </span>
+        </span>
+      <% end %>
+    <% end %>
+
+    <%= link_to "Ver todos os resultados", busca_path(q: termo), class: "block text-center text-sm font-medium text-[#485057] px-4 py-3 hover:bg-[#F0F1F2] transition" %>
+  <% else %>
+    <p class="px-4 py-3 text-sm text-stone-500">Nenhum perfume encontrado.</p>
+  <% end %>
+</div>

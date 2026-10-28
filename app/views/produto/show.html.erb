@@ -1,5 +1,76 @@
-<div class="max-w-4xl mx-auto px-4 py-10">
-  <%= link_to "← Voltar", root_path, class: "text-sm text-stone-600 hover:text-marinho" %>
-  <h1 class="font-serif text-3xl text-marinho my-6"><%= @produto.nome %></h1>
-  <p class="text-2xl font-semibold"><%= number_to_currency(@produto.preco) %></p>
-</div>
+   <% variantes = @produto.variantes.sort_by { |v| v.preco || 0 } %>
+   <% inicial = variantes.find(&:disponivel?) || variantes.first %>
+   <% moeda = ->(valor) { number_to_currency(valor, unit: "R$ ", separator: ",", delimiter: ".") } %>
+   <% detalhes = {
+        "Categoria" => @produto.rotulo(:categoria),
+        "Fragrância" => @produto.rotulo(:fragancia),
+        "Intensidade" => @produto.rotulo(:intensidade),
+        "Momento" => @produto.rotulo(:momento),
+      }.select { |_, valor| valor.present? } %>
+
+   <div class="min-h-screen bg-[#F7F7F5]">
+     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+       <%= link_to "← Voltar", :back, class: "text-sm text-[#748A9C] hover:text-[#485057] transition" %>
+
+       <div class="grid md:grid-cols-2 gap-8 md:gap-14 mt-6 items-start">
+         <div class="aspect-square bg-white border border-[#E5E6E7] rounded-2xl overflow-hidden shadow-sm">
+           <% if @produto.imagem.attached? %>
+             <%= image_tag @produto.imagem, alt: @produto.nome, class: "w-full h-full object-cover" %>
+           <% else %>
+             <div class="w-full h-full flex items-center justify-center text-sm text-[#748A9C]">Sem foto</div>
+           <% end %>
+         </div>
+
+         <div data-controller="variante">
+           <% if @produto.marca.present? %>
+             <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C] mb-3"><%= @produto.marca %></p>
+           <% end %>
+
+           <h1 class="font-serif text-3xl md:text-4xl text-[#485057]"><%= @produto.nome %></h1>
+           <div class="w-16 h-1 bg-[#B8BDC3] mt-5 mb-6"></div>
+
+           <p class="text-3xl font-semibold text-[#343A40]" data-variante-target="preco">
+             <%= inicial ? moeda.call(inicial.preco) : "Indisponível" %>
+           </p>
+
+           <% if variantes.any? %>
+             <div class="mt-8">
+               <p class="text-sm font-medium text-[#485057] mb-3">Tamanho</p>
+               <div class="flex flex-wrap gap-3">
+                 <% variantes.each do |v| %>
+                   <label class="<%= v.disponivel? ? "cursor-pointer" : "cursor-not-allowed opacity-50" %>">
+                     <%= radio_button_tag "variante_id", v.id, v == inicial,
+                                          class: "sr-only peer",
+                                          disabled: !v.disponivel?,
+                                          data: { preco_formatado: moeda.call(v.preco), action: "change->variante#atualizar" } %>
+                     <span class="block rounded-full border border-[#B8BDC3] px-5 py-2.5 text-sm text-[#485057] transition peer-checked:bg-[#485057] peer-checked:text-white peer-checked:border-[#485057] <%= "line-through" unless v.disponivel? %>">
+                       <%= Variante.tamanhos[v.tamanho] %>
+                     </span>
+                   </label>
+                 <% end %>
+               </div>
+             </div>
+           <% end %>
+
+           <% if @produto.descricao.present? %>
+             <p class="mt-8 text-[#485057]/80 leading-relaxed"><%= @produto.descricao %></p>
+           <% end %>
+
+           <% if detalhes.any? %>
+             <dl class="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-[#E5E6E7] pt-6">
+               <% detalhes.each do |rotulo, valor| %>
+                 <div>
+                   <dt class="text-xs uppercase tracking-widest text-[#748A9C]"><%= rotulo %></dt>
+                   <dd class="mt-1 text-sm text-[#485057]"><%= valor %></dd>
+                 </div>
+               <% end %>
+             </dl>
+           <% end %>
+
+           <button type="button" disabled class="mt-10 w-full rounded-full bg-[#485057] py-4 text-sm font-medium text-white opacity-60 cursor-not-allowed">
+             Adicionar ao carrinho (em breve)
+           </button>
+         </div>
+       </div>
+     </div>
+   </div>

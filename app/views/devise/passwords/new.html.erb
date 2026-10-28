@@ -30,16 +30,16 @@
           <%= f.label :email, "E-mail", class: label_classes %>
 
           <%= f.email_field :email,
-              autofocus: true,
-              autocomplete: "email",
-              placeholder: "ex: seuemail@gmail.com",
-              class: field_classes %>
+                            autofocus: true,
+                            autocomplete: "email",
+                            placeholder: "ex: seuemail@gmail.com",
+                            class: field_classes %>
         </div>
 
         <!-- Botão -->
         <div class="actions">
           <%= f.submit "Enviar instruções",
-              class: "w-full h-11 sm:h-12 bg-gray-900 hover:bg-gray-700 active:bg-gray-950 text-white text-sm font-semibold rounded-lg cursor-pointer transition duration-200" %>
+                       class: "w-full h-11 sm:h-12 bg-gray-900 hover:bg-gray-700 active:bg-gray-950 text-white text-sm font-semibold rounded-lg cursor-pointer transition duration-200" %>
         </div>
 
       <% end %>
@@ -63,8 +63,8 @@
       <span class="text-gray-600">Lembrou sua senha?</span>
 
       <%= link_to "Entrar",
-          new_session_path(resource_name),
-          class: "font-semibold text-gray-900 hover:text-gray-500 transition duration-200" %>
+                  new_session_path(resource_name),
+                  class: "font-semibold text-gray-900 hover:text-gray-500 transition duration-200" %>
     </div>
 
   </div>

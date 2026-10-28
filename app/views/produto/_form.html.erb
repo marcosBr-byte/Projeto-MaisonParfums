@@ -1,8 +1,11 @@
-<%= form_with model: produto, url: (produto.new_record? ? produtos_path : produto_path(produto)) do |form| %>
+<% campo = "w-full rounded-lg border border-[#D9DADD] bg-white px-4 py-2.5 text-sm text-[#343A40] focus:border-[#748A9C] focus:outline-none focus:ring-2 focus:ring-[#748A9C]/30" %>
+<% rotulo = "block text-sm font-medium text-[#485057] mb-1.5" %>
+
+<%= form_with model: produto, url: (produto.new_record? ? produtos_path : produto_path(produto)), class: "max-w-2xl mx-auto bg-white border border-[#E5E6E7] rounded-2xl p-6 md:p-8 space-y-6" do |form| %>
   <% if produto.errors.any? %>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-      <h2><%= pluralize(produto.errors.count, "erro") %>:</h2>
-      <ul>
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg text-sm" role="alert">
+      <h2 class="font-medium mb-1"><%= pluralize(produto.errors.count, "erro") %>:</h2>
+      <ul class="list-disc pl-5">
         <% produto.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -11,76 +14,87 @@
   <% end %>
 
   <div>
-    <%= form.label :nome, "Nome" %>
-    <%= form.text_field :nome %>
+    <%= form.label :nome, "Nome", class: rotulo %>
+    <%= form.text_field :nome, class: campo %>
   </div>
 
   <div>
-    <%= form.label :marca, "Marca" %>
-    <%= form.text_field :marca %>
+    <%= form.label :marca, "Marca", class: rotulo %>
+    <%= form.text_field :marca, class: campo %>
   </div>
 
   <div>
-    <%= form.label :descricao, "Descrição" %>
-    <%= form.text_area :descricao %>
+    <%= form.label :descricao, "Descrição", class: rotulo %>
+    <%= form.text_area :descricao, rows: 4, class: campo %>
+  </div>
+
+  <div class="grid sm:grid-cols-2 gap-6">
+    <div>
+      <%= form.label :categoria, "Categoria", class: rotulo %>
+      <%= form.select :categoria, ["Feminino", "Masculino", "Unissex"], { include_blank: "Selecione" }, class: campo %>
+    </div>
+
+    <div>
+      <%= form.label :fragancia, "Fragrância", class: rotulo %>
+      <%= form.text_field :fragancia, list: "fragrancias-sugeridas", placeholder: "Ex: Floral, Amadeirada", class: campo %>
+      <datalist id="fragrancias-sugeridas">
+        <option value="Floral">
+        <option value="Cítrica">
+        <option value="Amadeirada">
+        <option value="Oriental">
+        <option value="Fougère">
+        <option value="Chipre">
+        <option value="Gourmand">
+        <option value="Aromática">
+        <option value="Aquática">
+      </datalist>
+    </div>
+
+    <div>
+      <%= form.label :intensidade, "Intensidade", class: rotulo %>
+      <%= form.select :intensidade, ["Baixa", "Média", "Alta"], { include_blank: "Selecione" }, class: campo %>
+    </div>
+
+    <div>
+      <%= form.label :momento, "Momento", class: rotulo %>
+      <%= form.select :momento, ["Dia", "Noite", "Ambos"], { include_blank: "Selecione" }, class: campo %>
+    </div>
   </div>
 
   <div>
-    <%= form.label :categoria, "Categoria" %>
-    <%= form.select :categoria, ["Feminino", "Masculino", "Unissex"], include_blank: "Selecione" %>
+    <%= form.label :frasco_mae_id, "Frasco Mãe (de onde sai o líquido)", class: rotulo %>
+    <%= form.collection_select :frasco_mae_id, FrascoMae.order(:nome), :id, :nome, { include_blank: "Nenhum (produto lacrado)" }, class: campo %>
+  </div>
+
+  <div class="rounded-xl bg-[#F7F7F5] border border-[#E5E6E7] p-4">
+    <h3 class="font-serif text-lg text-[#485057]">Tamanhos e preços</h3>
+    <p class="text-sm text-[#748A9C] mb-4">Preencha só os tamanhos que você vende. Preço vazio = tamanho não disponível.</p>
+
+    <div class="space-y-3">
+      <%= form.fields_for :variantes do |v| %>
+        <div class="flex flex-wrap items-center gap-3">
+          <%= v.hidden_field :tamanho %>
+          <span class="w-20 text-sm font-medium text-[#485057]"><%= Variante.tamanhos[v.object.tamanho] %></span>
+          <%= v.number_field :preco, step: 0.01, placeholder: "Preço (R$)", class: "#{campo} !w-36" %>
+          <% if v.object.tamanho == "lacrado" %>
+            <%= v.number_field :estoque, placeholder: "Estoque (unidades)", class: "#{campo} !w-44" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <div>
-    <%= form.label :tamanho, "Tamanho" %>
-    <%= form.text_field :tamanho, list: "tamanhos-sugeridos", placeholder: "Ex: 2ml, 5ml, 10ml, Lacrado" %>
-    <datalist id="tamanhos-sugeridos">
-      <option value="2ml">
-      <option value="5ml">
-      <option value="10ml">
-      <option value="Lacrado">
-    </datalist>
+    <%= form.label :imagem, "Imagem do produto", class: rotulo %>
+    <%= form.file_field :imagem, accept: "image/png,image/jpeg,image/webp",
+                                 class: "block w-full text-sm text-[#485057] file:mr-4 file:rounded-full file:border-0 file:bg-[#485057] file:px-5 file:py-2.5 file:text-sm file:text-white hover:file:bg-[#748A9C] file:cursor-pointer" %>
+    <% if produto.imagem.attached? %>
+      <%= image_tag produto.imagem, class: "mt-3 w-24 h-24 rounded-lg object-cover border border-[#E5E6E7]" %>
+    <% end %>
   </div>
 
-  <div>
-    <%= form.label :frasco_mae_id, "Frasco Mãe (de onde sai o líquido)" %>
-    <%= form.collection_select :frasco_mae_id, FrascoMae.order(:nome), :id, :nome, include_blank: "Nenhum (produto lacrado)" %>
+  <div class="flex items-center gap-4 pt-2">
+    <%= form.submit "Salvar", class: "px-8 py-3 rounded-full bg-[#485057] text-white text-sm font-medium hover:bg-[#748A9C] transition duration-300 cursor-pointer" %>
+    <%= link_to "Cancelar", admin_path, class: "text-sm text-[#748A9C] hover:text-[#485057]" %>
   </div>
-
-  <div>
-    <%= form.label :fragancia, "Fragrância" %>
-    <%= form.text_field :fragancia, list: "fragrancias-sugeridas", placeholder: "Ex: Floral, Amadeirada" %>
-    <datalist id="fragrancias-sugeridas">
-      <option value="Floral">
-      <option value="Cítrica">
-      <option value="Amadeirada">
-      <option value="Oriental">
-      <option value="Fougère">
-      <option value="Chipre">
-      <option value="Gourmand">
-      <option value="Aromática">
-      <option value="Aquática">
-    </datalist>
-  </div>
-
-  <div>
-    <%= form.label :intensidade, "Intensidade" %>
-    <%= form.select :intensidade, ["Baixa", "Média", "Alta"], include_blank: "Selecione" %>
-  </div>
-
-  <div>
-    <%= form.label :momento, "Momento" %>
-    <%= form.select :momento, ["Dia", "Noite", "Ambos"], include_blank: "Selecione" %>
-  </div>
-
-  <div>
-    <%= form.label :preco, "Preço" %>
-    <%= form.number_field :preco, step: 0.01 %>
-  </div>
-
-  <div>
-    <%= form.label :estoque, "Estoque (só para produto lacrado)" %>
-    <%= form.number_field :estoque %>
-  </div>
-
-  <%= form.submit "Salvar" %>
 <% end %>

@@ -3,11 +3,17 @@ class Produto < ApplicationRecord
   has_many :carrinhos, through: :itens_carrinho
   has_many :itens_pedidos, class_name: "ItemPedido", dependent: :destroy
   has_many :pedidos, through: :itens_pedidos
+  has_many :variantes, dependent: :destroy
   belongs_to :frasco_mae, optional: true
-  # has_one_attached :imagem
+  has_one_attached :imagem
+
+  accepts_nested_attributes_for :variantes,
+    reject_if: ->(a) { a["id"].blank? && a["preco"].blank? }
 
   validates :nome, presence: true
   validates :preco, presence: true, numericality: { greater_than: 0 }
+
+  before_validation :sincronizar_preco
 
   after_create_commit do
     broadcast_prepend_to "produtos_#{categoria}", target: "produtos", partial: "produto/produto", locals: { produto: self }
@@ -65,8 +71,7 @@ class Produto < ApplicationRecord
     decant? ? frasco_mae.estoque_ml >= volume_ml * qtd : estoque.to_i >= qtd
   end
 
-  # RN02 + RN03: quantidade máxima que o cliente pode pedir
-    # RN02: quantidade máxima que o estoque permite
+  # RN02: quantidade máxima que o estoque permite
   def quantidade_maxima
     return estoque.to_i unless decant?
     frasco_mae.estoque_ml / volume_ml
@@ -84,4 +89,31 @@ class Produto < ApplicationRecord
       end
     end
   end
+
+  # Menor preço entre os tamanhos (usado em "a partir de")
+  def preco_minimo
+    variantes.map(&:preco).compact.min
+  end
+
+  # Monta uma linha em branco para cada tamanho que ainda não existe (usado no formulário)
+  def montar_variantes
+    Variante.tamanhos.each_key do |k|
+      variantes.build(tamanho: k) unless variantes.map(&:tamanho).include?(k)
+    end
+  end
+
+  def rotulo(campo)
+       self.class.defined_enums[campo.to_s][public_send(campo)]
+  end
+  
+  private
+
+  # Mantém produtos.preco igual ao menor preço das variantes,
+  # assim o site atual (cards, busca, carrinho) continua funcionando
+  def sincronizar_preco
+    menor = preco_minimo
+    self.preco = menor if menor
+  end
+
+  
 end

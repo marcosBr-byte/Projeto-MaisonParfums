@@ -4,7 +4,6 @@
 
     <div class="bg-white px-4 py-6 sm:px-8 sm:py-9 lg:px-10 lg:py-10 rounded-xl border border-gray-200 shadow-sm">
 
-      <!-- Título -->
       <h2 class="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900 text-center mb-2 sm:mb-3">
         Entrar na sua conta
       </h2>
@@ -13,7 +12,6 @@
         Acesse sua conta e acompanhe seus pedidos em um só lugar.
       </p>
 
-      <!-- Formulário do Devise -->
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 
         <% field_classes = "w-full h-11 sm:h-12 px-3 sm:px-4 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg outline-none placeholder:text-gray-400 transition duration-200 hover:border-gray-400 focus:border-gray-700 focus:ring-2 focus:ring-gray-200" %>
@@ -26,13 +24,11 @@
           <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "ex: seuemail@gmail.com", class: field_classes %>
         </div>
 
-        <!-- Senha -->
         <div class="mb-4 sm:mb-5">
           <%= f.label :password, "Senha", class: label_classes %>
           <%= f.password_field :password, autocomplete: "current-password", placeholder: "Digite sua senha", class: field_classes %>
         </div>
 
-        <!-- Lembrar de mim -->
         <% if devise_mapping.rememberable? %>
           <div class="flex items-center gap-2 mb-5 sm:mb-6">
             <%= f.check_box :remember_me, class: "w-4 h-4 rounded border-gray-300 accent-gray-900 cursor-pointer" %>
@@ -40,28 +36,24 @@
           </div>
         <% end %>
 
-        <!-- Botão -->
         <div class="actions">
           <%= f.submit "Entrar", class: "w-full h-11 sm:h-12 bg-gray-900 hover:bg-gray-700 active:bg-gray-950 text-white text-sm font-semibold rounded-lg cursor-pointer transition duration-200" %>
         </div>
 
       <% end %>
 
-      <!-- Separador -->
       <div class="flex items-center gap-2 sm:gap-3 my-6 sm:my-7">
         <div class="h-px bg-gray-200 flex-1"></div>
         <span class="text-xs text-gray-400 uppercase tracking-wide">ou</span>
         <div class="h-px bg-gray-200 flex-1"></div>
       </div>
 
-      <!-- Links do Devise -->
       <div class="text-center text-sm text-gray-600">
         <%= render "devise/shared/links" %>
       </div>
 
     </div>
 
-    <!-- Cadastro -->
     <div class="bg-white border border-gray-200 rounded-xl mt-4 sm:mt-5 py-4 sm:py-5 px-3 sm:px-4 text-center text-xs sm:text-sm shadow-sm">
       <span class="text-gray-600">Não tem uma conta?</span>
       <%= link_to "Cadastre-se", new_registration_path(resource_name), class: "font-semibold text-gray-900 hover:text-gray-500 transition duration-200" %>

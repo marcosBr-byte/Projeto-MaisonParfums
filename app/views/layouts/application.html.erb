@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -27,7 +28,95 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="bg-[#F7F7F5]">
+
+    <header class="bg-[#E5E6E7] border-b border-[#D0D3D6] shrink-0 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-6">
+        <%= link_to root_path, class: "font-serif text-2xl tracking-wide text-[#485057]" do %>
+          Maison Parfum
+        <% end %>
+
+           <%= form_with url: busca_path, method: :get, local: true, class: "relative hidden md:flex flex-1 max-w-md", data: { controller: "busca-sugestoes", busca_sugestoes_url_value: "/busca/sugestoes" } do |form| %>
+              <%= form.search_field :q, value: params[:q], placeholder: "Buscar perfumes...", autocomplete: "off", class: "w-full border border-[#C9CDD1] rounded-l px-4 py-2 text-sm focus:outline-none focus:border-[#748A9C]", data: { busca_sugestoes_target: "input", action: "input->busca-sugestoes#buscar keydown->busca-sugestoes#tecla" } %>
+              <%= form.button type: "submit", aria: { label: "Buscar perfumes" }, class: "bg-[#B8BDC3] text-[#343A40] px-4 rounded-r cursor-pointer hover:bg-[#A7ADB4] transition-colors duration-300" do %>
+                <span class="material-symbols-outlined">search</span>
+              <% end %>
+
+              <div data-busca-sugestoes-target="resultados" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-[#D9DADD] rounded-lg shadow-lg overflow-hidden z-50"></div>
+            <% end %>
+
+        <div class="flex items-center gap-4 text-sm text-[#485057]">
+          <% if usuario_signed_in? %>
+            <% if current_usuario.admin? %>
+              <%= link_to admin_perfil_path, aria: { label: "Meu perfil" }, title: "Meu perfil", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+                <span class="material-symbols-outlined">person</span>
+              <% end %>
+            <% else %>
+              <%= link_to perfil_path, aria: { label: "Meu perfil" }, title: "Meu perfil", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+                <span class="material-symbols-outlined">person</span>
+              <% end %>
+
+              <%# Ícone do carrinho %>
+              <%= link_to "#", aria: { label: "Meu carrinho" }, title: "Meu carrinho", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+                <span class="material-symbols-outlined">shopping_cart</span>
+              <% end %>
+            <% end %>
+
+            <%= button_to destroy_usuario_session_path, method: :delete, aria: { label: "Sair" }, title: "Sair", class: "flex items-center hover:text-[#748A9C] cursor-pointer transition-all duration-300 hover:scale-110" do %>
+              <span class="material-symbols-outlined">logout</span>
+            <% end %>
+          <% else %>
+            <%= link_to new_usuario_session_path, aria: { label: "Entrar" }, title: "Entrar", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+              <span class="material-symbols-outlined">person</span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <nav class="hidden md:block border-t border-[#D9DADD]">
+        <ul class="max-w-7xl mx-auto px-4 flex justify-center items-center gap-8 text-sm font-medium text-[#485057]">
+          <li class="py-3"><%= link_to "Início", root_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
+
+          <% [
+               ["Decants Masculinos", decants_masculinos_path, %w[Árabes Chanel Dior Versace]],
+               ["Decants Femininos", decants_femininos_path, %w[Árabes Chanel Dior Lancôme]],
+               ["Decants Nicho", "#", %w[Creed Xerjoff Nishane Mancera]]
+             ].each do |titulo, caminho, marcas| %>
+            <li class="relative group py-3">
+              <%= link_to titulo, caminho, class: "hover:text-[#748A9C] transition-colors duration-300" %>
+
+              <%# Menu suspenso com animação %>
+              <ul class="invisible opacity-0 translate-y-2 pointer-events-none group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 ease-out absolute left-0 top-full pt-2 bg-white/95 backdrop-blur-md border border-[#D9DADD]/70 shadow-[0_10px_30px_rgba(72,80,87,0.18)] rounded-lg min-w-44 z-20">
+                <% marcas.each do |marca| %>
+                  <li>
+                    <a href="#" class="block px-4 py-2 text-[#485057] hover:bg-[#F0F1F2] hover:pl-6 transition-all duration-300">
+                      <%= marca %>
+                    </a>
+                  </li>
+                <% end %>
+              </ul>
+            </li>
+          <% end %>
+
+          <li class="py-3"><a href="#destaques" class="hover:text-[#748A9C] transition-colors duration-300">Destaques</a></li>
+          <li class="py-3"><a href="#descubra" class="hover:text-[#748A9C] transition-colors duration-300">Descubra seu Perfume</a></li>
+          <li class="py-3"><a href="#contato" class="hover:text-[#748A9C] transition-colors duration-300">Contato</a></li>
+          <li class="py-3"><a href="#" class="hover:text-[#748A9C] transition-colors duration-300">Grupo VIP de Ofertas (WhatsApp)</a></li>
+        </ul>
+      </nav>
+
+      <details class="md:hidden border-t border-[#D9DADD]">
+        <summary class="px-4 py-3 text-sm font-medium text-[#485057] cursor-pointer">Menu</summary>
+        <ul class="px-4 pb-3 flex flex-col gap-2 text-sm text-[#485057]">
+          <li><%= link_to "Início", root_path %></li>
+          <li><%= link_to "Decants Masculinos", decants_masculinos_path %></li>
+          <li><%= link_to "Decants Femininos", decants_femininos_path %></li>
+          <li><a href="#">Decants Nicho</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </details>
+    </header>
+
     <main>
       <%= yield %>
       <p class="notice"><%= notice %></p>

@@ -23,7 +23,7 @@
           <td class="py-2"><%= frasco.estoque_ml %> ml</td>
           <td class="py-2 text-right">
             <%= link_to "Editar", edit_frasco_mae_path(frasco), class: "text-stone-600 hover:text-marinho mr-4" %>
-            <%= button_to "Excluir", frasco_mae_path(frasco), method: :delete, form: { data: { turbo_confirm: "Excluir este frasco?" }, class: "inline" },class: "text-red-700" %>
+            <%= button_to "Excluir", frasco_mae_path(frasco), method: :delete, form: { data: { turbo_confirm: "Excluir este frasco?" }, class: "inline" }, class: "text-red-700" %>
           </td>
         </tr>
       <% end %>

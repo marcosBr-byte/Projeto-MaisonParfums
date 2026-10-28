@@ -1,11 +1,12 @@
 <%= turbo_stream_from "produtos_feminino" %>
+<div class="bg-[#F7F7F5]">
+  <div class="max-w-7xl mx-auto px-4 py-10">
+    <%= link_to "← Voltar", root_path, class: "text-sm text-stone-600 hover:text-marinho" %>
+    <h1 class="font-serif text-3xl text-marinho my-6">Decants Femininos</h1>
 
-<div class="max-w-7xl mx-auto px-4 py-10">
-  <%= link_to "← Voltar", root_path, class: "text-sm text-stone-600 hover:text-marinho" %>
-  <h1 class="font-serif text-3xl text-marinho my-6">Decants Femininos</h1>
-
-  <div id="produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-    <%= render partial: "home/produto", collection: @produtos, as: :produto %>
-    <p class="hidden only:block col-span-full text-stone-500">Nenhum produto cadastrado ainda.</p>
+    <div id="produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+      <%= render partial: "produto/produto", collection: @produtos, as: :produto %>
+      <p class="hidden only:block col-span-full text-stone-500">Nenhum produto cadastrado ainda.</p>
+    </div>
   </div>
 </div>
