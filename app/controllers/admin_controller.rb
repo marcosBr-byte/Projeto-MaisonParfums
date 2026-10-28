@@ -4,4 +4,8 @@ class AdminController < ApplicationController
   def index
      @produtos = Produto.order(:nome)
   end
+
+   def show
+    @usuario = current_usuario
+  end
 end
