@@ -56,6 +56,20 @@ class Produto < ApplicationRecord
     alta: "Alta"
   }
 
+  enum :piramide_olfativa, {
+    saida: "saida",
+    coracao: "coracao",
+    base: "base"
+  }
+
+  enum :concentracao, {
+    parfum: "parfum",
+    EDP: "EDP",
+    EDT: "EDT",
+    EDC: "EDC",
+    splash: "splash"
+  }
+
   # "tamanho_5ml" -> "5ml" -> 5 | "Lacrado" -> nil
   def volume_ml
     v = self.class.tamanhos[tamanho].to_i

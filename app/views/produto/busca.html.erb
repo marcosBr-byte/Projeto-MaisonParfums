@@ -22,7 +22,7 @@
    
     <% if @produtos.any? %>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-7">
-        <%= render partial: "produto/produto", collection: @produtos, as: :produto %>
+        <%= render partial: "produto/produtos", collection: @produtos, as: :produto %>
       </div>
     <% elsif @termo.present? %>
       <div class="bg-white border border-[#E5E6E7] rounded-2xl px-6 py-14 text-center">

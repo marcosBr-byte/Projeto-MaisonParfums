@@ -80,7 +80,7 @@ class ProdutoController < ApplicationController
   def produto_params
     params.require(:produto).permit(
       :nome, :marca, :descricao, :categoria, :fragancia, :intensidade,
-      :momento, :frasco_mae_id, :imagem,
+      :momento, :piramide_olfativa, :concentracao, :frasco_mae_id, :imagem,
       variantes_attributes: [:id, :tamanho, :preco, :estoque]
     )
   end

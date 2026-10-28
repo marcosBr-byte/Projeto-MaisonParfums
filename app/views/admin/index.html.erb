@@ -1,3 +1,16 @@
+<header>
+  <nav>
+    <ul>
+      <li><%= link_to "Início", root_path %></li>
+      <% if usuario_signed_in? %>
+        <li><%= button_to "Sair", destroy_usuario_session_path, method: :delete %></li>
+      <% end %>
+      <li><%= link_to "Cadastrar Produtos", new_produto_path %></li>
+    </ul>
+  </nav>
+</header>
+<main class="container">
+  <h1>Bem-vindo ao Painel Administrativo</h1>
 <aside class="sidebar-container">
   <div class="topo">
     <div class="logo">
@@ -20,11 +33,11 @@
       <h3>Customizar</h3>
     <% end %>
 
-    <%= link_to "#" do %>
+    <%= link_to admin_pedidos_path do %>
       <span class="material-symbols-outlined">receipt_long</span>
       <h3>Pedidos</h3>
     <% end %>
-
+   
     <%= link_to "#" do %>
       <span class="material-symbols-outlined">insights</span>
       <h3>Analisar</h3>
@@ -51,3 +64,94 @@
     <% end %>
   </nav>
 </aside>
+
+<main class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Painel Administrativo</h1>
+    <span class="text-muted">Visão geral do sistema</span>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <!-- Usuários -->
+    <div class="col-md-4">
+      <div class="card text-white bg-primary shadow-sm h-100">
+        <div class="card-header fw-bold">Usuários Cadastrados</div>
+        <div class="card-body">
+          <h2 class="card-title display-5 fw-bold"><%= @total_usuarios || 0 %></h2>
+          <p class="card-text mb-0">Total de contas registradas.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Produtos -->
+    <div class="col-md-4">
+      <div class="card text-white bg-success shadow-sm h-100">
+        <div class="card-header fw-bold">Produtos Cadastrados</div>
+        <div class="card-body">
+          <h2 class="card-title display-5 fw-bold"><%= @total_produtos || 0 %></h2>
+          <p class="card-text mb-0">Itens disponíveis no catálogo.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pedidos -->
+    <div class="col-md-4">
+      <div class="card text-white bg-info shadow-sm h-100">
+        <div class="card-header fw-bold">Total de Pedidos</div>
+        <div class="card-body">
+          <h2 class="card-title display-5 fw-bold"><%= @total_pedidos || 0 %></h2>
+          <p class="card-text mb-0">Vendas realizadas na loja.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Últimos Pedidos -->
+  <div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+      <span class="fw-bold">Últimos Pedidos Realizados</span>
+      <%= link_to "Ver Todos os Pedidos", admin_pedidos_path, class: "btn btn-sm btn-light" %>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Usuário</th>
+              <th>Data</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @ultimos_pedidos.present? %>
+              <% @ultimos_pedidos.each do |pedido| %>
+                <tr>
+                  <td><%= pedido.usuario&.email || "Usuário não encontrado" %></td>
+                  <td><%= l(pedido.created_at, format: :default) rescue pedido.created_at.strftime("%d/%m/%Y às %H:%M") %></td>
+                  <td>
+                    <% 
+                      status_atual = pedido.status.to_s.downcase
+                      badge_class = case status_atual
+                      when "pendente" then "bg-warning text-dark"
+                      when "pago" then "bg-info text-dark"
+                      when "enviado" then "bg-primary"
+                      when "entregue" then "bg-success"
+                      when "cancelado" then "bg-danger"
+                      else "bg-secondary"
+                      end
+                    %>
+                    <span class="badge <%= badge_class %>"><%= status_atual.titleize %></span>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="3" class="text-center py-3 text-muted">Nenhum pedido recente encontrado.</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main> 

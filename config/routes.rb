@@ -23,7 +23,12 @@ Rails.application.routes.draw do
   get "produtos_todos", to: "produto#pag_todos_prod", as: :produtos_todos
   get "busca", to: "produto#busca", as: :busca
   get "busca/sugestoes", to: "produto#sugestoes", as: :busca_sugestoes
-  
+
   resources :produtos, controller: "produto", only: [:index, :show, :new, :create, :edit, :update, :destroy] # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
   resources :frasco_maes, controller: "frasco_mae", except: [:show] # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
+
+  namespace :admin do
+    root to: 'dashboard#index'
+    resources :pedidos, only: [:index]
+  end
 end
