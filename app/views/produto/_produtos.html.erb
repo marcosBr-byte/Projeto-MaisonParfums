@@ -1,4 +1,13 @@
 <%= link_to produto_path(produto), id: dom_id(produto), class: "block border border-stone-200 p-4 hover:shadow-md transition" do %>
+  
+  <div class="aspect-square mb-3 overflow-hidden bg-stone-50 flex items-center justify-center">
+    <% if produto.respond_to?(:imagem) && produto.imagem.attached?%>
+      <% image_tag produto.imagem, alt: produto.nome, class: "w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300"%>
+    <% else %>
+      <span class="text-xs text-stone-400">Sem imagem</span>
+    <% end %>
+  </div>
+  
   <h3 class="font-serif text-lg text-marinho"><%= produto.nome %></h3>
   <p class="text-sm text-stone-600"><%= Produto.tamanhos[produto.tamanho] %></p>
   <p class="text-lg font-semibold"><%= number_to_currency(produto.preco) %></p>

@@ -4,7 +4,7 @@ class Produto < ApplicationRecord
   has_many :itens_pedidos, class_name: "ItemPedido", dependent: :destroy
   has_many :pedidos, through: :itens_pedidos
   belongs_to :frasco_mae, optional: true
-  # has_one_attached :imagem
+  has_one_attached :imagem
 
   validates :nome, presence: true
   validates :preco, presence: true, numericality: { greater_than: 0 }

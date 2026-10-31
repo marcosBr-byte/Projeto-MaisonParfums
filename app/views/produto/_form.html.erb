@@ -82,5 +82,10 @@
     <%= form.number_field :estoque %>
   </div>
 
+  <div>
+    <%= form.label :imagem, "Foto do perfume" %>
+    <%= form.file_field :imagem, accept: "image/*" %>
+  </div>
+  
   <%= form.submit "Salvar" %>
 <% end %>

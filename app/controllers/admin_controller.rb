@@ -1,4 +1,6 @@
 class AdminController < ApplicationController
+  layout "admin"
+
   before_action :authenticate_usuario!, only: [:index] # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
   before_action :exigir_admin, only: [:index] # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
   def index

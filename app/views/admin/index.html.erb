@@ -1,157 +1,47 @@
-<header>
-  <nav>
-    <ul>
-      <li><%= link_to "Início", root_path %></li>
-      <% if usuario_signed_in? %>
-        <li><%= button_to "Sair", destroy_usuario_session_path, method: :delete %></li>
+<div class="flex items-baseline justify-between mb-6">
+  <h1 class="font-serif text-2xl text-stone-900">Painel Administrativo</h1>
+  <span class="text-sm text-stone-500">Visão geral</span>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+  <% [["Usuários", @total_usuarios], ["Produtos", @total_produtos], ["Pedidos", @total_pedidos]].each do |titulo, total| %>
+    <div class="rounded-xl border border-stone-200 bg-white p-5">
+      <p class="text-sm text-stone-500"><%= titulo %></p>
+      <p class="mt-1 text-3xl font-semibold text-stone-900"><%= total || 0 %></p>
+    </div>
+  <% end %>
+</div>
+
+<div class="rounded-xl border border-stone-200 bg-white overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-4 border-b border-stone-200">
+    <h2 class="font-medium">Últimos pedidos</h2>
+    <%= link_to "Ver todos", admin_pedidos_path, class: "text-sm text-stone-600 hover:text-stone-900" %>
+  </div>
+  <table class="w-full text-sm">
+    <thead class="bg-stone-50 text-left text-stone-500">
+      <tr>
+        <th class="px-5 py-2">Usuário</th>
+        <th class="px-5 py-2">Data</th>
+        <th class="px-5 py-2">Status</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-stone-100">
+      <% Array(@ultimos_pedidos).each do |pedido| %>
+        <tr>
+          <td class="px-5 py-3"><%= pedido.usuario&.email || "—" %></td>
+          <td class="px-5 py-3"><%= pedido.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+          <td class="px-5 py-3">
+            <span class="rounded-full bg-stone-100 px-2 py-0.5 text-xs text-stone-700">
+              <%= pedido.status.to_s.titleize %>
+            </span>
+          </td>
+        </tr>
       <% end %>
-      <li><%= link_to "Cadastrar Produtos", new_produto_path %></li>
-    </ul>
-  </nav>
-</header>
-<main class="container">
-  <h1>Bem-vindo ao Painel Administrativo</h1>
-<aside class="sidebar-container">
-  <div class="topo">
-    <div class="logo">
-      <h2 class="titulo">Maison Parfum</h2>
-    </div>
-
-    <div class="fecha" id="fecha-sidebar">
-      <span class="material-symbols-outlined">close</span>
-    </div>
-  </div>
-
-  <nav class="sidebar">
-    <%= link_to admin_path, class: "ativo" do %>
-      <span class="material-symbols-outlined">grid_view</span>
-      <h3>Início</h3>
-    <% end %>
-
-    <%= link_to "#" do %>
-      <span class="material-symbols-outlined">person</span>
-      <h3>Customizar</h3>
-    <% end %>
-
-    <%= link_to admin_pedidos_path do %>
-      <span class="material-symbols-outlined">receipt_long</span>
-      <h3>Pedidos</h3>
-    <% end %>
-   
-    <%= link_to "#" do %>
-      <span class="material-symbols-outlined">insights</span>
-      <h3>Analisar</h3>
-    <% end %>
-
-    <%= link_to "#" do %>
-      <span class="material-symbols-outlined">mail</span>
-      <h3>Mensagens</h3>
-    <% end %>
-
-    <%= link_to new_produto_path do %>
-      <span class="material-symbols-outlined">inventory_2</span>
-      <h3>Produtos</h3>
-    <% end %>
-
-    <%= link_to "#" do %>
-      <span class="material-symbols-outlined">settings</span>
-      <h3>Configuração</h3>
-    <% end %>
-
-    <%= link_to destroy_usuario_session_path, data: { turbo_method: :delete } do %>
-      <span class="material-symbols-outlined">logout</span>
-      <h3>Sair</h3>
-    <% end %>
-  </nav>
-</aside>
-
-<main class="container my-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Painel Administrativo</h1>
-    <span class="text-muted">Visão geral do sistema</span>
-  </div>
-
-  <div class="row g-3 mb-4">
-    <!-- Usuários -->
-    <div class="col-md-4">
-      <div class="card text-white bg-primary shadow-sm h-100">
-        <div class="card-header fw-bold">Usuários Cadastrados</div>
-        <div class="card-body">
-          <h2 class="card-title display-5 fw-bold"><%= @total_usuarios || 0 %></h2>
-          <p class="card-text mb-0">Total de contas registradas.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Produtos -->
-    <div class="col-md-4">
-      <div class="card text-white bg-success shadow-sm h-100">
-        <div class="card-header fw-bold">Produtos Cadastrados</div>
-        <div class="card-body">
-          <h2 class="card-title display-5 fw-bold"><%= @total_produtos || 0 %></h2>
-          <p class="card-text mb-0">Itens disponíveis no catálogo.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pedidos -->
-    <div class="col-md-4">
-      <div class="card text-white bg-info shadow-sm h-100">
-        <div class="card-header fw-bold">Total de Pedidos</div>
-        <div class="card-body">
-          <h2 class="card-title display-5 fw-bold"><%= @total_pedidos || 0 %></h2>
-          <p class="card-text mb-0">Vendas realizadas na loja.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Últimos Pedidos -->
-  <div class="card shadow-sm">
-    <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
-      <span class="fw-bold">Últimos Pedidos Realizados</span>
-      <%= link_to "Ver Todos os Pedidos", admin_pedidos_path, class: "btn btn-sm btn-light" %>
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>Usuário</th>
-              <th>Data</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% if @ultimos_pedidos.present? %>
-              <% @ultimos_pedidos.each do |pedido| %>
-                <tr>
-                  <td><%= pedido.usuario&.email || "Usuário não encontrado" %></td>
-                  <td><%= l(pedido.created_at, format: :default) rescue pedido.created_at.strftime("%d/%m/%Y às %H:%M") %></td>
-                  <td>
-                    <% 
-                      status_atual = pedido.status.to_s.downcase
-                      badge_class = case status_atual
-                      when "pendente" then "bg-warning text-dark"
-                      when "pago" then "bg-info text-dark"
-                      when "enviado" then "bg-primary"
-                      when "entregue" then "bg-success"
-                      when "cancelado" then "bg-danger"
-                      else "bg-secondary"
-                      end
-                    %>
-                    <span class="badge <%= badge_class %>"><%= status_atual.titleize %></span>
-                  </td>
-                </tr>
-              <% end %>
-            <% else %>
-              <tr>
-                <td colspan="3" class="text-center py-3 text-muted">Nenhum pedido recente encontrado.</td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</main> 
+      <% if @ultimos_pedidos.blank? %>
+        <tr>
+          <td colspan="3" class="px-5 py-6 text-center text-stone-400">Nenhum pedido recente.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

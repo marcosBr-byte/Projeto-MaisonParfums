@@ -1,4 +1,6 @@
 class ProdutoController < ApplicationController
+  layout "admin", only: %i[new create edit update]
+
   before_action :exigir_admin, only: %i[new create edit update destroy]
   before_action :set_produto, only: %i[show edit update destroy]
 
@@ -47,6 +49,6 @@ class ProdutoController < ApplicationController
   end
 
   def produto_params
-    params.require(:produto).permit(:nome, :marca, :descricao, :categoria, :tamanho, :fragancia, :intensidade, :momento, :piramide_olfativa, :concentracao, :preco, :estoque, :frasco_mae_id)#imagem
+    params.require(:produto).permit(:nome, :marca, :descricao, :categoria, :tamanho, :fragancia, :intensidade, :momento, :piramide_olfativa, :concentracao, :preco, :estoque, :frasco_mae_id, :imagem)
   end
 end
