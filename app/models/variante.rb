@@ -30,14 +30,19 @@
      end
 
      def baixar_estoque!(qtd)
-       alvo = decant? ? produto.frasco_mae : self
-       alvo.with_lock do
-         raise "Estoque insuficiente de #{produto.nome}" unless disponivel?(qtd)
-         if decant?
-           produto.frasco_mae.update!(estoque_ml: produto.frasco_mae.estoque_ml - volume_ml * qtd)
-         else
-           update!(estoque: estoque - qtd)
-         end
-       end
-     end
+        raise ArgumentError, "Quantidade inválida" unless qtd.to_i.positive?
+        if decant?
+          frasco = produto.frasco_mae
+          frasco.with_lock do
+             necessario = volume_ml * qtd
+            raise "Estoque insuficiente de #{produto.nome}" if frasco.estoque_ml < necessario
+            frasco.update!(estoque_ml: frasco.estoque_ml - necessario)
+          end
+        else
+          with_lock do
+            raise "Estoque insuficiente de #{produto.nome}" if estoque < qtd
+            update!(estoque: estoque - qtd)
+          end
+        end
+      end
    end

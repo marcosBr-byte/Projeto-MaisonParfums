@@ -1,4 +1,7 @@
 class Usuario < ApplicationRecord
+  has_many :mensagens, class_name: "Mensagem", dependent: :destroy
+  has_one :carrinho, dependent: :destroy
+  has_many :pedidos, dependent: :destroy
   has_one_attached :imagem
    
   # Include default devise modules. Others available are:
@@ -19,5 +22,8 @@ class Usuario < ApplicationRecord
   validates :nome, presence: true
   validates :telefone, presence: true
 
+  def perfil_completo?
+    [telefone, cep, estado, cidade, bairro, rua, numero_casa].all?(&:present?)
+  end
   
 end

@@ -1,0 +1,116 @@
+<main class="max-w-5xl mx-auto px-4 py-8 sm:px-8">
+
+  <%= link_to "← Voltar aos pedidos", admin_pedidos_path,class: "text-sm text-[#748A9C] hover:text-[#485057] transition" %>
+
+  <header class="mt-6 mb-8">
+    <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C]"> Maison Parfum</p>
+    <h1 class="font-serif text-3xl text-[#485057] mt-2">Pedido </h1>
+    <p class="text-sm text-[#748A9C] mt-2">Realizado em <%= @pedido.created_at.strftime("%d/%m/%Y às %H:%M") %></p>
+    <div class="mt-4">
+      <%= badge_status(@pedido.status) %>
+    </div>
+  </header>
+
+  <section class="bg-white border border-[#E5E6E7] rounded-2xl p-6 mb-6 shadow-sm">
+    <h2 class="font-semibold text-lg text-[#485057] mb-5"> Dados do cliente</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm">
+      <div>
+        <p class="text-[#748A9C]">Nome</p>
+        <p class="font-medium"><%= @pedido.usuario.nome %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">E-mail</p>
+        <p class="font-medium"><%= @pedido.usuario.email %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">Telefone</p>
+        <p class="font-medium"><%= @pedido.usuario.telefone.presence || "Não informado" %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">CPF</p>
+        <p class="font-medium"><%= @pedido.usuario.cpf.presence || "Não informado" %></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white border border-[#E5E6E7] rounded-2xl p-6 mb-6 shadow-sm">
+    <h2 class="font-semibold text-lg text-[#485057] mb-5">Endereço de entrega </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-sm">
+      <div>
+        <p class="text-[#748A9C]">CEP</p>
+        <p class="font-medium"><%= @pedido.usuario.cep.presence || "Não informado" %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">Estado</p>
+        <p class="font-medium"><%= @pedido.usuario.estado.presence || "Não informado" %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">Cidade</p>
+        <p class="font-medium"><%= @pedido.usuario.cidade.presence || "Não informado" %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">Bairro</p>
+        <p class="font-medium"><%= @pedido.usuario.bairro.presence || "Não informado" %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">Rua / Avenida</p>
+        <p class="font-medium"><%= @pedido.usuario.rua.presence || "Não informado" %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">Número</p>
+        <p class="font-medium"><%= @pedido.usuario.numero_casa.presence || "Não informado" %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">Complemento</p>
+        <p class="font-medium"><%= @pedido.usuario.complemento.presence || "Não informado" %></p>
+      </div>
+
+      <div>
+        <p class="text-[#748A9C]">Ponto de referência</p>
+        <p class="font-medium"><%= @pedido.usuario.ponto_referencia.presence || "Não informado" %></p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="bg-white border border-[#E5E6E7] rounded-2xl p-6 shadow-sm">
+    <h2 class="font-semibold text-lg text-[#485057] mb-5"> Produtos do pedido </h2>
+    <div class="space-y-4">
+      <% @pedido.itens_pedidos.each do |item| %>
+        <div class="flex flex-col sm:flex-row sm:justify-between gap-3 border-b border-[#E5E6E7] pb-4">
+          <div>
+            <p class="font-medium text-[#485057]"> <%= item.produto.nome %></p>
+            <p class="text-sm text-[#748A9C] mt-1">Quantidade: <%= item.quantidade %></p>
+            <% if item.variante %>
+              <p class="text-sm text-[#748A9C]">Variante: <%= item.variante.respond_to?(:nome) ? item.variante.nome : item.variante.id %></p>
+            <% end %>
+          </div>
+
+          <div class="text-sm sm:text-right">
+            <p class="text-[#748A9C]">Unitário: <%= moeda(item.preco_unitario) %></p>
+            <p class="font-semibold text-[#485057] mt-1">Subtotal: <%= moeda(item.preco_unitario * item.quantidade) %></p>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+
+    <div class="flex justify-between items-center pt-5 mt-3">
+      <span class="font-semibold text-[#485057]">Total do pedido</span>
+
+      <span class="text-xl font-semibold text-[#485057]">
+        <%= moeda(@pedido.valor_total) %>
+      </span>
+    </div>
+  </section>
+
+</main>

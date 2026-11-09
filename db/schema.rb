@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_27_132509) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_131630) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,11 +42,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_132509) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "banners", force: :cascade do |t|
+    t.string "chave", null: false
+    t.string "titulo", null: false
+    t.string "subtitulo"
+    t.boolean "ativo", default: true, null: false
+    t.integer "ordem", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chave"], name: "index_banners_on_chave", unique: true
+  end
+
   create_table "carrinhos", force: :cascade do |t|
     t.bigint "usuario_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["usuario_id"], name: "index_carrinhos_on_usuario_id"
+  end
+
+  create_table "configuracaos", force: :cascade do |t|
+    t.text "descricao"
+    t.string "whatsapp"
+    t.string "email_contato"
+    t.string "instagram_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "frasco_maes", force: :cascade do |t|
@@ -81,12 +101,35 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_132509) do
     t.index ["variante_id"], name: "index_itens_pedidos_on_variante_id"
   end
 
+  create_table "mensagems", force: :cascade do |t|
+    t.string "nome", null: false
+    t.string "email", null: false
+    t.string "assunto", null: false
+    t.text "conteudo", null: false
+    t.boolean "lida", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "usuario_id", null: false
+    t.bigint "pedido_id"
+    t.index ["pedido_id"], name: "index_mensagems_on_pedido_id"
+    t.index ["usuario_id"], name: "index_mensagems_on_usuario_id"
+  end
+
   create_table "pedidos", force: :cascade do |t|
     t.bigint "usuario_id", null: false
     t.decimal "valor_total"
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "cep"
+    t.string "estado"
+    t.string "cidade"
+    t.string "bairro"
+    t.string "rua"
+    t.string "numero_casa"
+    t.string "complemento"
+    t.string "ponto_referencia"
+    t.string "telefone_entrega"
     t.index ["usuario_id"], name: "index_pedidos_on_usuario_id"
   end
 
@@ -153,6 +196,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_132509) do
   add_foreign_key "itens_pedidos", "pedidos"
   add_foreign_key "itens_pedidos", "produtos"
   add_foreign_key "itens_pedidos", "variantes"
+  add_foreign_key "mensagems", "pedidos"
+  add_foreign_key "mensagems", "usuarios"
   add_foreign_key "pedidos", "usuarios"
   add_foreign_key "produtos", "frasco_maes"
   add_foreign_key "variantes", "produtos"

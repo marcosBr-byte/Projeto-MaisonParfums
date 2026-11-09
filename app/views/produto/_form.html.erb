@@ -86,8 +86,7 @@
 
   <div>
     <%= form.label :imagem, "Imagem do produto", class: rotulo %>
-    <%= form.file_field :imagem, accept: "image/png,image/jpeg,image/webp",
-                                 class: "block w-full text-sm text-[#485057] file:mr-4 file:rounded-full file:border-0 file:bg-[#485057] file:px-5 file:py-2.5 file:text-sm file:text-white hover:file:bg-[#748A9C] file:cursor-pointer" %>
+    <%= form.file_field :imagem, accept: "image/png,image/jpeg,image/webp", class: "block w-full text-sm text-[#485057] file:mr-4 file:rounded-full file:border-0 file:bg-[#485057] file:px-5 file:py-2.5 file:text-sm file:text-white hover:file:bg-[#748A9C] file:cursor-pointer" %>
     <% if produto.imagem.attached? %>
       <%= image_tag produto.imagem, class: "mt-3 w-24 h-24 rounded-lg object-cover border border-[#E5E6E7]" %>
     <% end %>

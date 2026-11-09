@@ -1,5 +1,6 @@
 class ProdutoController < ApplicationController
-  before_action :exigir_admin, only: %i[new create edit update destroy]
+  layout "admin", only: [:index, :new, :edit]
+  before_action :exigir_admin, only: %i[index new create edit update destroy]
   before_action :set_produto, only: %i[show edit update destroy]
 
   def index
@@ -7,7 +8,10 @@ class ProdutoController < ApplicationController
   end
 
   def pag_todos_prod
-    @produtos = Produto.all
+    @masculinos = Produto.masculino.order(:nome)
+    @femininos = Produto.feminino.order(:nome)
+    @unissex = Produto.unissex.order(:nome)
+    
     render "produto/produtos_todos"
   end
 

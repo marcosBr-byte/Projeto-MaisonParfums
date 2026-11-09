@@ -1,16 +1,18 @@
 class AdminController < ApplicationController
-  before_action :authenticate_usuario!, only: [:index] # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
-  before_action :exigir_admin, only: [:index] # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets
+  layout "admin", only: [:index]
+  before_action :authenticate_usuario!
+  before_action :exigir_admin
+
   def index
-    @produtos = Produto.order(:nome)
-    @pedidos = Pedido.includes(:usuario).order(created_at: :desc)
     @total_pedidos = Pedido.count
     @total_usuarios = Usuario.count
     @total_produtos = Produto.count
-    @ultimos_pedidos = Pedido.includes(:usuario).order(created_at: :desc).limit(4)
+    @pedidos_pendentes = Pedido.where(status: "pendente").count
+    @ultimos_pedidos = Pedido.includes(:usuario).order(created_at: :desc).limit(5)
+    @frascos = FrascoMae.order(:estoque_ml).limit(5)
   end
 
-   def show
+  def show
     @usuario = current_usuario
   end
 end

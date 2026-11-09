@@ -1,50 +1,67 @@
-   <% variantes = produto.variantes.sort_by { |v| v.preco || 0 } %>
-   <% detalhes = [
-        produto.rotulo(:categoria),
-        produto.rotulo(:fragancia),
-        (produto.intensidade.present? ? "Intensidade #{produto.rotulo(:intensidade)}" : nil),
-        produto.rotulo(:momento),
-      ].compact %>
+<% variantes = produto.variantes.sort_by { |v| v.preco || 0 } %>
 
-   <%= link_to produto_path(produto), id: dom_id(produto), class: "group block bg-white border border-[#E5E6E7] rounded-2xl overflow-hidden hover:shadow-lg transition duration-300" do %>
-     <div class="aspect-square bg-[#F7F7F5] overflow-hidden">
-       <% if produto.imagem.attached? %>
-         <%= image_tag produto.imagem, alt: produto.nome, class: "w-full h-full object-cover group-hover:scale-105 transition duration-500" %>
-       <% else %>
-         <div class="w-full h-full flex items-center justify-center text-sm text-[#748A9C]">Sem foto</div>
-       <% end %>
-     </div>
+<% detalhes = [
+  produto.rotulo(:categoria),
+  produto.rotulo(:fragancia),
+  (produto.intensidade.present? ? "Intensidade #{produto.rotulo(:intensidade)}" : nil),
+  produto.rotulo(:momento)
+].compact_blank %>
 
-     <div class="p-4 space-y-2">
-       <% if produto.marca.present? %>
-         <p class="text-[11px] uppercase tracking-[0.2em] text-[#748A9C]"><%= produto.marca %></p>
-       <% end %>
+<%= link_to produto_path(produto),
+    id: dom_id(produto),
+    class: "group block bg-white border border-[#E5E6E7] rounded-2xl overflow-hidden hover:shadow-lg transition duration-300" do %>
 
-       <h3 class="font-serif text-lg leading-snug text-[#485057]"><%= produto.nome %></h3>
+  <div class="aspect-square bg-[#F7F7F5] overflow-hidden">
+    <% if produto.imagem.attached? %>
+      <%= image_tag produto.imagem,
+          alt: produto.nome,
+          class: "w-full h-full object-cover group-hover:scale-105 transition duration-500" %>
+    <% else %>
+      <div class="w-full h-full flex items-center justify-center text-sm text-[#748A9C]">
+        Sem foto
+      </div>
+    <% end %>
+  </div>
 
-       <% if detalhes.any? %>
-         <p class="text-xs text-[#748A9C]"><%= detalhes.join(" · ") %></p>
-       <% end %>
+  <div class="p-4 space-y-2">
+    <% if produto.marca.present? %>
+      <p class="text-[11px] uppercase tracking-[0.2em] text-[#748A9C]">
+        <%= produto.marca %>
+      </p>
+    <% end %>
 
-       <% if variantes.any? %>
-         <div class="flex flex-wrap gap-1.5 pt-1">
-           <% variantes.each do |v| %>
-             <span class="rounded-full border px-2.5 py-0.5 text-xs <%= v.disponivel? ? "border-[#B8BDC3] text-[#485057]" : "border-[#E5E6E7] text-[#B8BDC3] line-through" %>">
-               <%= Variante.tamanhos[v.tamanho] %>
-             </span>
-           <% end %>
-         </div>
-       <% end %>
+    <h3 class="font-serif text-lg leading-snug text-[#485057]">
+      <%= produto.nome %>
+    </h3>
 
-       <% if produto.preco.present? %>
-         <p class="pt-1 text-[#343A40]">
-           <% if variantes.size > 1 %>
-             <span class="text-xs text-[#748A9C]">a partir de</span>
-           <% end %>
-           <span class="text-lg font-semibold">
-             <%= number_to_currency(produto.preco, unit: "R$ ", separator: ",", delimiter: ".") %>
-           </span>
-         </p>
-       <% end %>
-     </div>
-   <% end %>
+    <% if detalhes.any? %>
+      <p class="text-xs text-[#748A9C]">
+        <%= detalhes.join(" · ") %>
+      </p>
+    <% end %>
+
+    <% if variantes.any? %>
+      <div class="flex flex-wrap gap-1.5 pt-1">
+        <% variantes.each do |variante| %>
+          <% tamanho = Variante.tamanhos[variante.tamanho] || variante.tamanho %>
+
+          <span class="rounded-full border px-2.5 py-0.5 text-xs <%= variante.disponivel? ? 'border-[#B8BDC3] text-[#485057]' : 'border-[#E5E6E7] text-[#B8BDC3] line-through' %>">
+            <%= tamanho %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if produto.preco.present? %>
+      <p class="pt-1 text-[#343A40]">
+        <% if variantes.size > 1 %>
+          <span class="text-xs text-[#748A9C]">A partir de</span>
+        <% end %>
+
+        <span class="text-lg font-semibold">
+          <%= number_to_currency(produto.preco, unit: "R$ ", separator: ",", delimiter: ".") %>
+        </span>
+      </p>
+    <% end %>
+  </div>
+<% end %>

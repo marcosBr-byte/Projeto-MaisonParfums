@@ -1,0 +1,83 @@
+<div class="p-6 md:p-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-serif text-[#343A40]">
+      Customizar loja
+    </h1>
+
+    <p class="mt-2 text-sm text-[#748A9C]">
+      Gerencie os banners e personalize a aparência da Maison Parfum.
+    </p>
+  </div>
+
+  <div class="space-y-6">
+    <% @banners.each do |banner| %>
+      <div class="rounded-2xl border border-[#E5E6E7] bg-white p-6 shadow-sm">
+
+        <div class="mb-5 flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-semibold text-[#343A40]">
+              <%= banner.titulo %>
+            </h2>
+
+            <p class="text-xs text-gray-500">
+              Identificador: <%= banner.chave %>
+            </p>
+          </div>
+
+          <% if banner.ativo? %>
+            <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+              Ativo
+            </span>
+          <% else %>
+            <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+              Inativo
+            </span>
+          <% end %>
+        </div>
+
+        <% if banner.imagem.attached? %>
+          <div class="mb-5">
+            <%= image_tag banner.imagem, class: "h-48 w-full rounded-xl object-cover" %>
+          </div>
+        <% else %>
+          <div class="mb-5 flex h-40 items-center justify-center rounded-xl bg-[#F7F7F5] text-sm text-gray-400">
+            Nenhuma imagem enviada
+          </div>
+        <% end %>
+
+        <%= form_with model: banner, url: admin_atualizar_banner_path(banner), method: :patch, multipart: true, class: "space-y-4" do |form| %>
+
+          <div>
+            <%= form.label :titulo, "Título", class: "mb-1 block text-sm font-medium text-gray-700" %>
+            <%= form.text_field :titulo, class: "w-full rounded-lg border border-gray-300 p-3 focus:border-[#748A9C] focus:outline-none" %>
+          </div>
+
+          <div>
+            <%= form.label :subtitulo, "Subtítulo", class: "mb-1 block text-sm font-medium text-gray-700" %>
+            <%= form.text_field :subtitulo, class: "w-full rounded-lg border border-gray-300 p-3 focus:border-[#748A9C] focus:outline-none" %>
+          </div>
+
+          <div>
+            <%= form.label :imagem, "Nova imagem", class: "mb-1 block text-sm font-medium text-gray-700" %>
+            <%= form.file_field :imagem, accept: "image/*", class: "w-full rounded-lg border border-gray-300 p-3 text-sm" %>
+          </div>
+
+          <div>
+            <%= form.label :ordem, "Ordem de exibição", class: "mb-1 block text-sm font-medium text-gray-700" %>
+            <%= form.number_field :ordem, min: 1, class: "w-full rounded-lg border border-gray-300 p-3" %>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <%= form.check_box :ativo, class: "h-4 w-4 rounded border-gray-300 text-[#748A9C]" %>
+            <%= form.label :ativo, "Banner ativo", class: "text-sm text-gray-700" %>
+          </div>
+
+          <div class="pt-2">
+            <%= form.submit "Salvar alterações", class: "rounded-lg bg-[#485057] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#343A40] cursor-pointer" %>
+          </div>
+
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

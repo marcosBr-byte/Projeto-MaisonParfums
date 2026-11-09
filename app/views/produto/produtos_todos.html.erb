@@ -1,0 +1,53 @@
+<div class="min-h-screen bg-[#F7F7F5]">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+
+    <div class="text-center mb-16">
+      <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C]">Maison Parfum</p>
+      <h1 class="font-serif text-4xl md:text-5xl text-[#343A40] mt-3">Todos os Produtos</h1>
+
+      <p class="text-[#748A9C] mt-4">Encontre sua próxima fragrância.</p>
+    </div>
+    <section class="mb-20">
+      <h2 class="font-serif text-3xl text-[#343A40] mb-8">Decants Masculinos</h2>
+
+      <% if @masculinos.any? %>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <% @masculinos.each do |produto| %>
+            <%= render "produtos", produto: produto %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-[#748A9C]">Nenhum produto disponível nesta categoria.</p>
+      <% end %>
+    </section>
+
+    <section class="mb-20">
+      <h2 class="font-serif text-3xl text-[#343A40] mb-8"> Decants Femininos</h2>
+
+      <% if @femininos.any? %>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <% @femininos.each do |produto| %>
+            <%= render "produtos", produto: produto %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-[#748A9C]">Nenhum produto disponível nesta categoria.</p>
+      <% end %>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="font-serif text-3xl text-[#343A40] mb-8">Decants Unissex</h2>
+
+      <% if @unissex.any? %>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <% @unissex.each do |produto| %>
+            <%= render "produtos", produto: produto %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-[#748A9C]">Nenhum produto disponível nesta categoria.</p>
+      <% end %>
+    </section>
+
+  </div>
+</div>

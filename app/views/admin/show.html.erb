@@ -1,46 +1,100 @@
-<div class="max-w-xl mx-auto px-4 py-10">
-  <%= link_to "← Voltar ao painel", admin_path, class: "text-sm text-stone-600 hover:text-marinho" %>
-  <h1 class="font-serif text-3xl text-marinho my-6">Perfil do administrador</h1>
+<div class="min-h-screen bg-[#F7F7F5] px-4 py-10 sm:py-14">
+  <div class="max-w-2xl mx-auto">
 
-  <dl class="divide-y divide-stone-200 border border-stone-200">
-    <div class="flex justify-between px-4 py-3">
-      <dt class="text-stone-600">Nome</dt>
-      <dd><%= @usuario.nome %></dd>
+    <%= link_to admin_path, class: "inline-flex items-center gap-2 text-sm text-[#748A9C] hover:text-[#485057] transition mb-8" do %>
+      <span>←</span>
+      <span>Voltar ao painel</span>
+    <% end %>
+
+    <div class="bg-white border border-[#E5E6E7] rounded-2xl shadow-sm overflow-hidden">
+
+      <div class="bg-[#485057] px-6 py-9 sm:px-10 text-center">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-300 mb-3">Maison Parfum</p>
+        <h1 class="font-serif text-3xl sm:text-4xl text-white">Meu perfil </h1>
+        <p class="text-sm text-gray-300 mt-2"> Informações da conta administrativa </p>
+      </div>
+
+      <div class="px-6 sm:px-10 pt-8 pb-6 text-center border-b border-[#E5E6E7]">
+        <% if @usuario.imagem.attached? %>
+          <%= image_tag @usuario.imagem, class: "w-28 h-28 rounded-full object-cover border-4 border-white shadow-md mx-auto" %>
+        <% else %>
+          <div class="w-28 h-28 rounded-full bg-[#E5E6E7] flex items-center justify-center mx-auto border-4 border-white shadow-md">
+            <span class="font-serif text-4xl text-[#485057]">
+              <%= @usuario.nome.to_s.first&.upcase || "A" %>
+            </span>
+          </div>
+        <% end %>
+
+        <h2 class="font-serif text-2xl text-[#485057] mt-4">
+          <%= @usuario.nome.presence || "Administrador" %>
+        </h2>
+
+        <span class="inline-block mt-2 px-4 py-1 rounded-full bg-[#F1F2F2] text-xs font-medium text-[#485057]">
+          Administrador
+        </span>
+      </div>
+
+      <div class="px-6 sm:px-10 py-8">
+
+        <h3 class="text-xs uppercase tracking-[0.18em] text-[#748A9C] font-semibold mb-5"> Dados da conta</h3>
+
+        <dl class="divide-y divide-[#E5E6E7]">
+
+          <div class="py-4 sm:flex sm:items-center sm:justify-between">
+            <dt class="text-sm text-gray-500">Nome completo</dt>
+            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
+              <%= @usuario.nome.presence || "Não informado" %>
+            </dd>
+          </div>
+          <div class="py-4 sm:flex sm:items-center sm:justify-between">
+            <dt class="text-sm text-gray-500">E-mail</dt>
+            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0 break-all">
+              <%= @usuario.email %>
+            </dd>
+          </div>
+          <div class="py-4 sm:flex sm:items-center sm:justify-between">
+            <dt class="text-sm text-gray-500">Telefone</dt>
+            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
+              <%= @usuario.telefone.presence || "Não informado" %>
+            </dd>
+          </div>
+          <div class="py-4 sm:flex sm:items-center sm:justify-between">
+            <dt class="text-sm text-gray-500">Estado</dt>
+            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
+              <%= @usuario.estado.presence || "Não informado" %>
+            </dd>
+          </div>
+          <div class="py-4 sm:flex sm:items-center sm:justify-between">
+            <dt class="text-sm text-gray-500">Cidade</dt>
+            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
+              <%= @usuario.cidade.presence || "Não informado" %>
+            </dd>
+          </div>
+          <div class="py-4 sm:flex sm:items-center sm:justify-between">
+            <dt class="text-sm text-gray-500">Bairro</dt>
+            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
+              <%= @usuario.bairro.presence || "Não informado" %>
+            </dd>
+          </div>
+          <div class="py-4 sm:flex sm:items-center sm:justify-between">
+            <dt class="text-sm text-gray-500">Membro desde</dt>
+            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
+              <%= @usuario.created_at.strftime("%d/%m/%Y") %>
+            </dd>
+          </div>
+        </dl>
+
+        <div class="mt-8 pt-6 border-t border-[#E5E6E7]">
+          <%= link_to edit_usuario_registration_path,class: "flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[#485057] text-white text-sm font-medium hover:bg-[#748A9C] transition duration-300" do %>
+            <span>Editar meus dados</span>
+            <span>→</span>
+          <% end %>
+        </div>
+
+      </div>
     </div>
-
-    <div class="flex justify-between px-4 py-3">
-      <dt class="text-stone-600">E-mail</dt>
-      <dd><%= @usuario.email %></dd>
-    </div>
-
-    <div class="flex justify-between px-4 py-3">
-      <dt class="text-stone-600">Telefone</dt>
-      <dd><%= @usuario.telefone %></dd>
-    </div>
-
-    <div class="flex justify-between px-4 py-3">
-      <dt class="text-stone-600">Membro desde</dt>
-      <dd><%= @usuario.created_at.strftime("%d/%m/%Y") %></dd>
-    </div>
-  </dl>
-
-      
-  <div class="flex justify-between px-4 py-3">
-      <dt class="text-stone-600">Estado</dt>
-      <dd><%= @usuario.estado.presence || "Não informado" %></dd>
-  </div>
-
-  <div class="flex justify-between px-4 py-3">
-    <dt class="text-stone-600">Cidade</dt>
-    <dd><%= @usuario.cidade.presence || "Não informado" %></dd>
-  </div>
-
-  <div class="flex justify-between px-4 py-3">
-      <dt class="text-stone-600">Bairro</dt>
-      <dd><%= @usuario.bairro.presence || "Não informado" %></dd>
-  </div>
-
-  <div class="mt-6">
-    <%= link_to "Editar conta", edit_usuario_registration_path, class: "inline-block mt-7 px-6 py-3 rounded-full bg-[#485057] text-white text-sm hover:bg-[#748A9C] transition duration-300" %>
+    <p class="text-center text-xs text-gray-400 mt-6">
+      Maison Parfum · Área administrativa
+    </p>
   </div>
 </div>

@@ -12,6 +12,7 @@ class Produto < ApplicationRecord
 
   validates :nome, presence: true
   validates :preco, presence: true, numericality: { greater_than: 0 }
+  validate :decants_exigem_frasco_mae
 
   before_validation :sincronizar_preco
 
@@ -70,7 +71,6 @@ class Produto < ApplicationRecord
     splash: "splash"
   }
 
-  # "tamanho_5ml" -> "5ml" -> 5 | "Lacrado" -> nil
   def volume_ml
     v = self.class.tamanhos[tamanho].to_i
     v.positive? ? v : nil
@@ -80,18 +80,15 @@ class Produto < ApplicationRecord
     frasco_mae.present? && volume_ml.present?
   end
 
-  # RN02: tem líquido suficiente para essa quantidade?
   def disponivel?(qtd = 1)
     decant? ? frasco_mae.estoque_ml >= volume_ml * qtd : estoque.to_i >= qtd
   end
 
-  # RN02: quantidade máxima que o estoque permite
   def quantidade_maxima
     return estoque.to_i unless decant?
     frasco_mae.estoque_ml / volume_ml
   end
 
-  # RN01: baixa o estoque (chame quando o pedido for pago)
   def baixar_estoque!(qtd)
     alvo = decant? ? frasco_mae : self
     alvo.with_lock do
@@ -104,12 +101,10 @@ class Produto < ApplicationRecord
     end
   end
 
-  # Menor preço entre os tamanhos (usado em "a partir de")
   def preco_minimo
     variantes.map(&:preco).compact.min
   end
 
-  # Monta uma linha em branco para cada tamanho que ainda não existe (usado no formulário)
   def montar_variantes
     Variante.tamanhos.each_key do |k|
       variantes.build(tamanho: k) unless variantes.map(&:tamanho).include?(k)
@@ -122,12 +117,21 @@ class Produto < ApplicationRecord
   
   private
 
-  # Mantém produtos.preco igual ao menor preço das variantes,
-  # assim o site atual (cards, busca, carrinho) continua funcionando
+  def decants_exigem_frasco_mae
+    tamanhos_decant = %w[tamanho_2ml tamanho_5ml tamanho_10ml]
+
+    possui_decant = variantes.any? do |variante|
+      tamanhos_decant.include?(variante.tamanho) && variante.preco.present?
+    end
+
+    if possui_decant && frasco_mae.blank?
+      errors.add(:frasco_mae, "deve ser selecionado para vender decants")
+    end
+  end
+
   def sincronizar_preco
     menor = preco_minimo
     self.preco = menor if menor
   end
 
-  
 end

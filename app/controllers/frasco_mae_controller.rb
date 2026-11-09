@@ -1,9 +1,11 @@
 class FrascoMaeController < ApplicationController
+  layout "admin"
+
   before_action :exigir_admin
   before_action :set_frasco_mae, only: %i[edit update destroy]
 
   def index
-    @frascos = FrascoMae.order(:nome)
+    @frascos = FrascoMae.includes(:produtos).order(:nome)
   end
 
   def new
@@ -30,8 +32,11 @@ class FrascoMaeController < ApplicationController
   end
 
   def destroy
-    @frasco_mae.destroy
-    redirect_to frasco_maes_path, notice: "Frasco Mãe excluído com sucesso."
+    if @frasco_mae.destroy
+      redirect_to frasco_maes_path, notice: "Frasco Mãe excluído com sucesso.", status: :see_other
+    else
+      redirect_to frasco_maes_path, alert: "Este frasco está em uso por produtos e não pode ser excluído.", status: :see_other
+    end
   end
 
   private

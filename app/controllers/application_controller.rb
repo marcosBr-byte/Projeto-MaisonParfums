@@ -28,12 +28,15 @@ class ApplicationController < ActionController::Base
     stored_location_for(usuario) || (usuario.admin? ? admin_path : root_path)
   end
 
-  def after_sign_out_path_for(_resource_or_scope)
-    new_usuario_session_path
+  def after_update_path_for(usuario)
+    usuario.admin? ? admin_perfil_path : root_path
   end
-
+    
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[nome telefone estado cidade bairro])
-    devise_parameter_sanitizer.permit(:account_update, keys: %i[nome telefone estado cidade bairro])
+
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[ nome telefone cpf cep estado cidade bairro rua numero_casa complemento ponto_referencia imagem
+      ]
+    )
   end
 end

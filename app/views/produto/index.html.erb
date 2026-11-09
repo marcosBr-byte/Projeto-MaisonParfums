@@ -40,8 +40,7 @@
                       <% end %>
 
                       <div>
-                        <p class="font-medium text-[#485057]"><%= produto.nome %></p>
-                        <p class="text-sm text-[#748A9C]">Código: #<%= produto.id %></p>
+                        <p class="font-medium text-[#485057]"><%= produto.nome %></p
                       </div>
                     </div>
                   </td>
@@ -61,10 +60,7 @@
                     <div class="flex items-center gap-4 whitespace-nowrap">
                       <%= link_to "Editar", edit_produto_path(produto), class: "text-[#748A9C] hover:text-[#485057] font-medium underline underline-offset-4" %>
 
-                      <%= button_to "Excluir", produto_path(produto),
-                                    method: :delete,
-                                    class: "text-red-700 hover:text-red-900 font-medium bg-transparent border-0 cursor-pointer",
-                                    form: { data: { turbo_confirm: "Deseja realmente excluir este produto?" } } %>
+                      <%= button_to "Excluir", produto_path(produto),method: :delete, class: "text-red-700 hover:text-red-900 font-medium bg-transparent border-0 cursor-pointer", form: { data: { turbo_confirm: "Deseja realmente excluir este produto?" } } %>
                     </div>
                   </td>
                 </tr>

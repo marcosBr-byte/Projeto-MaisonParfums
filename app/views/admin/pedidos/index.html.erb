@@ -1,0 +1,77 @@
+<% filtros = [["Todos", nil]] + Pedido.defined_enums["status"].keys.map { |s| [s.titleize, s] } %>
+
+<div class="max-w-7xl mx-auto px-4 py-8 sm:px-8 md:py-10">
+
+  <div class="mb-8">
+    <p class="mb-2 text-xs uppercase tracking-[0.3em] text-[#748A9C]">Maison Parfum</p>
+    <h1 class="font-serif text-3xl text-[#485057] md:text-4xl">Pedidos</h1>
+    <p class="mt-2 text-sm text-[#748A9C]">
+      <%= @pedidos.size %> pedido(s) encontrado(s).
+    </p>
+    <div class="mt-5 h-1 w-16 bg-[#B8BDC3]"></div>
+  </div>
+
+  <div class="mb-6 flex flex-wrap gap-2">
+    <% filtros.each do |nome, valor| %>
+      <%= link_to nome, admin_pedidos_path(status: valor),
+          class: "rounded-full border px-4 py-1.5 text-sm transition #{ @status == valor ? 'border-[#485057] bg-[#485057] text-white' : 'border-[#B8BDC3] text-[#485057] hover:bg-[#E5E6E7]' }" %>
+    <% end %>
+  </div>
+
+  <div class="overflow-hidden rounded-2xl border border-[#E5E6E7] bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[750px] text-left text-sm">
+        <thead class="bg-[#E5E6E7] text-xs uppercase tracking-wider text-[#485057]">
+          <tr>
+            <th class="px-6 py-4 font-semibold">Pedido</th>
+            <th class="px-6 py-4 font-semibold">Cliente</th>
+            <th class="px-6 py-4 font-semibold">Data</th>
+            <th class="px-6 py-4 font-semibold">Total</th>
+            <th class="px-6 py-4 font-semibold">Status</th>
+            <th class="px-6 py-4 font-semibold">Ações</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-[#E5E6E7]">
+          <% if @pedidos.any? %>
+            <% @pedidos.each do |pedido| %>
+              <tr class="transition hover:bg-[#F7F7F5]">
+                <td class="whitespace-nowrap px-6 py-5 font-medium text-[#485057]">
+                  #<%= pedido.id %>
+                </td>
+
+                <td class="px-6 py-5 text-[#485057]">
+                  <%= pedido.usuario&.nome.presence || pedido.usuario&.email || "Usuário não encontrado" %>
+                </td>
+
+                <td class="whitespace-nowrap px-6 py-5 text-[#748A9C]">
+                  <%= pedido.created_at.strftime("%d/%m/%Y às %H:%M") %>
+                </td>
+
+                <td class="whitespace-nowrap px-6 py-5 text-[#343A40]">
+                  <%= pedido.valor_total ? moeda(pedido.valor_total) : "—" %>
+                </td>
+
+                <td class="px-6 py-5">
+                  <%= badge_status(pedido.status) %>
+                </td>
+
+                <td class="whitespace-nowrap px-6 py-5">
+                  <%= link_to "Ver pedido", admin_pedido_path(pedido), class: "text-[#748A9C] font-medium hover:text-[#485057] transition" %>
+                </td>
+              </tr>
+            <% end %>
+
+          <% else %>
+
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center text-[#748A9C]">
+                <span class="material-symbols-outlined mb-2 block text-4xl text-[#B8BDC3]"> receipt_long</span> Nenhum pedido encontrado.
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -7,6 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Maison Parfum">
     <meta name="mobile-web-app-capable" content="yes">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -36,16 +38,18 @@
           Maison Parfum
         <% end %>
 
-           <%= form_with url: busca_path, method: :get, local: true, class: "relative hidden md:flex flex-1 max-w-md", data: { controller: "busca-sugestoes", busca_sugestoes_url_value: "/busca/sugestoes" } do |form| %>
-              <%= form.search_field :q, value: params[:q], placeholder: "Buscar perfumes...", autocomplete: "off", class: "w-full border border-[#C9CDD1] rounded-l px-4 py-2 text-sm focus:outline-none focus:border-[#748A9C]", data: { busca_sugestoes_target: "input", action: "input->busca-sugestoes#buscar keydown->busca-sugestoes#tecla" } %>
-              <%= form.button type: "submit", aria: { label: "Buscar perfumes" }, class: "bg-[#B8BDC3] text-[#343A40] px-4 rounded-r cursor-pointer hover:bg-[#A7ADB4] transition-colors duration-300" do %>
-                <span class="material-symbols-outlined">search</span>
-              <% end %>
+        <%= form_with url: busca_path, method: :get, local: true, class: "relative hidden md:flex flex-1 max-w-md", data: { controller: "busca", busca_url_value: "/busca/sugestoes", action: "click@window->busca#fecharFora" } do |form| %>
+          <%= form.search_field :q, value: params[:q], placeholder: "Buscar perfumes...", autocomplete: "off", class: "w-full border border-[#C9CDD1] rounded-l px-4 py-2 text-sm focus:outline-none focus:border-[#748A9C]", data: { busca_target: "input", action: "input->busca#buscar" } %>
+            
+          <%= form.button type: "submit", aria: { label: "Buscar perfumes" }, class: "bg-[#B8BDC3] text-[#343A40] px-4 rounded-r cursor-pointer hover:bg-[#A7ADB4] transition-colors duration-300" do %>
+              <span class="material-symbols-outlined">search</span>
+          <% end %>
 
-              <div data-busca-sugestoes-target="resultados" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-[#D9DADD] rounded-lg shadow-lg overflow-hidden z-50"></div>
-            <% end %>
-
+          <div data-busca-target="lista" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-[#D9DADD] rounded-lg shadow-lg overflow-hidden z-50"></div>
+          
+        <% end %>
         <div class="flex items-center gap-4 text-sm text-[#485057]">
+
           <% if usuario_signed_in? %>
             <% if current_usuario.admin? %>
               <%= link_to admin_perfil_path, aria: { label: "Meu perfil" }, title: "Meu perfil", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
@@ -56,11 +60,14 @@
                 <span class="material-symbols-outlined">person</span>
               <% end %>
 
-              <%# Ícone do carrinho %>
-              <%= link_to "#", aria: { label: "Meu carrinho" }, title: "Meu carrinho", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+              <%= link_to carrinho_path, aria: { label: "Meu carrinho" }, title: "Meu carrinho", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
                 <span class="material-symbols-outlined">shopping_cart</span>
-              <% end %>
+             <% end %>
             <% end %>
+
+            <%= link_to new_mensagen_path, aria: { label: "Mensagens" }, title: "Mensagens", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+                <span class="material-symbols-outlined">mail</span>
+              <% end %>
 
             <%= button_to destroy_usuario_session_path, method: :delete, aria: { label: "Sair" }, title: "Sair", class: "flex items-center hover:text-[#748A9C] cursor-pointer transition-all duration-300 hover:scale-110" do %>
               <span class="material-symbols-outlined">logout</span>
@@ -98,9 +105,9 @@
             </li>
           <% end %>
 
-          <li class="py-3"><a href="#destaques" class="hover:text-[#748A9C] transition-colors duration-300">Destaques</a></li>
+          <li class="py-3"><a href="#destaques", root_path(anchor: "destaques"), class="hover:text-[#748A9C] transition-colors duration-300">Destaques</a></li>
           <li class="py-3"><a href="#descubra" class="hover:text-[#748A9C] transition-colors duration-300">Descubra seu Perfume</a></li>
-          <li class="py-3"><a href="#contato" class="hover:text-[#748A9C] transition-colors duration-300">Contato</a></li>
+          <li class="py-3"><a href="#contato", root_path(anchor: "contato"), class="hover:text-[#748A9C] transition-colors duration-300">Contato</a></li>
           <li class="py-3"><a href="#" class="hover:text-[#748A9C] transition-colors duration-300">Grupo VIP de Ofertas (WhatsApp)</a></li>
         </ul>
       </nav>
@@ -117,10 +124,111 @@
       </details>
     </header>
 
-    <main>
+     <main>
       <%= yield %>
       <p class="notice"><%= notice %></p>
       <p class="alert"><%= alert %></p>
     </main>
+
+    
+    <% configuracao_loja = Configuracao.atual %>
+    <footer id="contato" class="bg-[#E5E6E7] border-t border-[#D0D3D6] text-[#485057]">
+      <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div>
+            <%= link_to "Maison Parfum", root_path,class: "font-serif text-2xl tracking-wide text-[#485057]" %>
+            <p class="text-sm text-[#737980] leading-relaxed mt-4 max-w-xs">
+              <%= configuracao_loja.descricao.presence ||
+                  "Descubra novas fragrâncias e encontre o perfume que combina com você." %>
+            </p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-base mb-5">Menu principal</h3>
+            <ul class="space-y-3 text-sm text-[#737980]">
+              <li>
+                <%= link_to "Início", root_path, class: "hover:text-[#485057] transition" %>
+              </li>
+              <li>
+                <%= link_to "Decants masculinos", decants_masculinos_path, class: "hover:text-[#485057] transition" %>
+              </li>
+              <li>
+                <%= link_to "Decants femininos", decants_femininos_path, class: "hover:text-[#485057] transition" %>
+              </li>
+              <li>
+                <%= link_to "Minha conta", new_usuario_session_path, class: "hover:text-[#485057] transition" %>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold text-base mb-5">Informações</h3>
+
+            <ul class="space-y-3 text-sm text-[#737980]">
+              <li>
+                <a href="#" class="hover:text-[#485057] transition">
+                  Perguntas frequentes
+                </a>
+              </li>
+
+              <li>
+                <a href="#" class="hover:text-[#485057] transition">
+                  Trocas e devoluções
+                </a>
+              </li>
+
+              <li>
+                <a href="#" class="hover:text-[#485057] transition">
+                  Política de privacidade
+                </a>
+              </li>
+
+              <li>
+                <a href="#" class="hover:text-[#485057] transition">
+                  Quem somos
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-base mb-5">Entre em contato</h3>
+
+            <p class="text-sm text-[#737980] leading-relaxed">
+              Ficou com alguma dúvida? Entre em contato com a Maison Parfum
+              pelos nossos canais de atendimento.
+            </p>
+
+            <% if configuracao_loja.email_contato.present? %>
+              <p class="mt-3 text-sm text-[#737980]">
+                <%= mail_to configuracao_loja.email_contato,
+                    configuracao_loja.email_contato,class: "hover:text-[#485057] transition" %>
+              </p>
+            <% end %>
+
+            <div class="mt-6">
+              <h4 class="font-semibold text-sm mb-3">Redes sociais</h4>
+              <div class="flex items-center gap-3">
+                <% if configuracao_loja.instagram_url.present? %>
+                  <a href="<%= configuracao_loja.instagram_url %>", aria-label="Instagram", target="_blank", rel="noopener noreferrer", class="w-10 h-10 rounded-full bg-[#485057] text-white flex items-center justify-center hover:bg-[#748A9C] transition">
+                    <i class="fa-brands fa-instagram text-xl"></i>
+                  </a>
+                <% end %>
+
+                <% if configuracao_loja.whatsapp.present? %>
+                  <a href="https://wa.me/<%= configuracao_loja.whatsapp.gsub(/\D/, '') %>",  aria-label="WhatsApp", target="_blank", rel="noopener noreferrer", class="w-10 h-10 rounded-full bg-[#485057] text-white flex items-center justify-center hover:bg-[#748A9C] transition">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                  </a>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-[#D0D3D6] mt-10 pt-6 text-center">
+          <p class="text-xs text-[#737980]">
+            © <%= Date.current.year %> Maison Parfum. Todos os direitos reservados.
+          </p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

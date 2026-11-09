@@ -1,6 +1,14 @@
-<h1>Novo produto</h1>
+<div class="min-h-screen bg-[#F7F7F5] px-4 py-10 sm:px-8">
+    <div class="max-w-2xl mx-auto">
+        <%= link_to "← Ver todos os produtos", produtos_path, class: "text-sm text-[#748A9C] hover:text-[#485057] transition" %>
 
-<%= link_to "Ver todos os produtos", produtos_path %>
+        <div class="mt-6 mb-8">
+            <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C] mb-3">Maison Parfum</p>
+            <h1 class="font-serif text-3xl md:text-4xl text-[#485057]">Novo produto</h1>
+            <div class="w-16 h-1 bg-[#B8BDC3] mt-5"></div>
+        </div>
 
-<%= render "form", produto: @produto %>
+        <%= render "form", produto: @produto %>
+    </div>
+</div>
 

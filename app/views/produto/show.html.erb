@@ -67,9 +67,26 @@
              </dl>
            <% end %>
 
-           <button type="button" disabled class="mt-10 w-full rounded-full bg-[#485057] py-4 text-sm font-medium text-white opacity-60 cursor-not-allowed">
-             Adicionar ao carrinho (em breve)
-           </button>
+           
+          <% if variantes.any? && inicial.present? %>
+              <%= form_with url: adicionar_carrinho_path, method: :post, class: "mt-10" do |f| %>
+                <%= f.hidden_field :produto_id, value: @produto.id %>
+
+                <%= f.hidden_field :variante_id,
+                    value: inicial.id,
+                    data: { variante_target: "selecionada" } %>
+
+                <%= f.hidden_field :quantidade, value: 1 %>
+
+                <%= f.submit "Adicionar ao carrinho",
+                    class: "w-full rounded-full bg-[#485057] py-4 text-sm font-medium text-white hover:bg-[#748A9C] transition cursor-pointer" %>
+              <% end %>
+            <% else %>
+              <button type="button" disabled class="mt-10 w-full rounded-full bg-[#485057] py-4 text-sm font-medium text-white opacity-60 cursor-not-allowed">
+                Indisponível
+              </button>
+          <% end %>
+
          </div>
        </div>
      </div>

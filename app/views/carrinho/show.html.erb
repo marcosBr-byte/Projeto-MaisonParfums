@@ -1,0 +1,100 @@
+
+<div class="min-h-screen bg-[#F7F7F5]">
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 bg-white text-[#485057] border border-[#E5E6E7] rounded-2xl mb-8 shadow-sm">
+      <h1 class="font-serif text-3xl text-[#485057]">Carrinho de Compras</h1>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <%= link_to "Adicionar mais itens", produtos_todos_path ,class: "px-6 py-3 text-center border border-[#B8BDC3] text-[#485057] rounded-full transition hover:bg-[#485057] hover:text-white" %>
+        <%= button_to "Limpar todos os itens", limpar_carrinho_path, method: :delete, class: "px-6 py-3 border border-[#D0D3D6] text-[#748A9C] rounded-full hover:bg-[#485057] hover:text-white transition cursor-pointer" %>
+      </div>
+    </div>
+
+    <% if @itens.any? %>
+      <div class="space-y-5">
+        <% @itens.each do |item| %>
+          <div class="bg-white border border-[#E5E6E7] rounded-2xl p-5 sm:p-6 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+              <div class="w-full sm:w-32 h-36 sm:h-32 bg-[#F7F7F5] rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+
+                <% if item.produto.imagem.attached? %>
+                  <%= image_tag item.produto.imagem, class: "w-full h-full object-cover", alt: item.produto.nome %>
+                <% else %>
+                  <span class="text-xs text-[#748A9C]"> Maison Parfum</span>
+                <% end %>
+              </div>
+
+              <div class="flex-1 min-w-0">
+
+                <% if item.produto.marca.present? %>
+                  <p class="text-xs uppercase tracking-widest text-[#748A9C] mb-1">
+                    <%= item.produto.marca %>
+                  </p>
+                <% end %>
+
+                <h2 class="font-serif text-xl text-[#485057]">
+                  <%= item.produto.nome %>
+                </h2>
+
+                <p class="text-sm text-[#748A9C] mt-2">Tamanho: <%= item.variante ? Variante.tamanhos[item.variante.tamanho] : "Não informado" %></p>
+                <div class="mt-3">
+                  <p class="text-sm text-[#748A9C] mb-2">Quantidade: </p>
+                  <div class="flex items-center gap-3"> <%= button_to "−", itens_carrinho_path(item), method: :patch, params: { quantidade: item.quantidade - 1 }, class: "w-9 h-9 rounded-full border border-[#D0D3D6] text-[#485057] hover:bg-[#F7F7F5] transition",  disabled: item.quantidade <= 1 %>
+
+                    <span class="text-sm font-semibold text-[#485057]">
+                      <%= item.quantidade %>
+                    </span>
+
+                    <%= button_to "+", itens_carrinho_path(item), method: :patch, params: { quantidade: item.quantidade + 1 },class: "w-9 h-9 rounded-full border border-[#D0D3D6] text-[#485057] hover:bg-[#485057] hover:text-white transition" %>
+                  </div>
+                </div>
+
+                <p class="text-sm text-[#485057] mt-2">Unitário:<%= number_to_currency(item.preco_unitario, unit: "R$ ", separator: ",", delimiter: ".") %></p>
+              </div>
+
+              <div class="flex sm:flex-col items-center sm:items-end justify-between gap-4">
+                <p class="text-lg font-semibold text-[#343A40]">
+                  <%= number_to_currency(item.preco_unitario * item.quantidade, unit: "R$ ", separator: ",", delimiter: "." ) %> </p>
+                <%= button_to "Remover", item, method: :delete, class: "text-sm text-[#748A9C] underline hover:text-red-600 transition", form: { class: "inline" } %>
+              </div>
+            </div>
+          </div>
+
+        <% end %>
+
+      </div>
+
+      <div class="mt-8 bg-white border border-[#E5E6E7] rounded-2xl p-6 sm:p-8">
+
+        <div class="flex justify-between items-center gap-4">
+          <div>
+            <p class="text-sm text-[#748A9C]">Resumo da sacola</p>
+            <h2 class="font-serif text-xl text-[#485057] mt-1">Total da compra</h2>
+          </div>
+          <p class="text-2xl font-semibold text-[#343A40]"> <%= number_to_currency( @itens.sum { |item| item.preco_unitario * item.quantidade }, unit: "R$ ", separator: ",", delimiter: "." ) %></p>
+        </div>
+
+        <div class="border-t border-[#E5E6E7] mt-6 pt-6 flex flex-col sm:flex-row justify-between gap-4">
+          <%= link_to "Continuar comprando", produtos_todos_path, class: "text-center px-6 py-3 rounded-full border border-[#B8BDC3] text-[#485057] text-sm hover:bg-[#F7F7F5] transition" %>
+          <%= button_to "Finalizar pedido", finalizar_carrinho_path, method: :post,class: "px-8 py-3 rounded-full bg-[#485057] text-white text-sm hover:bg-[#748A9C] transition cursor-pointer" %>
+        </div>
+      </div>
+    <% else %>
+
+      <div class="bg-white border border-[#E5E6E7] rounded-2xl px-6 py-16 text-center">
+
+        <div class="w-16 h-16 rounded-full bg-[#F7F7F5] flex items-center justify-center mx-auto mb-5">
+          <span class="material-symbols-outlined text-3xl text-[#748A9C]">
+            shopping_bag
+          </span>
+        </div>
+
+        <h2 class="font-serif text-2xl text-[#485057]">Sua sacola está vazia</h2>
+        <p class="text-sm text-[#748A9C] mt-3">
+          Descubra uma fragrância especial para você.
+        </p>
+        <%= link_to "Explorar perfumes",produtos_todos_path, class: "inline-flex mt-7 px-8 py-3 rounded-full bg-[#485057] text-white text-sm hover:bg-[#748A9C] transition" %>
+      </div>
+    <% end %>
+  </main>
+</div>

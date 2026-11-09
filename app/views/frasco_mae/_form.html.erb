@@ -1,24 +1,41 @@
-<%= form_with model: frasco_mae, url: (frasco_mae.new_record? ? frasco_maes_path : frasco_mae_path(frasco_mae)) do |form| %>
+<%= form_with model: frasco_mae, url: (frasco_mae.new_record? ? frasco_maes_path : frasco_mae_path(frasco_mae)), class: "space-y-6" do |form| %>
+
   <% if frasco_mae.errors.any? %>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-      <h2><%= pluralize(frasco_mae.errors.count, "erro") %>:</h2>
-      <ul>
-        <% frasco_mae.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700" role="alert">
+      <div class="mb-2 flex items-center gap-2">
+        <span class="font-bold">!</span>
+        <h2 class="text-sm font-semibold">
+          <%= pluralize(frasco_mae.errors.count, "erro encontrado", "erros encontrados") %>
+        </h2>
+      </div>
+
+      <ul class="list-inside list-disc space-y-1 text-sm">
+        <% frasco_mae.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :nome, "Nome do perfume" %>
-    <%= form.text_field :nome %>
+  <div class="space-y-2">
+    <%= form.label :nome, "Nome do perfume",class: "block text-sm font-semibold text-stone-700" %>
+    <%= form.text_field :nome,placeholder: "Ex.: Dior Sauvage",class: "w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-sm text-stone-800 placeholder:text-stone-400 outline-none transition focus:border-[#748A9C] focus:ring-2 focus:ring-[#748A9C]/20" %>
+    <p class="text-xs text-stone-400">Informe o nome do perfume armazenado no frasco.</p>
   </div>
 
-  <div>
-    <%= form.label :estoque_ml, "Estoque (ml)" %>
-    <%= form.number_field :estoque_ml, min: 0 %>
+  <div class="space-y-2">
+    <%= form.label :estoque_ml, "Estoque disponível (ml)",class: "block text-sm font-semibold text-stone-700" %>
+    <div class="relative">
+      <%= form.number_field :estoque_ml, min: 0, placeholder: "Ex.: 1000", class: "w-full rounded-lg border border-stone-300 bg-white px-4 py-3 pr-14 text-sm text-stone-800 placeholder:text-stone-400 outline-none transition focus:border-[#748A9C] focus:ring-2 focus:ring-[#748A9C]/20" %>
+      <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-stone-400">ml</span>
+    </div>
+
+    <p class="text-xs text-stone-400">Informe a quantidade de líquido disponível no frasco.</p>
   </div>
 
-  <%= form.submit "Salvar" %>
+  <div class="flex flex-col-reverse gap-3 border-t border-stone-200 pt-6 sm:flex-row sm:justify-end">
+    <%= link_to "Cancelar",frasco_maes_path,class: "inline-flex items-center justify-center rounded-lg border border-stone-300 px-5 py-3 text-sm font-medium text-stone-600 transition hover:bg-stone-50" %>
+    <%= form.submit (frasco_mae.new_record? ? "Cadastrar Frasco" : "Salvar Alterações"),class: "inline-flex cursor-pointer items-center justify-center rounded-lg bg-[#748A9C] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#5E7488] focus:outline-none focus:ring-2 focus:ring-[#748A9C] focus:ring-offset-2" %>
+  </div>
+
 <% end %>

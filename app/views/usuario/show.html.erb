@@ -1,27 +1,14 @@
 <main class="min-h-screen bg-[#F7F7F5] text-[#485057] px-4 py-10">
   <div class="max-w-5xl mx-auto">
-
-   
     <header class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
       <div>
-        <p class="text-xs tracking-[0.3em] text-[#748A9C] uppercase">
-          Maison Parfum
-        </p>
-
-        <h1 class="text-3xl font-serif mt-2 text-[#485057]">
-          Meu perfil
-        </h1>
-
-        <p class="text-[#485057]/75 text-sm mt-2">
-          Gerencie seus dados e endereço de entrega.
-        </p>
+        <p class="text-xs tracking-[0.3em] text-[#748A9C] uppercase">Maison Parfum</p>
+        <h1 class="text-3xl font-serif mt-2 text-[#485057]">Meu perfil </h1>
+        <p class="text-[#485057]/75 text-sm mt-2">Gerencie seus dados e endereço de entrega.</p>
       </div>
-
-      <%= link_to "← Voltar à loja", root_path,
-                  class: "text-[#748A9C] hover:text-[#485057] transition font-medium" %>
+      <%= link_to "← Voltar à loja", root_path, class: "text-[#748A9C] hover:text-[#485057] transition font-medium" %>
     </header>
 
-    <!-- Mensagens -->
     <% if notice.present? %>
       <div class="mb-5 rounded-lg border border-[#748A9C]/40 bg-white p-4 text-sm text-[#485057]">
         <%= notice %>
@@ -33,22 +20,15 @@
         <%= alert %>
       </div>
     <% end %>
-
-    <!-- Cartão do perfil -->
+   
     <section class="bg-white border border-[#E5E6E7] rounded-2xl overflow-hidden shadow-sm">
-
-      <!-- Faixa decorativa -->
       <div class="h-28 bg-gradient-to-r from-[#E5E6E7] via-[#748A9C] to-[#B8BDC3]"></div>
-
       <div class="px-5 sm:px-9 pb-9">
-
-        <!-- Foto e informações -->
         <div class="flex flex-col sm:flex-row sm:items-end gap-4 -mt-10 mb-8">
 
           <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white bg-[#E5E6E7] flex items-center justify-center shrink-0 shadow-sm">
             <% if @usuario.imagem.attached? %>
-              <%= image_tag @usuario.imagem,
-                            class: "w-full h-full object-cover" %>
+              <%= image_tag @usuario.imagem,class: "w-full h-full object-cover" %>
             <% else %>
               <span class="text-3xl text-[#748A9C]">
                 <%= @usuario.nome.to_s.first&.upcase || "U" %>
@@ -57,28 +37,14 @@
           </div>
 
           <div class="pb-1">
-            <h2 class="text-2xl font-semibold text-[#485057]">
-              <%= @usuario.nome %>
-            </h2>
-
-            <p class="text-[#748A9C] text-sm mt-1">
-              <%= @usuario.email %>
-            </p>
+            <h2 class="text-2xl font-semibold text-[#485057]"><%= @usuario.nome %></h2>
+            <p class="text-[#748A9C] text-sm mt-1"><%= @usuario.email %></p>
           </div>
         </div>
-
-        <%= form_with model: @usuario,
-                      url: perfil_path,
-                      method: :patch,
-                      multipart: true,
-                      class: "space-y-8" do |f| %>
-
+        <%= form_with model: @usuario,url: perfil_path, method: :patch, multipart: true,class: "space-y-8" do |f| %>
           <% if @usuario.errors.any? %>
             <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-              <p class="font-semibold mb-2">
-                Verifique os campos abaixo:
-              </p>
-
+              <p class="font-semibold mb-2">Verifique os campos abaixo:</p>
               <ul class="list-disc pl-5 text-sm space-y-1">
                 <% @usuario.errors.full_messages.each do |mensagem| %>
                   <li><%= mensagem %></li>
@@ -87,191 +53,102 @@
             </div>
           <% end %>
 
-          <!-- Dados pessoais -->
           <section>
-            <h3 class="text-lg font-semibold text-[#485057]">
-              Dados pessoais
-            </h3>
-
-            <p class="text-sm text-[#748A9C] mt-1 mb-5">
-              Suas informações de cadastro.
-            </p>
-
-            <!-- Foto -->
+            <h3 class="text-lg font-semibold text-[#485057]">Dados pessoai</h3>
+            <p class="text-sm text-[#748A9C] mt-1 mb-5">Suas informações de cadastro.</p>
             <div class="mb-5">
-              <%= f.label :imagem, "Foto de perfil",
-                          class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-              <%= f.file_field :imagem,
-                               accept: "image/png,image/jpeg,image/webp",
-                               class: "block w-full text-sm text-[#485057] file:mr-4 file:rounded-lg file:border-0 file:bg-[#B8BDC3] file:px-4 file:py-2 file:text-[#485057] hover:file:bg-[#748A9C] hover:file:text-white file:transition" %>
-
-              <p class="text-xs text-[#748A9C] mt-2">
-                Escolha uma imagem JPG, PNG ou WebP.
-              </p>
+              <%= f.label :imagem, "Foto de perfil",class: "block text-sm text-[#485057] mb-2 font-medium" %>
+              <%= f.file_field :imagem, accept: "image/png,image/jpeg,image/webp", class: "block w-full text-sm text-[#485057] file:mr-4 file:rounded-lg file:border-0 file:bg-[#B8BDC3] file:px-4 file:py-2 file:text-[#485057] hover:file:bg-[#748A9C] hover:file:text-white file:transition" %>
+              <p class="text-xs text-[#748A9C] mt-2">Escolha uma imagem JPG, PNG ou WebP.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
               <div>
-                <%= f.label :nome, "Nome completo",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :nome,
-                                 autocomplete: "name",
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :nome, "Nome completo",class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :nome, autocomplete: "name", class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
               <div>
-                <label class="block text-sm text-[#485057] mb-2 font-medium">
-                  E-mail
-                </label>
-
+                <label class="block text-sm text-[#485057] mb-2 font-medium">E-mail</label>
                 <div class="rounded-lg bg-[#E5E6E7]/60 border border-[#E5E6E7] px-4 py-3 text-[#748A9C]">
-                  <%= @usuario.email %>
+                <%= @usuario.email %>
                 </div>
               </div>
 
               <div>
-                <%= f.label :telefone, "Telefone",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.telephone_field :telefone,
-                                      autocomplete: "tel",
-                                      placeholder: "(00) 00000-0000",
-                                      class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :telefone, "Telefone", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.telephone_field :telefone, autocomplete: "tel", placeholder: "(00) 00000-0000", class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
               <div>
-                <%= f.label :cpf, "CPF (opcional)",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :cpf,
-                                 placeholder: "000.000.000-00",
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :cpf, "CPF (opcional)", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :cpf, placeholder: "000.000.000-00",  class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
-
             </div>
           </section>
 
-          <!-- Endereço -->
           <section class="border-t border-[#E5E6E7] pt-7">
-            <h3 class="text-lg font-semibold text-[#485057]">
-              Endereço de entrega
-            </h3>
-
-            <p class="text-sm text-[#748A9C] mt-1 mb-5">
-              Preencha os dados para facilitar a entrega dos seus pedidos.
-            </p>
-
+            <h3 class="text-lg font-semibold text-[#485057]">Endereço de entrega</h3>
+            <p class="text-sm text-[#748A9C] mt-1 mb-5">Preencha os dados para facilitar a entrega dos seus pedidos.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
               <div>
-                <%= f.label :cep, "CEP",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :cep,
-                                 autocomplete: "postal-code",
-                                 placeholder: "00000-000",
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :cep, "CEP", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :cep, autocomplete: "postal-code", placeholder: "00000-000", class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
               <div>
-                <%= f.label :estado, "Estado",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-                    <%= f.select :estado, Usuario::ESTADOS, include_blank: "Selecione" %>
-
-                <%= f.text_field :estado,
-                                 autocomplete: "address-level1",
-                                 placeholder: "Ex.: PB",
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :estado, "Estado", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.select :estado, Usuario::ESTADOS, { include_blank: "Selecione seu estado" }, { autocomplete: "address-level1", class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition"} %>
               </div>
 
               <div>
-                <%= f.label :cidade, "Cidade",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :cidade,
-                                 autocomplete: "address-level2",
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :cidade, "Cidade",class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :cidade, autocomplete: "address-level2", class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
               <div>
-                <%= f.label :bairro, "Bairro",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :bairro,
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :bairro, "Bairro", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :bairro, class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
               <div>
-                <%= f.label :rua, "Rua / Avenida",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :rua,
-                                 autocomplete: "street-address",
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :rua, "Rua / Avenida", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :rua, autocomplete: "street-address", class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
               <div>
-                <%= f.label :numero_casa, "Número",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :numero_casa,
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :numero_casa, "Número", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :numero_casa,class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
               <div class="md:col-span-2">
-                <%= f.label :complemento, "Complemento (opcional)",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :complemento,
-                                 placeholder: "Apartamento, bloco, casa dos fundos...",
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :complemento, "Complemento (opcional)", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :complemento, placeholder: "Apartamento, bloco, casa dos fundos...", class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
               <div class="md:col-span-2">
-                <%= f.label :ponto_referencia,
-                            "Ponto de referência (opcional)",
-                            class: "block text-sm text-[#485057] mb-2 font-medium" %>
-
-                <%= f.text_field :ponto_referencia,
-                                 placeholder: "Ex.: próximo à praça central",
-                                 class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
+                <%= f.label :ponto_referencia, "Ponto de referência (opcional)", class: "block text-sm text-[#485057] mb-2 font-medium" %>
+                <%= f.text_field :ponto_referencia, placeholder: "Ex.: próximo à praça central", class: "w-full rounded-lg bg-[#F7F7F5] border border-[#E5E6E7] px-4 py-3 text-[#485057] placeholder:text-[#748A9C] focus:border-[#748A9C] focus:ring-1 focus:ring-[#748A9C] outline-none transition" %>
               </div>
 
             </div>
           </section>
 
-          <!-- Botões -->
           <div class="flex flex-col sm:flex-row gap-3 pt-2">
-            <%= f.submit "Salvar alterações",
-                         class: "rounded-lg bg-[#B8BDC3] text-[#485057] font-semibold px-6 py-3 cursor-pointer hover:bg-[#748A9C] hover:text-white transition duration-300" %>
-
-            <%= link_to "Voltar sem salvar", root_path,
-                        class: "text-center rounded-lg border border-[#B8BDC3] px-6 py-3 text-[#485057] hover:bg-[#E5E6E7] transition" %>
+            <%= f.submit "Salvar alterações", class: "rounded-lg bg-[#B8BDC3] text-[#485057] font-semibold px-6 py-3 cursor-pointer hover:bg-[#748A9C] hover:text-white transition duration-300" %>
+            <%= link_to "Voltar sem salvar", root_path, class: "text-center rounded-lg border border-[#B8BDC3] px-6 py-3 text-[#485057] hover:bg-[#E5E6E7] transition" %>
           </div>
-
         <% end %>
 
-        <!-- Encerrar sessão -->
         <div class="border-t border-[#E5E6E7] mt-8 pt-6">
-          <p class="text-sm text-[#748A9C] mb-3">
-            Deseja encerrar sua sessão?
-          </p>
-
-          <%= button_to "Sair da conta",
-                        destroy_usuario_session_path,
-                        method: :delete,
-                        class: "rounded-lg border border-[#B8BDC3] px-5 py-2 text-sm text-[#485057] hover:bg-[#E5E6E7] transition" %>
+          <p class="text-sm text-[#748A9C] mb-3">Deseja encerrar sua sessão?</p>
+          <%= button_to "Sair da conta", destroy_usuario_session_path, method: :delete, class: "rounded-lg border border-[#B8BDC3] px-5 py-2 text-sm text-[#485057] hover:bg-[#E5E6E7] transition" %>
         </div>
-
       </div>
     </section>
 
-    <p class="text-xs text-[#748A9C] text-center mt-6">
-      Maison Parfum — Sua experiência, seu estilo.
-    </p>
-
+    <p class="text-xs text-[#748A9C] text-center mt-6">Maison Parfum — Sua experiência, seu estilo.</p>
   </div>
 </main>

@@ -1,5 +1,32 @@
-<div class="max-w-xl mx-auto px-4 py-10">
-  <%= link_to "← Voltar", frasco_maes_path, class: "text-sm text-stone-600 hover:text-marinho" %>
-  <h1 class="font-serif text-3xl text-marinho my-6">Novo Frasco Mãe</h1>
-  <%= render "form", frasco_mae: @frasco_mae %>
+<div class="min-h-screen bg-stone-50 px-4 py-10 sm:px-6">
+  <div class="mx-auto max-w-3xl">
+    <%= link_to frasco_maes_path, class: "inline-flex items-center gap-2 text-sm text-stone-500 transition hover:text-amber-700" do %>
+      <span>←</span>
+      <span>Voltar aos Frascos Mãe</span>
+    <% end %>
+
+    <div class="mb-8 mt-7">
+      <p class="mb-2 text-xs uppercase tracking-[0.3em] text-[#748A9C]">Maison Parfum</p>
+      <h1 class="font-serif text-3xl text-[#485057] md:text-4xl">Frascos Mãe</h1>
+      <p class="mt-3 max-w-xl text-sm leading-6 text-stone-500">Cadastre um novo frasco e mantenha seu estoque de perfumesorganizado e atualizado.</p>
+    </div>
+
+    <div class="overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm">
+
+      <div class="border-b border-stone-200 px-6 py-5 sm:px-8">
+        <h2 class="font-serif text-xl font-semibold text-stone-900">Informações do frasco </h2>
+        <p class="mt-1 text-sm text-stone-500">Preencha os dados para cadastrar seu produto.</p>
+      </div>
+
+      <div class="px-6 py-7 sm:px-8">
+        <%= render "form", frasco_mae: @frasco_mae %>
+      </div>
+
+      <div class="border-t border-stone-200 bg-stone-50 px-6 py-4 sm:px-8">
+        <p class="text-xs text-stone-500">Maison Parfum · Gerenciamento de estoque</p>
+      </div>
+
+    </div>
+
+  </div>
 </div>

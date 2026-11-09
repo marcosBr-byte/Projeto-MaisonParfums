@@ -47,7 +47,7 @@
 
   <section class="bg-[#F0F1F2] border-30 border-[#F0F1F2]">
     <div class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-      <% [["local_shipping", "Frete grátis", "Em compras acima de R$ 250"],
+      <% [["local_shipping", "Frete para todo o Brasil", "Em compras nos seus pedidos "],
         ["credit_card", "Parcele sem juros", "Em até 3x em todo o site"],
         ["pix", "3% off no Pix", "Desconto na finalização"],
         ["lock", "Site seguro", "Seus dados protegidos"]].each do |icone, titulo, texto| %>
@@ -77,6 +77,126 @@
     </div>
   </section>
 
+  
+  <section id="destaques" class="bg-[#F7F7F5] px-4 sm:px-6 lg:px-8 py-12">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="text-center mb-10">
+        <h2 class="font-serif text-3xl md:text-4xl text-[#485057]">
+          Os mais vendidos
+        </h2>
+        <p class="text-sm text-gray-500 mt-3">
+          Conheça as fragrâncias favoritas dos nossos clientes.
+        </p>
+      </div>
+
+      <%# Decants masculinos %>
+      <div class="mb-12">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-serif text-2xl text-[#485057]">
+            Decants masculinos
+          </h3>
+
+          <%= link_to "Ver coleção →", decants_masculinos_path,
+              class: "text-sm text-[#748A9C] hover:text-[#485057] transition" %>
+        </div>
+
+        <% if @mais_vendidos_masculinos.any? %>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <% @mais_vendidos_masculinos.each do |produto| %>
+              <div class="group bg-white rounded-xl border border-[#E5E6E7] overflow-hidden hover:shadow-lg transition duration-300">
+
+                <%= link_to produto_path(produto), class: "block" do %>
+                  <div class="aspect-square bg-[#F0F1F2] overflow-hidden">
+                    <% if produto.imagem.attached? %>
+                      <%= image_tag produto.imagem,
+                          alt: produto.nome,
+                          class: "w-full h-full object-cover group-hover:scale-105 transition duration-500" %>
+                    <% else %>
+                      <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                        Sem imagem
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
+
+                <div class="p-3 sm:p-4">
+                  <h4 class="text-sm font-semibold text-[#485057] line-clamp-2 min-h-10">
+                    <%= produto.nome %>
+                  </h4>
+
+                  <p class="text-base font-semibold text-[#485057] mt-3">
+                    <%= number_to_currency(produto.preco) %>
+                  </p>
+
+                  <%= link_to "Ver detalhes", produto_path(produto),
+                      class: "block text-center mt-4 py-2.5 rounded-lg bg-[#485057] text-white text-xs sm:text-sm hover:bg-[#748A9C] transition" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-center text-sm text-gray-500 py-8">
+            Ainda não temos perfumes masculinos vendidos para destacar.
+          </p>
+        <% end %>
+      </div>
+
+      <%# Decants femininos %>
+      <div>
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="font-serif text-2xl text-[#485057]">
+            Decants femininos
+          </h3>
+
+          <%= link_to "Ver coleção →", decants_femininos_path,
+              class: "text-sm text-[#748A9C] hover:text-[#485057] transition" %>
+        </div>
+
+        <% if @mais_vendidos_femininos.any? %>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <% @mais_vendidos_femininos.each do |produto| %>
+              <div class="group bg-white rounded-xl border border-[#E5E6E7] overflow-hidden hover:shadow-lg transition duration-300">
+
+                <%= link_to produto_path(produto), class: "block" do %>
+                  <div class="aspect-square bg-[#F0F1F2] overflow-hidden">
+                    <% if produto.imagem.attached? %>
+                      <%= image_tag produto.imagem,
+                          alt: produto.nome,
+                          class: "w-full h-full object-cover group-hover:scale-105 transition duration-500" %>
+                    <% else %>
+                      <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                        Sem imagem
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
+
+                <div class="p-3 sm:p-4">
+                  <h4 class="text-sm font-semibold text-[#485057] line-clamp-2 min-h-10">
+                    <%= produto.nome %>
+                  </h4>
+
+                  <p class="text-base font-semibold text-[#485057] mt-3">
+                    <%= number_to_currency(produto.preco) %>
+                  </p>
+
+                  <%= link_to "Ver detalhes", produto_path(produto),
+                      class: "block text-center mt-4 py-2.5 rounded-lg bg-[#485057] text-white text-xs sm:text-sm hover:bg-[#748A9C] transition" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-center text-sm text-gray-500 py-8">
+            Ainda não temos perfumes femininos vendidos para destacar.
+          </p>
+        <% end %>
+      </div>
+
+    </div>
+  </section>
+
   <section id="secao-decants" class="bg-[#F7F7F5] px-4 sm:px-6 lg:px-8 py-8 md:py-10">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
 
@@ -88,7 +208,7 @@
             alt: "Coleção de decants masculinos",
             class: "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" %>
 
-        <div class="absolute inset-0 bg-linear-to-r from-[#17232E]/95 via-[#17232E]/65 to-transparent"></div>
+        <div class="absolute inset-0 bg-linear-to-r from-[17232E]/95 via-[17232E]/65 to-transparent"></div>
 
         <div class="absolute inset-y-0 left-0 z-10 flex flex-col justify-center items-start p-5 sm:p-7 lg:p-8 max-w-[75%]">
           <h2 class="font-serif text-2xl sm:text-3xl text-white leading-tight mb-3">

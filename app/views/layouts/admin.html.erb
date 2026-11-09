@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin · Maison Parfum</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-[#F7F7F5] text-[#485057]">
+    <input type="checkbox" id="menu-admin" class="peer sr-only" aria-label="Abrir menu">
+
+    <%# Barra de topo (só no celular) %>
+    <header class="md:hidden sticky top-0 z-30 flex items-center justify-between border-b border-[#E5E6E7] bg-white px-4 py-3">
+      <label for="menu-admin" class="flex cursor-pointer items-center text-[#485057]" aria-label="Abrir menu">
+        <span class="material-symbols-outlined">menu</span>
+      </label>
+      <span class="font-serif text-lg text-[#485057]">Maison Parfum</span>
+      <span class="w-6"></span>
+    </header>
+
+    <%# Fundo escuro quando o menu abre no celular %>
+    <label for="menu-admin" class="fixed inset-0 z-40 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 peer-checked:opacity-100 peer-checked:pointer-events-auto md:hidden"></label>
+
+    <%= render "admin/menu" %>
+
+    <main class="min-h-screen md:ml-64">
+      <% if notice.present? || alert.present? %>
+        <div class="max-w-7xl mx-auto px-4 pt-6 sm:px-8">
+          <% if notice.present? %>
+            <p class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><%= notice %></p>
+          <% end %>
+          <% if alert.present? %>
+            <p class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><%= alert %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

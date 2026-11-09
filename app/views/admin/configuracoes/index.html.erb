@@ -1,0 +1,58 @@
+<div class="p-6 md:p-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-serif text-[#343A40]">Configurações</h1>
+    <p class="mt-2 text-sm text-[#748A9C]">Gerencie as informações e os canais de atendimento da Maison Parfum.</p>
+  </div>
+
+  <%= form_with model: @configuracao, url: admin_configuracoes_path, method: :patch,  class: "space-y-6" do |f| %>
+    <% if @configuracao.errors.any? %>
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <p class="font-semibold mb-2">Não foi possível salvar as configurações:</p>
+        <ul class="list-disc pl-5">
+          <% @configuracao.errors.full_messages.each do |mensagem| %>
+            <li><%= mensagem %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-[#343A40]">Informações da loja</h2>
+      <p class="mt-1 mb-5 text-sm text-gray-500">Apresente a Maison Parfum aos seus clientes.</p>
+      <div>
+        <%= f.label :descricao, "Descrição da loja", class: "mb-2 block text-sm font-medium text-[#485057]" %>
+        <%= f.text_area :descricao, rows: 4, placeholder: "Escreva uma breve descrição da Maison Parfum...", class: "w-full rounded-lg border border-[#D0D3D6] p-3 text-sm focus:border-[#748A9C] focus:outline-none focus:ring-1 focus:ring-[#748A9C]" %>
+      </div>
+    </div>
+
+    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-[#343A40]">Canais de atendimento</h2>
+      <p class="mt-1 mb-5 text-sm text-gray-500">Informe como seus clientes podem entrar em contato. </p>
+
+      <div class="space-y-5">
+        <div>
+          <%= f.label :whatsapp, "WhatsApp", class: "mb-2 block text-sm font-medium text-[#485057]" %>
+          <%= f.telephone_field :whatsapp, placeholder: "Ex.: 5583999999999", class: "w-full rounded-lg border border-[#D0D3D6] p-3 text-sm focus:border-[#748A9C] focus:outline-none focus:ring-1 focus:ring-[#748A9C]" %>
+          <p class="mt-1 text-xs text-gray-400">Digite o número com código do país e DDD.</p>
+        </div>
+
+        <div>
+          <%= f.label :email_contato, "E-mail de contato",class: "mb-2 block text-sm font-medium text-[#485057]" %>
+          <%= f.email_field :email_contato, placeholder: "contato@maisonparfum.com", class: "w-full rounded-lg border border-[#D0D3D6] p-3 text-sm focus:border-[#748A9C] focus:outline-none focus:ring-1 focus:ring-[#748A9C]" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6 shadow-sm">
+      <h2 class="text-lg font-semibold text-[#343A40]">Redes sociais </h2>
+      <p class="mt-1 mb-5 text-sm text-gray-500">Adicione o endereço do Instagram da loja.</p>
+      <div>
+        <%= f.label :instagram_url, "Instagram", class: "mb-2 block text-sm font-medium text-[#485057]" %>
+        <%= f.url_field :instagram_url,  placeholder: "https://www.instagram.com/sua_loja", class: "w-full rounded-lg border border-[#D0D3D6] p-3 text-sm focus:border-[#748A9C] focus:outline-none focus:ring-1 focus:ring-[#748A9C]" %>
+      </div>
+    </div>
+    <div class="flex justify-end">
+      <%= f.submit "Salvar configurações", class: "cursor-pointer rounded-lg bg-[#485057] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#748A9C]" %>
+    </div>
+  <% end %>
+</div>
