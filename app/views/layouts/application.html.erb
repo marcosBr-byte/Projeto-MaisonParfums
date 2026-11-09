@@ -50,33 +50,34 @@
         <% end %>
         <div class="flex items-center gap-4 text-sm text-[#485057]">
 
-          <% if usuario_signed_in? %>
-            <% if current_usuario.admin? %>
-              <%= link_to admin_perfil_path, aria: { label: "Meu perfil" }, title: "Meu perfil", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
-                <span class="material-symbols-outlined">person</span>
-              <% end %>
-            <% else %>
-              <%= link_to perfil_path, aria: { label: "Meu perfil" }, title: "Meu perfil", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
-                <span class="material-symbols-outlined">person</span>
-              <% end %>
-
-              <%= link_to carrinho_path, aria: { label: "Meu carrinho" }, title: "Meu carrinho", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
-                <span class="material-symbols-outlined">shopping_cart</span>
-             <% end %>
-            <% end %>
-
-            <%= link_to new_mensagen_path, aria: { label: "Mensagens" }, title: "Mensagens", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
-                <span class="material-symbols-outlined">mail</span>
-              <% end %>
-
-            <%= button_to destroy_usuario_session_path, method: :delete, aria: { label: "Sair" }, title: "Sair", class: "flex items-center hover:text-[#748A9C] cursor-pointer transition-all duration-300 hover:scale-110" do %>
-              <span class="material-symbols-outlined">logout</span>
-            <% end %>
-          <% else %>
-            <%= link_to new_usuario_session_path, aria: { label: "Entrar" }, title: "Entrar", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
-              <span class="material-symbols-outlined">person</span>
-            <% end %>
+          
+      <% if usuario_signed_in? %>
+        <% if current_usuario.admin? %>
+          <%= link_to admin_perfil_path, aria: { label: "Meu perfil" }, title: "Meu perfil", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+            <span class="material-symbols-outlined">person</span>
           <% end %>
+        <% else %>
+          <%= link_to perfil_path, aria: { label: "Meu perfil" }, title: "Meu perfil", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+            <span class="material-symbols-outlined">person</span>
+          <% end %>
+
+          <%= link_to carrinho_path, aria: { label: "Meu carrinho" }, title: "Meu carrinho", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+            <span class="material-symbols-outlined">shopping_cart</span>
+          <% end %>
+
+          <%= link_to new_mensagen_path, aria: { label: "Mensagens" }, title: "Mensagens", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+            <span class="material-symbols-outlined">mail</span>
+          <% end %>
+        <% end %>
+
+        <%= button_to destroy_usuario_session_path, method: :delete, aria: { label: "Sair" }, title: "Sair", class: "flex items-center hover:text-[#748A9C] cursor-pointer transition-all duration-300 hover:scale-110" do %>
+          <span class="material-symbols-outlined">logout</span>
+        <% end %>
+      <% else %>
+        <%= link_to new_usuario_session_path, aria: { label: "Entrar" }, title: "Entrar", class: "flex items-center hover:text-[#748A9C] transition-all duration-300 hover:scale-110" do %>
+          <span class="material-symbols-outlined">person</span>
+        <% end %>
+      <% end %>
         </div>
       </div>
 
