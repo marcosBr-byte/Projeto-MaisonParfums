@@ -102,7 +102,9 @@ jobs:
           MAISON_PARFUM_DATABASE_PASSWORD: postgres
           # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test
+        run: |
+          bin/rails db:prepare
+          bin/rails test
 
   system-test:
     runs-on: ubuntu-24.04
@@ -133,7 +135,9 @@ jobs:
           MAISON_PARFUM_DATABASE_PASSWORD: postgres
           # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test:system
+        run: |
+          bin/rails db:prepare
+          bin/rails test:system
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
