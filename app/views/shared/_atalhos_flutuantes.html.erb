@@ -1,0 +1,20 @@
+<% if configuracao_loja.brinde_ativo? %>
+  <% total = total_brinde_flutuante %>
+  <% restante = [configuracao_loja.brinde_meta - total, 0.to_d].max %>
+  <details class="floating-gift" data-floating-gift>
+    <summary aria-label="Consultar seu brinde">
+      <span class="floating-gift-icon material-symbols-outlined" aria-hidden="true">redeem</span>
+      <span><%= restante.zero? ? "Você ganhou sua amostra!" : "Faltam #{moeda_loja(restante)} para ganhar uma amostra" %></span>
+    </summary>
+    <div class="floating-gift-panel">
+      <%= render "shared/brinde", total: total %>
+      <%= link_to "Escolher perfumes", produtos_todos_path, class: "floating-gift-link" %>
+    </div>
+  </details>
+<% end %>
+<% numero = configuracao_loja.whatsapp.to_s.gsub(/\D/, "") %>
+<% if numero.present? %>
+  <%= link_to "https://wa.me/#{numero}", target: "_blank", rel: "noopener noreferrer", class: "floating-whatsapp", aria: { label: "Fale com a Maison Parfum pelo WhatsApp (abre em nova aba)" }, data: { floating_whatsapp: true } do %>
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  <% end %>
+<% end %>

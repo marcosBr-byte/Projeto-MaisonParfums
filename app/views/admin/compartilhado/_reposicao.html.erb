@@ -1,0 +1,36 @@
+<section id="reposicao" class="insight-panel" aria-labelledby="reposicao-titulo">
+  <div class="insight-panel-heading">
+    <div><h2 id="reposicao-titulo">Necessidades de reposição de estoque</h2><p>Perfumes com tamanhos esgotados ou com menos de 5 unidades. Os esgotados aparecem primeiro.</p></div>
+    <span class="text-sm text-[#748A9C]"><%= pluralize(reposicao.size, "produto") %></span>
+  </div>
+  <% if reposicao.any? %>
+    <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4 p-4 sm:p-5">
+      <% reposicao.each do |produto, variantes| %>
+        <article class="rounded-xl border border-[#E5E6E7] p-4 min-w-0" data-reposicao-produto="<%= produto.id %>">
+          <div class="flex items-start gap-3">
+            <%= link_to edit_produto_path(produto), class: "shrink-0", aria: { label: "Repor #{produto.nome}" } do %>
+              <% if produto.imagem.attached? %>
+                <%= image_tag imagem_loja(produto.imagem, tamanho: :miniatura), alt: produto.nome, width: 72, height: 72, loading: "lazy", class: "h-18 w-18 rounded-lg object-contain bg-[#F7F7F5]" %>
+              <% else %>
+                <span class="flex h-18 w-18 items-center justify-center rounded-lg bg-[#F7F7F5]"><span class="material-symbols-outlined text-[#748A9C]" aria-hidden="true">water_drop</span><span class="sr-only">Sem foto</span></span>
+              <% end %>
+            <% end %>
+            <div class="min-w-0">
+              <%= link_to produto.nome, edit_produto_path(produto), class: "font-semibold text-sm text-[#485057] hover:underline break-words" %>
+              <p class="mt-1 text-xs text-[#748A9C]">Categoria: <%= produto.rotulo(:categoria).presence || "Não informada" %></p>
+              <p class="mt-1 text-xs text-[#748A9C]">Marca: <%= produto.marca.presence || "Não informada" %></p>
+            </div>
+          </div>
+          <ul class="mt-4 space-y-2">
+            <% variantes.each do |variante| %>
+              <li class="flex flex-wrap items-center justify-between gap-2 text-xs"><span><%= Variante.tamanhos[variante.tamanho] %> · <%= variante.estoque %> unidades</span><%= badge_estoque(variante.estoque) %></li>
+            <% end %>
+          </ul>
+          <%= link_to "Repor estoque →", edit_produto_path(produto), class: "inline-block mt-4 text-sm font-medium text-[#485057] underline" %>
+        </article>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="p-6 text-sm text-[#748A9C]">Nenhum produto precisa de reposição no momento.</p>
+  <% end %>
+</section>

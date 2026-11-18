@@ -21,6 +21,14 @@
       </div>
     <% end %>
    
+    <% if Usuario.omniauth_providers.any? %>
+      <section class="bg-white border border-[#E5E6E7] rounded-2xl p-6 mb-6">
+        <h2 class="font-semibold">Contas conectadas</h2>
+        <p class="text-sm text-[#748A9C] mt-2">Conecte uma conta para entrar com mais facilidade nas próximas visitas.</p>
+        <%= render "devise/shared/social_login", conectar: true %>
+      </section>
+    <% end %>
+
     <section class="bg-white border border-[#E5E6E7] rounded-2xl overflow-hidden shadow-sm">
       <div class="h-28 bg-gradient-to-r from-[#E5E6E7] via-[#748A9C] to-[#B8BDC3]"></div>
       <div class="px-5 sm:px-9 pb-9">
@@ -28,7 +36,7 @@
 
           <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-white bg-[#E5E6E7] flex items-center justify-center shrink-0 shadow-sm">
             <% if @usuario.imagem.attached? %>
-              <%= image_tag @usuario.imagem,class: "w-full h-full object-cover" %>
+              <%= image_tag imagem_loja(@usuario.imagem), alt: "Foto de perfil", class: "w-full h-full object-cover" %>
             <% else %>
               <span class="text-3xl text-[#748A9C]">
                 <%= @usuario.nome.to_s.first&.upcase || "U" %>
@@ -148,6 +156,17 @@
         </div>
       </div>
     </section>
+
+    <% if @usuario.pedidos.exists? %>
+      <section class="mt-8 rounded-2xl bg-white border p-6">
+        <h2 class="font-serif text-2xl text-[#485057]">Meus pedidos</h2>
+        <ul class="mt-4 space-y-3">
+          <% @usuario.pedidos.order(created_at: :desc).limit(20).each do |pedido| %>
+            <li><%= link_to "Pedido ##{pedido.id} — #{moeda_loja(pedido.valor_total)} — #{pedido.status.humanize}", pagamento_pedido_path(pedido), class: "underline" %></li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
 
     <p class="text-xs text-[#748A9C] text-center mt-6">Maison Parfum — Sua experiência, seu estilo.</p>
   </div>

@@ -1,48 +1,42 @@
-   class Variante < ApplicationRecord
-     belongs_to :produto
+class Variante < ApplicationRecord
+  belongs_to :produto
+  enum :tamanho, { tamanho_5ml: "5ml", tamanho_8ml: "8ml", tamanho_10ml: "10ml", tamanho_15ml: "15ml", lacrado: "Lacrado" }
+  validates :tamanho, presence: true, uniqueness: { scope: :produto_id }
+  validates :preco, numericality: { greater_than: 0 }
+  validates :estoque, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :volume_lacrado_ml, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
 
-     enum :tamanho, {
-       tamanho_2ml: "2ml",
-       tamanho_5ml: "5ml",
-       tamanho_10ml: "10ml",
-       lacrado: "Lacrado"
-     }
+  def volume_ml
+    lacrado? ? volume_lacrado_ml : self.class.tamanhos[tamanho].to_i.presence
+  end
 
-     validates :tamanho, presence: true, uniqueness: { scope: :produto_id }
-     validates :preco, presence: true, numericality: { greater_than: 0 }
+  def preco_venda(configuracao = Configuracao.atual)
+    configuracao.preco_com_desconto(preco)
+  end
 
-     def volume_ml
-       v = self.class.tamanhos[tamanho].to_i
-       v.positive? ? v : nil
-     end
+  def preco_por_ml(configuracao = Configuracao.atual)
+    preco_venda(configuracao) / volume_ml if volume_ml.to_i.positive?
+  end
 
-     def decant?
-       produto.frasco_mae.present? && volume_ml.present?
-     end
+  def borrifadas_estimadas(configuracao = Configuracao.atual)
+    volume_ml * configuracao.borrifadas_por_ml if volume_ml.to_i.positive?
+  end
 
-     def disponivel?(qtd = 1)
-       decant? ? produto.frasco_mae.estoque_ml >= volume_ml * qtd : estoque.to_i >= qtd
-     end
+  def disponivel?(quantidade = 1)
+    estoque.to_i >= quantidade
+  end
 
-     def quantidade_maxima
-       return estoque.to_i unless decant?
-       produto.frasco_mae.estoque_ml / volume_ml
-     end
+  def quantidade_maxima
+    estoque.to_i
+  end
 
-     def baixar_estoque!(qtd)
-        raise ArgumentError, "Quantidade inválida" unless qtd.to_i.positive?
-        if decant?
-          frasco = produto.frasco_mae
-          frasco.with_lock do
-             necessario = volume_ml * qtd
-            raise "Estoque insuficiente de #{produto.nome}" if frasco.estoque_ml < necessario
-            frasco.update!(estoque_ml: frasco.estoque_ml - necessario)
-          end
-        else
-          with_lock do
-            raise "Estoque insuficiente de #{produto.nome}" if estoque < qtd
-            update!(estoque: estoque - qtd)
-          end
-        end
+  def baixar_estoque!(quantidade)
+    with_lock do
+      unless quantidade.is_a?(Integer) && quantidade.positive? && disponivel?(quantidade)
+        errors.add(:estoque, "insuficiente para #{produto.nome}")
+        raise ActiveRecord::RecordInvalid, self
       end
-   end
+      update!(estoque: estoque - quantidade)
+    end
+  end
+end

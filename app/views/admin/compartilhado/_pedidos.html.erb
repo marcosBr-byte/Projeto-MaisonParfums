@@ -1,0 +1,13 @@
+<section class="insight-panel">
+  <div class="insight-panel-heading"><div><h2><%= titulo %></h2><p><%= descricao %></p></div><%= link_to "Todos os pedidos →", admin_pedidos_path, class: "text-sm text-[#748A9C] whitespace-nowrap" %></div>
+  <% if pedidos.any? %>
+    <div class="overflow-x-auto"><table class="w-full min-w-[560px] text-left text-sm">
+      <thead class="bg-[#F7F7F5] text-xs text-[#748A9C]"><tr><th class="px-5 py-3">Pedido / cliente</th><th class="px-5 py-3">Data</th><th class="px-5 py-3">Valor</th><th class="px-5 py-3">Situação</th></tr></thead>
+      <tbody class="divide-y divide-[#E5E6E7]"><% pedidos.each do |pedido| %><tr class="hover:bg-[#F7F7F5]">
+        <td class="px-5 py-4"><%= link_to "##{pedido.id} · #{pedido.usuario.nome}", admin_pedido_path(pedido), class: "font-semibold text-[#485057] underline-offset-4 hover:underline" %></td>
+        <td class="px-5 py-4 whitespace-nowrap text-[#748A9C]"><%= l(pedido.created_at.in_time_zone(ResumoVendas::FUSO), format: "%d/%m/%Y %H:%M") %></td>
+        <td class="px-5 py-4 whitespace-nowrap font-semibold"><%= moeda(pedido.valor_total) %></td><td class="px-5 py-4"><%= badge_status(pedido.status) %></td>
+      </tr><% end %></tbody>
+    </table></div>
+  <% else %><div class="p-10 text-center text-[#748A9C]"><span class="material-symbols-outlined text-4xl mb-3" aria-hidden="true">receipt_long</span><p class="text-sm">Nenhum pedido registrado neste período.</p></div><% end %>
+</section>

@@ -12,6 +12,10 @@
       <% end %>
       <div class="w-16 h-1 bg-[#B8BDC3] mt-5"></div>
     </div>
+    <div class="mb-8 max-w-2xl">
+      <%= render "shared/perfume_search", identificador: "busca-resultados", classes: "w-full" %>
+      <p class="mt-3 text-sm text-[#748A9C]">Busque por nome, marca ou características, como “floral feminino” ou “árabe masculino”.</p>
+    </div>
     <% if @termo.present? && @produtos.any? %>
       <div class="flex items-center justify-between mb-6">
         <p class="text-sm text-[#485057]"><%= @produtos.size %>
@@ -32,8 +36,8 @@
           </div>
         </div>
         <h2 class="font-serif text-2xl text-[#485057] mb-3">Nenhum perfume encontrado</h2>
-        <p class="text-sm text-gray-500 max-w-md mx-auto leading-relaxed">Não encontramos fragrâncias com esse nome. Experimente pesquisar por outro perfume ou verificar a escrita.</p>
-        <%= link_to "Ver todos os perfumes", produtos_path, class: "inline-block mt-7 px-6 py-3 rounded-full bg-[#485057] text-white text-sm hover:bg-[#748A9C] transition duration-300" %>
+        <p class="text-sm text-gray-500 max-w-md mx-auto leading-relaxed">Experimente menos palavras, outra marca ou uma característica, como floral ou amadeirado.</p>
+        <%= link_to "Ver todos os perfumes", produtos_todos_path, class: "inline-block mt-7 px-6 py-3 rounded-full bg-[#485057] text-white text-sm hover:bg-[#748A9C] transition duration-300" %>
       </div>
     
     <% else %>

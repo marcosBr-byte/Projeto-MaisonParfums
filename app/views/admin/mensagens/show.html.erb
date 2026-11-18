@@ -50,7 +50,7 @@
   </div>
   <div class="mt-8 border-t border-stone-100 pt-6">
     <p class="mb-3 text-xs font-medium uppercase tracking-wider text-stone-400">Mensagem</p>
-    <div class="whitespace-pre-wrap rounded-xl bg-stone-50 p-5 leading-relaxed text-stone-700"><%= @mensagem.conteudo %></div>
+    <div class="trix-content rounded-xl bg-stone-50 p-5 leading-relaxed text-stone-700"><%= @mensagem.conteudo %></div>
   </div>
   <div class="mt-8 flex flex-wrap gap-3">
     <%= link_to "Responder por e-mail", "mailto:#{@mensagem.email}?subject=#{ERB::Util.url_encode("Re: #{@mensagem.assunto}")}",class: "rounded-xl bg-stone-800 px-5 py-3 text-sm font-medium text-white hover:bg-stone-700" %>

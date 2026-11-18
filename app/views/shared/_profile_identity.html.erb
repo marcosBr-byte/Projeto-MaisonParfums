@@ -1,0 +1,16 @@
+<div class="account-identity">
+  <div class="account-identity-cover"><span>MAISON PARFUM</span><span aria-hidden="true">✧</span></div>
+  <div class="account-avatar">
+    <% if usuario.imagem.attached? && usuario.imagem.blob.persisted? %>
+      <%= image_tag imagem_loja(usuario.imagem, tamanho: :miniatura), alt: "Foto de perfil de #{usuario.nome}", width: 96, height: 96, decoding: "async" %>
+    <% else %>
+      <span aria-label="Iniciais do nome"><%= usuario.nome.to_s.split.first(2).map { |nome| nome.first }.join.upcase.presence || "M" %></span>
+    <% end %>
+  </div>
+  <div class="account-identity-body">
+    <h2><%= usuario.nome.presence || "Minha conta" %></h2>
+    <p class="account-identity-email"><%= usuario.email %></p>
+    <span class="account-role"><span class="material-symbols-outlined" aria-hidden="true"><%= usuario.admin? ? "verified_user" : "person" %></span><%= usuario.admin? ? "Administrador" : "Cliente Maison" %></span>
+    <div class="account-member"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span><div><span>Na Maison desde</span><strong><%= usuario.created_at&.in_time_zone("America/Fortaleza")&.strftime("%d/%m/%Y") %></strong></div></div>
+  </div>
+</div>

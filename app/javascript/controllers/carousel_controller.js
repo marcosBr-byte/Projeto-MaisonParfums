@@ -45,6 +45,8 @@ export default class extends Controller {
   }
 
   start() {
+    this.stop()
+    if (this.slideTargets.length < 2) return
     this.timer = setInterval(() => {
       this.indexValue = (this.indexValue + 1) % this.slideTargets.length
     }, this.intervalValue)

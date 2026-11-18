@@ -1,0 +1,8 @@
+:root {
+  --app-font: "Quicksand", "Arial Rounded MT Bold", sans-serif;
+  --font-sans: var(--app-font);
+  --font-serif: var(--app-font);
+}
+body { font-family: var(--app-font); }
+input, button, select, textarea, trix-editor { font-family: inherit; }
+.font-serif, .font-sans { font-family: var(--app-font); }

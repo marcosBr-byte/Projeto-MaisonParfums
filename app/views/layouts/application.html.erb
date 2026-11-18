@@ -1,7 +1,7 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
   <head>
+    <meta charset="utf-8">
     <title><%= content_for(:title) || "Maison Parfum" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,6 +23,8 @@
 
     <%# Ícones do dashboard %>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
@@ -30,24 +32,15 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-[#F7F7F5]">
+  <body class="bg-[#F7F7F5] ">
 
     <header class="bg-[#E5E6E7] border-b border-[#D0D3D6] shrink-0 sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-6">
-        <%= link_to root_path, class: "font-serif text-2xl tracking-wide text-[#485057]" do %>
+        <%= link_to root_path, class: "shrink-0 font-bold rounded-md text-2xl tracking-wide text-[#748A9C]" do %>
           Maison Parfum
         <% end %>
 
-        <%= form_with url: busca_path, method: :get, local: true, class: "relative hidden md:flex flex-1 max-w-md", data: { controller: "busca", busca_url_value: "/busca/sugestoes", action: "click@window->busca#fecharFora" } do |form| %>
-          <%= form.search_field :q, value: params[:q], placeholder: "Buscar perfumes...", autocomplete: "off", class: "w-full border border-[#C9CDD1] rounded-l px-4 py-2 text-sm focus:outline-none focus:border-[#748A9C]", data: { busca_target: "input", action: "input->busca#buscar" } %>
-            
-          <%= form.button type: "submit", aria: { label: "Buscar perfumes" }, class: "bg-[#B8BDC3] text-[#343A40] px-4 rounded-r cursor-pointer hover:bg-[#A7ADB4] transition-colors duration-300" do %>
-              <span class="material-symbols-outlined">search</span>
-          <% end %>
-
-          <div data-busca-target="lista" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-[#D9DADD] rounded-lg shadow-lg overflow-hidden z-50"></div>
-          
-        <% end %>
+        <%= render "shared/perfume_search", identificador: "busca-desktop", classes: "hidden md:flex flex-1 max-w-md" %>
         <div class="flex items-center gap-4 text-sm text-[#485057]">
 
           
@@ -82,13 +75,14 @@
       </div>
 
       <nav class="hidden md:block border-t border-[#D9DADD]">
-        <ul class="max-w-7xl mx-auto px-4 flex justify-center items-center gap-8 text-sm font-medium text-[#485057]">
+        <ul class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center items-center gap-x-6 text-sm font-medium text-[#485057]">
           <li class="py-3"><%= link_to "Início", root_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
 
           <% [
-               ["Decants Masculinos", decants_masculinos_path, %w[Árabes Chanel Dior Versace]],
-               ["Decants Femininos", decants_femininos_path, %w[Árabes Chanel Dior Lancôme]],
-               ["Decants Nicho", "#", %w[Creed Xerjoff Nishane Mancera]]
+               ["Decantes Masculinos", decants_masculinos_path, %w[Árabes Importados]],
+               ["Decantes Femininos", decants_femininos_path, %w[Árabes Importados]],
+               ["Decantes Unissex", decants_unissex_path, %w[Árabes Importados]],
+               ["Decantes Nicho", decants_nicho_path, %w[Xerjoff Nishane Sospiro]]
              ].each do |titulo, caminho, marcas| %>
             <li class="relative group py-3">
               <%= link_to titulo, caminho, class: "hover:text-[#748A9C] transition-colors duration-300" %>
@@ -97,19 +91,17 @@
               <ul class="invisible opacity-0 translate-y-2 pointer-events-none group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 ease-out absolute left-0 top-full pt-2 bg-white/95 backdrop-blur-md border border-[#D9DADD]/70 shadow-[0_10px_30px_rgba(72,80,87,0.18)] rounded-lg min-w-44 z-20">
                 <% marcas.each do |marca| %>
                   <li>
-                    <a href="#" class="block px-4 py-2 text-[#485057] hover:bg-[#F0F1F2] hover:pl-6 transition-all duration-300">
-                      <%= marca %>
-                    </a>
+                    <%= link_to marca, (marca == "Árabes" ? "#{caminho}?origem=arabe" : marca == "Importados" ? "#{caminho}?origem=importado" : (caminho == decants_nicho_path ? decants_nicho_path(origem: marca.downcase) : busca_path(q: marca))), class: "block px-4 py-2 text-[#485057] hover:bg-[#F0F1F2] hover:pl-6 transition-all duration-300" %>
                   </li>
                 <% end %>
               </ul>
             </li>
           <% end %>
 
-          <li class="py-3"><a href="#destaques", root_path(anchor: "destaques"), class="hover:text-[#748A9C] transition-colors duration-300">Destaques</a></li>
-          <li class="py-3"><a href="#descubra" class="hover:text-[#748A9C] transition-colors duration-300">Descubra seu Perfume</a></li>
-          <li class="py-3"><a href="#contato", root_path(anchor: "contato"), class="hover:text-[#748A9C] transition-colors duration-300">Contato</a></li>
-          <li class="py-3"><a href="#" class="hover:text-[#748A9C] transition-colors duration-300">Grupo VIP de Ofertas (WhatsApp)</a></li>
+          <li class="py-3"><%= link_to "Destaques", root_path(anchor: "selecao-maison"), class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
+          <li class="py-3"><%= link_to "Descubra seu Perfume", quiz_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
+          <li class="py-3"><%= link_to "Contato", atendimento_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
+          <li class="py-3"><%= link_to "Grupo VIP", grupo_vip_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
         </ul>
       </nav>
 
@@ -117,18 +109,29 @@
         <summary class="px-4 py-3 text-sm font-medium text-[#485057] cursor-pointer">Menu</summary>
         <ul class="px-4 pb-3 flex flex-col gap-2 text-sm text-[#485057]">
           <li><%= link_to "Início", root_path %></li>
-          <li><%= link_to "Decants Masculinos", decants_masculinos_path %></li>
-          <li><%= link_to "Decants Femininos", decants_femininos_path %></li>
-          <li><a href="#">Decants Nicho</a></li>
-          <li><a href="#contato">Contato</a></li>
+          <li><%= link_to "Decantes Masculinos", decants_masculinos_path %></li>
+          <li class="pl-4"><%= link_to "Árabes masculinos", decants_masculinos_path(origem: "arabe") %></li>
+          <li class="pl-4"><%= link_to "Importados masculinos", decants_masculinos_path(origem: "importado") %></li>
+          <li><%= link_to "Decantes Femininos", decants_femininos_path %></li>
+          <li class="pl-4"><%= link_to "Árabes femininos", decants_femininos_path(origem: "arabe") %></li>
+          <li class="pl-4"><%= link_to "Importados femininos", decants_femininos_path(origem: "importado") %></li>
+          <li><%= link_to "Decantes Unissex", decants_unissex_path %></li>
+          <li class="pl-4"><%= link_to "Árabes unissex", decants_unissex_path(origem: "arabe") %></li>
+          <li class="pl-4"><%= link_to "Importados unissex", decants_unissex_path(origem: "importado") %></li>
+          <li><%= link_to "Decantes Nicho", decants_nicho_path %></li>
+          <li><%= link_to "Descubra seu Perfume", quiz_path %></li>
+          <li><%= link_to "Grupo VIP", grupo_vip_path %></li>
+          <li><%= link_to "Contato", atendimento_path %></li>
         </ul>
       </details>
+      <div class="md:hidden px-4 pb-3">
+        <%= render "shared/perfume_search", identificador: "busca-mobile", classes: "w-full" %>
+      </div>
     </header>
 
      <main>
+      <%= render "shared/notifications" %>
       <%= yield %>
-      <p class="notice"><%= notice %></p>
-      <p class="alert"><%= alert %></p>
     </main>
 
     
@@ -138,10 +141,10 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
             <%= link_to "Maison Parfum", root_path,class: "font-serif text-2xl tracking-wide text-[#485057]" %>
-            <p class="text-sm text-[#737980] leading-relaxed mt-4 max-w-xs">
+            <div class="trix-content text-sm text-[#737980] leading-relaxed mt-4 max-w-xs">
               <%= configuracao_loja.descricao.presence ||
                   "Descubra novas fragrâncias e encontre o perfume que combina com você." %>
-            </p>
+            </div>
           </div>
           <div>
             <h3 class="font-semibold text-base mb-5">Menu principal</h3>
@@ -150,10 +153,10 @@
                 <%= link_to "Início", root_path, class: "hover:text-[#485057] transition" %>
               </li>
               <li>
-                <%= link_to "Decants masculinos", decants_masculinos_path, class: "hover:text-[#485057] transition" %>
+                <%= link_to "Decantes masculinos", decants_masculinos_path, class: "hover:text-[#485057] transition" %>
               </li>
               <li>
-                <%= link_to "Decants femininos", decants_femininos_path, class: "hover:text-[#485057] transition" %>
+                <%= link_to "Decantes femininos", decants_femininos_path, class: "hover:text-[#485057] transition" %>
               </li>
               <li>
                 <%= link_to "Minha conta", new_usuario_session_path, class: "hover:text-[#485057] transition" %>
@@ -165,27 +168,19 @@
 
             <ul class="space-y-3 text-sm text-[#737980]">
               <li>
-                <a href="#" class="hover:text-[#485057] transition">
-                  Perguntas frequentes
-                </a>
+                <%= link_to "Perguntas frequentes", perguntas_frequentes_path, class: "hover:text-[#485057] transition" %>
               </li>
 
               <li>
-                <a href="#" class="hover:text-[#485057] transition">
-                  Trocas e devoluções
-                </a>
+                <%= link_to "Trocas e devoluções", trocas_path, class: "hover:text-[#485057] transition" %>
               </li>
 
               <li>
-                <a href="#" class="hover:text-[#485057] transition">
-                  Política de privacidade
-                </a>
+                <%= link_to "Política de privacidade", privacidade_path, class: "hover:text-[#485057] transition" %>
               </li>
 
               <li>
-                <a href="#" class="hover:text-[#485057] transition">
-                  Quem somos
-                </a>
+                <%= link_to "Quem somos", sobre_path, class: "hover:text-[#485057] transition" %>
               </li>
             </ul>
           </div>
@@ -209,13 +204,13 @@
               <h4 class="font-semibold text-sm mb-3">Redes sociais</h4>
               <div class="flex items-center gap-3">
                 <% if configuracao_loja.instagram_url.present? %>
-                  <a href="<%= configuracao_loja.instagram_url %>", aria-label="Instagram", target="_blank", rel="noopener noreferrer", class="w-10 h-10 rounded-full bg-[#485057] text-white flex items-center justify-center hover:bg-[#748A9C] transition">
+                  <a href="<%= configuracao_loja.instagram_url %>" aria-label="Instagram" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#485057] text-white flex items-center justify-center hover:bg-[#748A9C] transition">
                     <i class="fa-brands fa-instagram text-xl"></i>
                   </a>
                 <% end %>
 
                 <% if configuracao_loja.whatsapp.present? %>
-                  <a href="https://wa.me/<%= configuracao_loja.whatsapp.gsub(/\D/, '') %>",  aria-label="WhatsApp", target="_blank", rel="noopener noreferrer", class="w-10 h-10 rounded-full bg-[#485057] text-white flex items-center justify-center hover:bg-[#748A9C] transition">
+                  <a href="https://wa.me/<%= configuracao_loja.whatsapp.gsub(/\D/, '') %>" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#485057] text-white flex items-center justify-center hover:bg-[#748A9C] transition">
                     <i class="fa-brands fa-whatsapp text-xl"></i>
                   </a>
                 <% end %>
@@ -231,5 +226,8 @@
         </div>
       </div>
     </footer>
+    <% unless current_usuario&.admin? || controller_path.start_with?("admin") %>
+      <%= render "shared/atalhos_flutuantes" %>
+    <% end %>
   </body>
 </html>

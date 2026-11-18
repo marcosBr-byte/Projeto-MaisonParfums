@@ -1,136 +1,70 @@
-<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-3 py-6 sm:px-6 sm:py-10">
+<% content_for :title, "Editar perfil · Maison Parfum" %>
+<% voltar = resource.admin? ? admin_perfil_path : perfil_path %>
+<div class="account-page account-page--edit">
+  <nav class="account-breadcrumb" aria-label="Navegação estrutural">
+    <%= link_to "Meu perfil", voltar %><span aria-hidden="true">/</span><span aria-current="page">Editar dados</span>
+  </nav>
+  <header class="account-heading"><div><p class="account-eyebrow">Do seu jeito</p><h1>Editar perfil</h1><p>Seus dados atualizados, sua experiência ainda melhor.</p></div><%= link_to "← Voltar ao perfil", voltar, class: "account-back-link" %></header>
 
-  <div class="w-full max-w-xl lg:max-w-2xl mx-auto">
+  <div class="account-layout">
+    <aside class="account-sidebar" aria-label="Navegação do perfil">
+      <%= render "shared/profile_identity", usuario: resource %>
+      <nav class="account-section-nav" aria-label="Seções da edição">
+        <a href="#dados-pessoais"><span class="material-symbols-outlined" aria-hidden="true">person</span> Dados pessoais <span aria-hidden="true">↗</span></a>
+        <% unless resource.admin? %><a href="#endereco"><span class="material-symbols-outlined" aria-hidden="true">location_on</span> Endereço <span aria-hidden="true">↗</span></a><% end %>
+        <a href="#seguranca"><span class="material-symbols-outlined" aria-hidden="true">lock</span> Senha e confirmação <span aria-hidden="true">↗</span></a>
+      </nav>
+    </aside>
 
-    <div class="bg-white px-4 py-6 sm:px-8 sm:py-9 lg:px-10 lg:py-10 rounded-xl border border-gray-200 shadow-sm">
-
-      <h2 class="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900 text-center mb-2 sm:mb-3">
-        Editar conta
-      </h2>
-
-      <p class="text-xs sm:text-sm lg:text-base text-gray-500 text-center mb-6 sm:mb-8">
-        Altere seus dados de acesso, seus dados pessoais e seu endereço.
-      </p>
-
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, data: { turbo: false } }) do |f| %>
+    <div class="account-panels">
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "account-form", data: { turbo: false } }) do |f| %>
         <%= render "devise/shared/error_messages", resource: resource %>
-        <div class="mb-5 sm:mb-6 text-center">
-          <%= f.label :imagem, "Foto de perfil", class: "block text-sm font-medium text-gray-700 mb-2" %>
-
-          <% if resource.imagem.attached? && resource.imagem.blob.persisted? %>
-            <div class="mb-3">
-              <%= image_tag resource.imagem, class: "w-24 h-24 rounded-full object-cover border border-gray-200 mx-auto" %>
+        <section id="dados-pessoais" class="account-card">
+          <div class="account-card-heading"><span class="account-section-icon material-symbols-outlined" aria-hidden="true">person</span><div><h2>Dados pessoais</h2><p>Como podemos identificar e entrar em contato com você.</p></div><span class="account-step" aria-hidden="true">01</span></div>
+          <div class="account-card-body">
+            <div class="account-photo-field"><span class="account-photo-icon material-symbols-outlined" aria-hidden="true">add_a_photo</span><div><%= f.label :imagem, "Sua foto de perfil" %><p>JPG, PNG ou WebP de até 5 MB.</p><%= f.file_field :imagem, accept: "image/png,image/jpeg,image/webp" %></div></div>
+            <div class="account-fields">
+              <div class="account-field account-field--wide"><%= f.label :nome, "Nome completo" %><%= f.text_field :nome, autocomplete: "name", required: true %></div>
+              <div class="account-field account-field--wide"><%= f.label :email, "E-mail de acesso" %><%= f.email_field :email, autocomplete: "email", required: true %><p>Use este e-mail para entrar na sua conta.</p></div>
+              <div class="account-field"><%= f.label :telefone, "Telefone com DDD" %><%= f.telephone_field :telefone, autocomplete: "tel", placeholder: "(83) 99999-9999" %></div>
+              <div class="account-field"><%= f.label :cpf, "CPF (opcional)" %><%= f.text_field :cpf, inputmode: "numeric", placeholder: "000.000.000-00" %></div>
             </div>
-          <% end %>
-
-          <div class="flex justify-center">
-            <%= f.file_field :imagem, accept: "image/png,image/jpeg,image/webp", class: "max-w-full text-sm text-gray-600 file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" %>
+            <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %><p class="account-hint">Aguardando confirmação para: <%= resource.unconfirmed_email %></p><% end %>
           </div>
-          
-          <p class="text-xs text-gray-500 mt-2">
-            Escolha uma imagem para usar como foto de perfil.
-          </p>
-        </div>
+        </section>
 
-        <% field_classes = "w-full h-11 sm:h-12 px-3 sm:px-4 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg outline-none placeholder:text-gray-400 transition duration-200 hover:border-gray-400 focus:border-gray-700 focus:ring-2 focus:ring-gray-200" %>
-        <% label_classes = "block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2" %>
+        <% unless resource.admin? %>
+        <section id="endereco" class="account-card">
+          <div class="account-card-heading"><span class="account-section-icon material-symbols-outlined" aria-hidden="true">location_on</span><div><h2>Endereço</h2><p>Preencha os detalhes para facilitar suas entregas.</p></div><span class="account-step" aria-hidden="true">02</span></div>
+          <div class="account-card-body account-fields">
+            <div class="account-field"><%= f.label :cep, "CEP" %><%= f.text_field :cep, autocomplete: "postal-code", inputmode: "numeric", placeholder: "00000-000" %></div>
+            <div class="account-field"><%= f.label :estado, "Estado" %><%= f.select :estado, Usuario::ESTADOS, { include_blank: "Selecione o estado" }, autocomplete: "address-level1" %></div>
+            <div class="account-field"><%= f.label :cidade, "Cidade" %><%= f.text_field :cidade, autocomplete: "address-level2", placeholder: "Sua cidade" %></div>
+            <div class="account-field"><%= f.label :bairro, "Bairro" %><%= f.text_field :bairro, autocomplete: "address-level3" %></div>
+            <div class="account-field"><%= f.label :rua, "Rua / Avenida" %><%= f.text_field :rua, autocomplete: "address-line1" %></div>
+            <div class="account-field"><%= f.label :numero_casa, "Número" %><%= f.text_field :numero_casa, placeholder: "Número ou S/N" %></div>
+            <div class="account-field account-field--wide"><%= f.label :complemento, "Complemento (opcional)" %><%= f.text_field :complemento, autocomplete: "address-line2", placeholder: "Apartamento, bloco, casa dos fundos…" %></div>
+            <div class="account-field account-field--wide"><%= f.label :ponto_referencia, "Ponto de referência (opcional)" %><%= f.text_field :ponto_referencia, placeholder: "Um lugar conhecido por perto" %></div>
+          </div>
+        </section>
 
-        <div class="mb-4 sm:mb-5">
-          <%= f.label :email, "E-mail", class: label_classes %>
-          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: field_classes %>
-        </div>
-
-        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-          <p class="text-sm text-gray-600 mb-4">Aguardando confirmação para: <%= resource.unconfirmed_email %></p>
         <% end %>
 
-        <div class="mb-4 sm:mb-5">
-          <%= f.label :cpf, "CPF (opcional)", class: label_classes %>
-          <%= f.text_field :cpf, placeholder: "000.000.000-00", class: field_classes %>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
-          <div>
-            <%= f.label :cep, "CEP", class: label_classes %>
-            <%= f.text_field :cep, autocomplete: "postal-code", placeholder: "00000-000", class: field_classes %>
+        <section id="seguranca" class="account-card">
+          <div class="account-card-heading"><span class="account-section-icon material-symbols-outlined" aria-hidden="true">lock</span><div><h2>Senha e confirmação</h2><p>Você só precisa criar uma nova senha se quiser alterá-la.</p></div><span class="account-step" aria-hidden="true"><%= resource.admin? ? "02" : "03" %></span></div>
+          <div class="account-card-body">
+            <div class="account-fields">
+              <div class="account-field"><%= f.label :password, "Nova senha (opcional)" %><%= f.password_field :password, autocomplete: "new-password", placeholder: "Deixe em branco para manter" %><% if @minimum_password_length %><p>Mínimo de <%= @minimum_password_length %> caracteres.</p><% end %></div>
+              <div class="account-field"><%= f.label :password_confirmation, "Confirmar nova senha" %><%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Repita a nova senha" %></div>
+            </div>
+            <div class="account-confirmation"><span class="material-symbols-outlined" aria-hidden="true">shield_lock</span><div class="account-field"><%= f.label :current_password, "Confirme com sua senha atual" %><%= f.password_field :current_password, autocomplete: "current-password", required: true, placeholder: "Sua senha atual" %><p>Necessária para salvar qualquer alteração no perfil.</p></div></div>
           </div>
+        </section>
 
-          <div>
-            <%= f.label :estado, "Estado", class: label_classes %>
-            <%= f.select :estado, Usuario::ESTADOS, { include_blank: "Selecione" }, class: field_classes %>
-          </div>
-
-          <div>
-            <%= f.label :cidade, "Cidade", class: label_classes %>
-            <%= f.text_field :cidade, autocomplete: "address-level2", class: field_classes %>
-          </div>
-
-          <div>
-            <%= f.label :bairro, "Bairro", class: label_classes %>
-            <%= f.text_field :bairro, class: field_classes %>
-          </div>
-
-          <div>
-            <%= f.label :rua, "Rua / Avenida", class: label_classes %>
-            <%= f.text_field :rua, autocomplete: "street-address", class: field_classes %>
-          </div>
-
-          <div>
-            <%= f.label :numero_casa, "Número", class: label_classes %>
-            <%= f.text_field :numero_casa, class: field_classes %>
-          </div>
-
-          <div class="sm:col-span-2">
-            <%= f.label :complemento, "Complemento (opcional)", class: label_classes %>
-            <%= f.text_field :complemento, placeholder: "Apartamento, bloco, casa dos fundos...", class: field_classes %>
-          </div>
-
-          <div class="sm:col-span-2">
-            <%= f.label :ponto_referencia, "Ponto de referência (opcional)", class: label_classes %>
-            <%= f.text_field :ponto_referencia, placeholder: "Ex.: próximo à praça central", class: field_classes %>
-          </div>
-        </div>
-
-        <div class="mb-4 sm:mb-5">
-          <%= f.label :password, "Nova senha", class: label_classes %>
-          <%= f.password_field :password, autocomplete: "new-password", placeholder: "Deixe em branco para não alterar", class: field_classes %>
-          <% if @minimum_password_length %>
-            <p class="text-xs text-gray-500 mt-1.5">Mínimo de <%= @minimum_password_length %> caracteres.</p>
-          <% end %>
-        </div>
-
-        <div class="mb-4 sm:mb-5">
-          <%= f.label :password_confirmation, "Confirmar nova senha", class: label_classes %>
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Repita a nova senha", class: field_classes %>
-        </div>
-
-        <div class="mb-5 sm:mb-6">
-          <%= f.label :current_password, "Senha atual", class: label_classes %>
-          <%= f.password_field :current_password, autocomplete: "current-password", placeholder: "Necessária para confirmar as alterações", class: field_classes %>
-        </div>
-
-        <div class="actions">
-          <%= f.submit "Atualizar", class: "w-full h-11 sm:h-12 bg-gray-900 hover:bg-gray-700 active:bg-gray-950 text-white text-sm font-semibold rounded-lg cursor-pointer transition duration-200" %>
-        </div>
+        <div class="account-form-actions"><p><span class="material-symbols-outlined" aria-hidden="true">check_circle</span> Tudo pronto? Salve suas alterações.</p><div><%= link_to "Cancelar", voltar, class: "account-button account-button--quiet" %><%= f.button type: :submit, class: "account-button account-button--primary" do %><span class="material-symbols-outlined" aria-hidden="true">check</span> Salvar alterações<% end %></div></div>
       <% end %>
 
-      <div class="flex items-center gap-2 sm:gap-3 my-6 sm:my-7">
-        <div class="h-px bg-gray-200 flex-1"></div>
-        <span class="text-xs text-gray-400 uppercase tracking-wide">ou</span>
-        <div class="h-px bg-gray-200 flex-1"></div>
-      </div>
-
-      <div class="text-center text-sm text-gray-600">
-        <%= link_to "Voltar", :back, class: "font-semibold text-gray-900 hover:text-gray-500 transition duration-200" %>
-      </div>
-
+      <details class="account-close"><summary>Encerrar minha conta</summary><p>O cancelamento remove sua conta e não pode ser desfeito.</p><%= button_to "Cancelar minha conta", registration_path(resource_name), method: :delete, data: { turbo_confirm: "Tem certeza? Essa ação não pode ser desfeita." }, class: "account-delete-button" %></details>
     </div>
-
-    <div class="bg-white border border-gray-200 rounded-xl mt-4 sm:mt-5 py-4 sm:py-5 px-3 sm:px-4 text-center text-xs sm:text-sm shadow-sm">
-      <p class="text-gray-600 mb-3">Não quer mais usar a loja?</p>
-      <%= button_to "Cancelar minha conta", registration_path(resource_name),method: :delete,data: { turbo_confirm: "Tem certeza? Essa ação não pode ser desfeita." },class: "text-red-700 hover:text-red-500 font-semibold cursor-pointer transition duration-200" %>
-    </div>
-
   </div>
-
 </div>

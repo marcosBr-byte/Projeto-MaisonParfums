@@ -1,6 +1,7 @@
 require_relative "boot"
 
 require "rails/all"
+require_relative "../lib/request_body_limit"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -10,6 +11,8 @@ module MaisonParfum
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
+    config.middleware.insert_before 0, RequestBodyLimit
+    config.action_dispatch.rescue_responses["RequestBodyLimit::Exceeded"] = "content_too_large"
     config.i18n.default_locale = :pt
     config.i18n.available_locales = [:pt, :en]
     # Please, add to the `ignore` list any other `lib` subdirectories that do
@@ -27,5 +30,7 @@ module MaisonParfum
     config.active_record.encryption.primary_key = ENV["ENC_PRIMARY_KEY"]
     config.active_record.encryption.deterministic_key = ENV["ENC_DETERMINISTIC_KEY"]
     config.active_record.encryption.key_derivation_salt = ENV["ENC_KEY_DERIVATION_SALT"]
+    config.active_storage.variant_processor = :vips
+    config.active_storage.track_variants = true
   end
 end

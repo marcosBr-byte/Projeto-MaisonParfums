@@ -3,9 +3,8 @@
 
   principais = [
     ["Início", "grid_view", admin_path, ativo.call(admin_path)],
-    ["Produtos", "inventory_2", produtos_path, ativo.call(produtos_path) || request.path.match?(%r{\A/produtos/\d+/edit})],
+    ["Produtos", "inventory_2", produtos_path, ativo.call(produtos_path) || request.path.match?(%r{\A/produtos/[^/]+/edit})],
     ["Cadastrar produto", "add_circle", new_produto_path, ativo.call(new_produto_path)],
-    ["Frascos mãe", "science", frasco_maes_path, request.path.start_with?("/frasco_maes")],
     ["Pedidos", "receipt_long", admin_pedidos_path, request.path.start_with?("/admin/pedidos")]
   ]
 
@@ -14,15 +13,16 @@
     ["Customizar", "palette", admin_customizar_path],
     ["Analisar", "insights", admin_analisar_path],
     ["Mensagens", "mail", admin_mensagens_path],
+    ["Avaliações", "reviews", admin_avaliacoes_path],
     ["Configurações", "settings", admin_configuracoes_path]
   ]
 %>
 
-<aside class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col overflow-y-auto border-r border-[#E5E6E7] bg-white px-5 py-6 transition-transform duration-300 peer-checked:translate-x-0 md:translate-x-0">
+<aside class="admin-sidebar fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col overflow-y-auto border-r border-[#E5E6E7] bg-white px-5 py-6 transition-transform duration-300 peer-checked:translate-x-0 md:translate-x-0">
 
-  <div class="mb-10 flex items-center justify-between">
+  <div class="admin-brand mb-10 flex items-center justify-between">
     <%= link_to admin_path, class: "font-serif text-2xl tracking-wide text-[#485057]" do %>
-      Maison <span class="text-[#748A9C]">Parfum</span>
+      Maison Parfum
     <% end %>
 
     <label for="menu-admin" class="flex cursor-pointer items-center text-[#748A9C] md:hidden" aria-label="Fechar menu">
@@ -30,11 +30,12 @@
     </label>
   </div>
 
-  <nav class="flex flex-1 flex-col gap-1">
+  <nav aria-label="Menu administrativo" class="flex flex-1 flex-col gap-1">
+    <p class="admin-nav-label">Operação</p>
 
     <% principais.each do |nome, icone, caminho, ativo_agora| %>
-      <%= link_to caminho, class: "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition #{ativo_agora ? 'bg-[#485057] text-white' : 'text-[#485057] hover:bg-[#F0F1F2] hover:text-[#748A9C]'}" do %>
-        <span class="material-symbols-outlined"><%= icone %></span>
+      <%= link_to caminho, aria: { current: ativo_agora ? "page" : nil }, class: "admin-nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition #{ativo_agora ? 'bg-[#485057] text-white' : 'text-[#485057] hover:bg-[#F0F1F2] hover:text-[#748A9C]'}" do %>
+        <span class="material-symbols-outlined" aria-hidden="true"><%= icone %></span>
         <span><%= nome %></span>
       <% end %>
     <% end %>
@@ -44,10 +45,11 @@
     </p>
 
     <% adicionais.each do |nome, icone, caminho| %>
-      <% ativo_agora = request.path == caminho %>
+      <% ativo_agora = request.path == caminho || request.path.start_with?("#{caminho}/") %>
+      <% ativo_agora ||= caminho == admin_perfil_path && devise_controller? && controller_name == "registrations" && %w[edit update].include?(action_name) %>
 
-      <%= link_to caminho, class: "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition #{ativo_agora ? 'bg-[#485057] text-white' : 'text-[#485057] hover:bg-[#F0F1F2] hover:text-[#748A9C]'}" do %>
-        <span class="material-symbols-outlined"><%= icone %></span>
+      <%= link_to caminho, aria: { current: ativo_agora ? "page" : nil }, class: "admin-nav-link flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition #{ativo_agora ? 'bg-[#485057] text-white' : 'text-[#485057] hover:bg-[#F0F1F2] hover:text-[#748A9C]'}" do %>
+        <span class="material-symbols-outlined" aria-hidden="true"><%= icone %></span>
         <span><%= nome %></span>
       <% end %>
     <% end %>

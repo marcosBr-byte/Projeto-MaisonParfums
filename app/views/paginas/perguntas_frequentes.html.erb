@@ -1,0 +1,16 @@
+<section class="max-w-3xl mx-auto px-5 py-12">
+  <%= render "cabecalho", titulo: "Perguntas frequentes", descricao: "Respostas para ajudar você a explorar o catálogo e fazer seu pedido." %>
+  <div class="space-y-4">
+    <% [
+      ["O que é um decant?", "É uma porção de perfume em um frasco menor. Ele permite conhecer a fragrância e levá-la na rotina sem comprar um frasco de tamanho completo. Confira o volume na página do produto."],
+      ["Como escolho o tamanho?", "Abra o perfume e selecione um dos tamanhos disponíveis. O preço muda conforme a opção escolhida. Tamanhos esgotados aparecem desabilitados."],
+      ["Como faço um pedido?", "Entre ou crie sua conta, escolha o perfume e o tamanho e adicione à sacola. Complete o endereço no perfil e finalize o pedido. Se o pagamento online estiver disponível, escolha Pix ou cartão na página de pagamento do pedido."],
+      ["O pedido é pago automaticamente?", "Finalizar registra um pedido pendente. Quando o pagamento online estiver ativado, você poderá pagar com Pix ou cartão pelo Mercado Pago. O pedido só é confirmado como pago após a aprovação do serviço. Consulte seus pedidos no perfil para retomar o pagamento."],
+      ["Como consulto frete e entrega?", "O carrinho apresenta o frete fixo configurado e aplica a campanha de frete grátis conforme seu endereço. Confirme disponibilidade e prazo com a loja antes de comprar. Após o envio, consulte os dados de entrega e o código de rastreamento, quando houver, em Perfil → Meus pedidos. O quiz considera o preço do perfume, sem frete."],
+      ["Como funciona o quiz?", "Você responde sobre perfil, famílias olfativas, momento, intensidade e orçamento. O sistema cruza essas preferências com os produtos cadastrados e disponíveis. É uma sugestão: a percepção da fragrância varia de pessoa para pessoa."]
+    ].each do |pergunta, resposta| %>
+      <details class="rounded-xl border border-[#E5E6E7] bg-white p-5"><summary class="cursor-pointer font-medium text-[#485057]"><%= pergunta %></summary><p class="mt-4 text-sm leading-relaxed text-[#748A9C]"><%= resposta %></p></details>
+    <% end %>
+  </div>
+  <div class="mt-8 flex flex-wrap gap-5 text-sm text-[#485057]"><%= link_to "Ainda tenho uma dúvida →", atendimento_path, class: "underline" %><%= link_to "Descobrir meu perfume →", quiz_path, class: "underline" %></div>
+</section>

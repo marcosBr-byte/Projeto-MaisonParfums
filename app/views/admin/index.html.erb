@@ -1,96 +1,23 @@
-<%
-  cartoes = [
-    ["Usuários cadastrados", @total_usuarios,    "group",           "Total de contas registradas."],
-    ["Produtos cadastrados", @total_produtos,    "inventory_2",     "Perfumes no catálogo."],
-    ["Total de pedidos",     @total_pedidos,     "shopping_bag",    "Pedidos registrados na loja."],
-    ["Pedidos pendentes",    @pedidos_pendentes, "pending_actions", "Aguardando andamento."]
-  ]
-%>
-
-<div class="max-w-7xl mx-auto px-4 py-8 sm:px-8 md:py-10">
-  <div class="mb-8">
-    <p class="mb-2 text-xs uppercase tracking-[0.3em] text-[#748A9C]">Maison Parfum</p>
-    <h1 class="font-serif text-3xl text-[#485057] md:text-4xl">Painel administrativo</h1>
-    <p class="mt-2 text-sm text-[#748A9C]">Visão geral da loja.</p>
-    <div class="mt-5 h-1 w-16 bg-[#B8BDC3]"></div>
+<div class="admin-overview max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-6">
+  <header class="admin-page-heading">
+    <div><p class="admin-eyebrow">Visão geral</p><h1>Painel administrativo</h1><p>Acompanhe as vendas, organize os pedidos e cuide do seu catálogo.</p></div>
+    <%= link_to new_produto_path, class: "admin-primary-action" do %><span class="material-symbols-outlined" aria-hidden="true">add</span> Cadastrar produto<% end %>
+  </header>
+  <%= render "admin/compartilhado/reposicao", reposicao: @reposicao %>
+  <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <%= render "admin/compartilhado/indicador", chave: "receita-mes", titulo: "Vendas confirmadas no mês", valor: moeda(@resumo.faturamento), icone: "payments", descricao: comparacao_vendas(@resumo.faturamento, @comparacao.faturamento) %>
+    <%= render "admin/compartilhado/indicador", chave: "pedidos-mes", titulo: "Pedidos neste mês", valor: @resumo.total, icone: "shopping_bag", descricao: "#{@resumo.quantidade_confirmada} pagos, enviados ou entregues" %>
+    <%= render "admin/compartilhado/indicador", chave: "ticket-mes", titulo: "Ticket médio confirmado", valor: moeda(@resumo.ticket_medio), icone: "receipt_long", descricao: "Valor médio dos pedidos confirmados neste mês" %>
+    <%= render "admin/compartilhado/indicador", chave: "pendentes", titulo: "Pedidos para acompanhar", valor: @pedidos_pendentes, icone: "pending_actions", descricao: "Pedidos pendentes em toda a loja" %>
   </div>
-
-  <div class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-    <% cartoes.each do |titulo, valor, icone, texto| %>
-      <div class="rounded-2xl border border-[#E5E6E7] bg-white p-6 shadow-sm transition hover:shadow-md">
-        <div class="flex items-center justify-between">
-          <p class="text-sm font-medium text-[#748A9C]"><%= titulo %></p>
-          <span class="material-symbols-outlined rounded-xl bg-[#F0F1F2] p-3 text-[#485057]"><%= icone %></span>
-        </div>
-        <p class="mt-5 text-4xl font-semibold text-[#343A40]"><%= valor.to_i %></p>
-        <p class="mt-2 text-sm text-[#748A9C]"><%= texto %></p>
-      </div>
+  <div class="grid sm:grid-cols-3 gap-4">
+    <% [[admin_pedidos_path(status: "pendente"), "pending_actions", "#{@pedidos_pendentes} pedidos pendentes", "Abrir fila de pedidos"], [admin_path(anchor: "reposicao"), "inventory_2", "#{@estoque_baixo} tamanhos com estoque baixo", "Confira tamanhos com menos de 5 unidades"], [admin_mensagens_path, "chat_bubble", "#{@mensagens_nao_lidas} mensagens não lidas", "Acompanhar atendimento"]].each do |caminho, icone, titulo, texto| %>
+      <%= link_to caminho, class: "insight-action" do %><span class="material-symbols-outlined text-[#A07A43]" aria-hidden="true"><%= icone %></span><div><p class="text-sm font-semibold"><%= titulo %></p><p class="mt-1 text-xs text-[#748A9C]"><%= texto %> →</p></div><% end %>
     <% end %>
   </div>
-
-  <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
-    <section class="overflow-hidden rounded-2xl border border-[#E5E6E7] bg-white shadow-sm xl:col-span-2">
-      <div class="flex flex-col gap-4 border-b border-[#E5E6E7] p-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 class="font-serif text-xl text-[#485057]">Últimos pedidos</h2>
-          <p class="mt-1 text-sm text-[#748A9C]">Acompanhe as compras realizadas.</p>
-        </div>
-        <%= link_to "Ver todos os pedidos", admin_pedidos_path, class: "inline-flex items-center justify-center rounded-xl bg-[#B8BDC3] px-5 py-3 text-sm font-medium text-[#485057] transition duration-300 hover:bg-[#748A9C] hover:text-white" %>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full min-w-[500px] text-left text-sm">
-          <thead class="bg-[#E5E6E7] text-xs uppercase tracking-wider text-[#485057]">
-            <tr>
-              <th class="px-6 py-4 font-semibold">Cliente</th>
-              <th class="px-6 py-4 font-semibold">Data</th>
-              <th class="px-6 py-4 font-semibold">Total</th>
-              <th class="px-6 py-4 font-semibold">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-[#E5E6E7]">
-            <% if @ultimos_pedidos.any? %>
-              <% @ultimos_pedidos.each do |pedido| %>
-                <tr class="transition hover:bg-[#F7F7F5]">
-                  <td class="px-6 py-5 font-medium text-[#485057]"><%= pedido.usuario&.nome.presence || pedido.usuario&.email || "Usuário não encontrado" %></td>
-                  <td class="whitespace-nowrap px-6 py-5 text-[#748A9C]"><%= pedido.created_at.strftime("%d/%m/%Y às %H:%M") %></td>
-                  <td class="whitespace-nowrap px-6 py-5 text-[#343A40]"><%= pedido.valor_total ? moeda(pedido.valor_total) : "—" %></td>
-                  <td class="px-6 py-5"><%= badge_status(pedido.status) %></td>
-                </tr>
-              <% end %>
-            <% else %>
-              <tr>
-                <td colspan="4" class="px-6 py-12 text-center text-[#748A9C]">
-                  <span class="material-symbols-outlined mb-2 block text-4xl text-[#B8BDC3]">receipt_long</span>Nenhum pedido recente encontrado.
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="overflow-hidden rounded-2xl border border-[#E5E6E7] bg-white shadow-sm">
-      <div class="border-b border-[#E5E6E7] p-6">
-        <h2 class="font-serif text-xl text-[#485057]">Estoque dos frascos mãe</h2>
-        <p class="mt-1 text-sm text-[#748A9C]">Os que estão acabando primeiro.</p>
-      </div>
-
-      <% if @frascos.any? %>
-        <ul class="divide-y divide-[#E5E6E7]">
-          <% @frascos.each do |frasco| %>
-            <li class="flex items-center justify-between gap-3 px-6 py-4">
-              <span class="min-w-0 truncate text-sm text-[#485057]"><%= frasco.nome %></span>
-              <span class="flex shrink-0 items-center gap-3">
-                <span class="text-sm font-semibold text-[#343A40]"><%= frasco.estoque_ml %> ml</span>
-                <%= badge_estoque(frasco.estoque_ml) %>
-              </span>
-            </li>
-          <% end %>
-        </ul>
-      <% else %>
-        <p class="px-6 py-10 text-center text-sm text-[#748A9C]">Nenhum frasco mãe cadastrado.</p>
-      <% end %>
-    </section>
+  <div class="grid xl:grid-cols-3 gap-6">
+    <div class="xl:col-span-3"><%= render "admin/compartilhado/evolucao", titulo: "Movimento dos últimos 7 dias", evolucao: @evolucao %></div>
   </div>
+  <%= render "admin/compartilhado/pedidos", titulo: "Últimos pedidos da loja", descricao: "Abra um pedido para consultar seus detalhes.", pedidos: @ultimos_pedidos %>
+  <div class="insight-footer-strip"><span><strong><%= @total_produtos %></strong> perfumes no catálogo</span><span><strong><%= @total_usuarios %></strong> contas cadastradas</span><span>Comparação mensal até o mesmo dia do mês anterior.</span></div>
 </div>

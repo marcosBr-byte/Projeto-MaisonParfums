@@ -1,5 +1,6 @@
 class UsuarioController < ApplicationController
   before_action :authenticate_usuario!
+  before_action :redirecionar_admin
   before_action :set_usuario
 
   def show
@@ -15,6 +16,10 @@ class UsuarioController < ApplicationController
   end
 
   private
+
+  def redirecionar_admin
+    redirect_to admin_perfil_path if current_usuario.admin?
+  end
 
   def set_usuario
     @usuario = current_usuario

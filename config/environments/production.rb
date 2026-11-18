@@ -28,7 +28,15 @@ Rails.application.configure do
   # config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = true
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+
+  dominio = (ENV["APP_HOST"].presence || ENV["RENDER_EXTERNAL_HOSTNAME"]).to_s.strip
+  unless ENV["SECRET_KEY_BASE_DUMMY"].present?
+    raise "Configure APP_HOST com o domínio público da loja, sem protocolo." unless dominio.match?(/\A[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?\z/i)
+  end
+  config.hosts = [dominio.presence || "localhost"]
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
@@ -58,7 +66,7 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options = { host: dominio.presence || "localhost", protocol: "https" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {

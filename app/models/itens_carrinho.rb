@@ -3,12 +3,12 @@
      belongs_to :produto
      belongs_to :variante, optional: true
 
-     validates :quantidade, presence: true, numericality: { greater_than: 0 }
+     validates :quantidade, presence: true, numericality: { only_integer: true, greater_than: 0 }
      validate :dentro_do_estoque
 
      # Preço unitário: da variante escolhida (ou do produto, nos itens antigos)
-     def preco_unitario
-       variante ? variante.preco : produto.preco
+     def preco_unitario(configuracao = Configuracao.atual)
+       (variante || produto).preco_venda(configuracao)
      end
 
      private

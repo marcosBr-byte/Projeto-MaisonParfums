@@ -1,0 +1,16 @@
+<% nome = avaliacao.usuario.nome.to_s.split.first.presence || "Cliente" %>
+<article class="home-testimonial" <%= tag.attributes(decorativa ? { aria: { hidden: true } } : { data: { avaliacao: avaliacao.id } }) %>>
+  <header class="home-testimonial-person">
+    <% if avaliacao.usuario.imagem.attached? %>
+      <%= image_tag imagem_loja(avaliacao.usuario.imagem, tamanho: :miniatura), alt: "Foto de perfil de #{nome}", width: 48, height: 48, loading: "lazy", decoding: "async", class: "home-testimonial-avatar" %>
+    <% else %>
+      <span class="home-testimonial-avatar home-testimonial-initial" aria-hidden="true"><%= nome.first.upcase %></span>
+    <% end %>
+    <div><strong><%= nome %></strong><time datetime="<%= avaliacao.created_at.iso8601 %>"><%= avaliacao.created_at.strftime("%d/%m/%Y") %></time></div>
+  </header>
+  <%= estrelas_avaliacao(avaliacao.nota) %>
+  <p class="home-testimonial-comment"><%= truncate(avaliacao.comentario, length: 240) %></p>
+  <%= link_to produto_path(avaliacao.produto, anchor: "avaliacoes"), class: "home-testimonial-product", tabindex: (decorativa ? -1 : nil) do %>
+    <span>Perfume avaliado</span><strong><%= avaliacao.produto.nome %></strong>
+  <% end %>
+</article>

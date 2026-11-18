@@ -12,6 +12,8 @@
         Crie sua conta e acompanhe seus pedidos em um só lugar.
       </p>
 
+      <%= render "devise/shared/social_login" %>
+
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
         <% field_classes = "w-full h-11 sm:h-12 px-3 sm:px-4 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg outline-none placeholder:text-gray-400 transition duration-200 hover:border-gray-400 focus:border-gray-700 focus:ring-2 focus:ring-gray-200" %>

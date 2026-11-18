@@ -1,5 +1,6 @@
 class ProdutoController < ApplicationController
-  layout "admin", only: [:index, :new, :edit]
+  include DetalhesProduto
+  layout "admin", only: %i[index new create edit update]
   before_action :exigir_admin, only: %i[index new create edit update destroy]
   before_action :set_produto, only: %i[show edit update destroy]
 
@@ -11,29 +12,45 @@ class ProdutoController < ApplicationController
     @masculinos = Produto.masculino.order(:nome)
     @femininos = Produto.feminino.order(:nome)
     @unissex = Produto.unissex.order(:nome)
+    @nichos = Produto.nicho.order(:nome)
     
     render "produto/produtos_todos"
   end
 
   def decants_masculinos
-    @produtos = Produto.where("categoria ILIKE ?", "masculino").order(:nome)
+    @produtos = filtrar_origem(Produto.masculino).order(:nome)
   end
 
   def decants_femininos
-    @produtos = Produto.where("categoria ILIKE ?", "feminino").order(:nome)
+    @produtos = filtrar_origem(Produto.feminino).order(:nome)
+  end
+
+  def decants_unissex
+    @produtos = filtrar_origem(Produto.unissex).order(:nome)
+  end
+
+  def decants_nicho
+    @origem = params[:origem].presence_in(Produto::ORIGENS_NICHO.keys)
+    @produtos = Produto.nicho.order(:nome)
+    @produtos = @produtos.where(origem: @origem) if @origem
   end
 
   def busca
-    @termo = params[:q].to_s.strip
+    @termo = params[:q].to_s.strip.first(120)
     @produtos = produtos_da_busca(@termo)
   end
 
   def sugestoes
-    termo = params[:q].to_s.strip
+    termo = params[:q].to_s.strip.first(120)
     render partial: "produto/sugestoes", locals: { produtos: produtos_da_busca(termo).limit(4), termo: termo }
   end
 
-  def show; end
+  def show
+    if params[:id] != @produto.to_param
+      return redirect_to produto_path(@produto), status: :moved_permanently
+    end
+    carregar_avaliacoes
+  end
 
   def new
     @produto = Produto.new
@@ -51,6 +68,7 @@ class ProdutoController < ApplicationController
   end
 
   def edit
+    return redirect_to edit_produto_path(@produto), status: :moved_permanently if params[:id] != @produto.to_param
     @produto.montar_variantes
   end
 
@@ -70,22 +88,39 @@ class ProdutoController < ApplicationController
 
   private
      
+  def filtrar_origem(produtos)
+    @origem = params[:origem].presence_in(Produto::ORIGENS.keys)
+    @origem ? produtos.where(origem: @origem) : produtos
+  end
+
   def produtos_da_busca(termo)
     return Produto.none if termo.blank?
 
-    padrao = "%#{Produto.sanitize_sql_like(termo)}%"
-    Produto.where("nome ILIKE :t OR marca ILIKE :t OR descricao ILIKE :t", t: padrao).order(:nome)
+    texto = "translate(lower(concat_ws(' ', nome, marca, descricao, fragancia, categoria, origem)), 'áàâãäéèêëíìîïóòôõöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')"
+    palavras = I18n.transliterate(termo).downcase.split.first(8)
+    equivalentes = { "arabes" => "arabe", "importados" => "importado", "unisex" => "unissex", "unisexy" => "unissex", "amadeirado" => "amadeirad", "amadeirada" => "amadeirad" }
+    produtos = Produto.all
+    palavras.each do |palavra|
+      padrao = "%#{Produto.sanitize_sql_like(equivalentes.fetch(palavra, palavra))}%"
+      produtos = produtos.where("#{texto} LIKE ?", padrao)
+    end
+    produtos.with_attached_imagem.includes(:variantes).order(:nome)
   end
 
   def set_produto
-    @produto = Produto.find(params[:id])
+    @produto = Produto.por_link!(params[:id])
   end
 
   def produto_params
-    params.require(:produto).permit(
-      :nome, :marca, :descricao, :categoria, :fragancia, :intensidade,
-      :momento, :piramide_olfativa, :concentracao, :frasco_mae_id, :imagem,
-      variantes_attributes: [:id, :tamanho, :preco, :estoque]
+    permitidos = params.require(:produto).permit(
+      :destaque,
+      :nome, :marca, :descricao, :categoria, :origem, :fragancia, :intensidade,
+      :momento, :piramide_olfativa, :concentracao, :imagem,
+      :uso_inverno, :uso_primavera, :uso_verao, :uso_outono, :uso_dia, :uso_noite,
+      fotos: [], notas_olfativas_attributes: [:id, :nome, :nivel, :imagem, :_destroy],
+      variantes_attributes: [:id, :tamanho, :preco, :estoque, :volume_lacrado_ml]
     )
+    permitidos.delete(:fotos) if Array(permitidos[:fotos]).all?(&:blank?)
+    permitidos
   end
 end

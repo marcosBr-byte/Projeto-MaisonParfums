@@ -1,93 +1,112 @@
-   <% variantes = @produto.variantes.sort_by { |v| v.preco || 0 } %>
-   <% inicial = variantes.find(&:disponivel?) || variantes.first %>
-   <% moeda = ->(valor) { number_to_currency(valor, unit: "R$ ", separator: ",", delimiter: ".") } %>
-   <% detalhes = {
-        "Categoria" => @produto.rotulo(:categoria),
-        "Fragrância" => @produto.rotulo(:fragancia),
-        "Intensidade" => @produto.rotulo(:intensidade),
-        "Momento" => @produto.rotulo(:momento),
-      }.select { |_, valor| valor.present? } %>
-
-   <div class="min-h-screen bg-[#F7F7F5]">
-     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-       <%= link_to "← Voltar", :back, class: "text-sm text-[#748A9C] hover:text-[#485057] transition" %>
-
-       <div class="grid md:grid-cols-2 gap-8 md:gap-14 mt-6 items-start">
-         <div class="aspect-square bg-white border border-[#E5E6E7] rounded-2xl overflow-hidden shadow-sm">
-           <% if @produto.imagem.attached? %>
-             <%= image_tag @produto.imagem, alt: @produto.nome, class: "w-full h-full object-cover" %>
-           <% else %>
-             <div class="w-full h-full flex items-center justify-center text-sm text-[#748A9C]">Sem foto</div>
-           <% end %>
-         </div>
-
-         <div data-controller="variante">
-           <% if @produto.marca.present? %>
-             <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C] mb-3"><%= @produto.marca %></p>
-           <% end %>
-
-           <h1 class="font-serif text-3xl md:text-4xl text-[#485057]"><%= @produto.nome %></h1>
-           <div class="w-16 h-1 bg-[#B8BDC3] mt-5 mb-6"></div>
-
-           <p class="text-3xl font-semibold text-[#343A40]" data-variante-target="preco">
-             <%= inicial ? moeda.call(inicial.preco) : "Indisponível" %>
-           </p>
-
-           <% if variantes.any? %>
-             <div class="mt-8">
-               <p class="text-sm font-medium text-[#485057] mb-3">Tamanho</p>
-               <div class="flex flex-wrap gap-3">
-                 <% variantes.each do |v| %>
-                   <label class="<%= v.disponivel? ? "cursor-pointer" : "cursor-not-allowed opacity-50" %>">
-                     <%= radio_button_tag "variante_id", v.id, v == inicial,
-                                          class: "sr-only peer",
-                                          disabled: !v.disponivel?,
-                                          data: { preco_formatado: moeda.call(v.preco), action: "change->variante#atualizar" } %>
-                     <span class="block rounded-full border border-[#B8BDC3] px-5 py-2.5 text-sm text-[#485057] transition peer-checked:bg-[#485057] peer-checked:text-white peer-checked:border-[#485057] <%= "line-through" unless v.disponivel? %>">
-                       <%= Variante.tamanhos[v.tamanho] %>
-                     </span>
-                   </label>
-                 <% end %>
-               </div>
-             </div>
-           <% end %>
-
-           <% if @produto.descricao.present? %>
-             <p class="mt-8 text-[#485057]/80 leading-relaxed"><%= @produto.descricao %></p>
-           <% end %>
-
-           <% if detalhes.any? %>
-             <dl class="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-[#E5E6E7] pt-6">
-               <% detalhes.each do |rotulo, valor| %>
-                 <div>
-                   <dt class="text-xs uppercase tracking-widest text-[#748A9C]"><%= rotulo %></dt>
-                   <dd class="mt-1 text-sm text-[#485057]"><%= valor %></dd>
-                 </div>
-               <% end %>
-             </dl>
-           <% end %>
-
-           
-          <% if variantes.any? && inicial.present? %>
-              <%= form_with url: adicionar_carrinho_path, method: :post, class: "mt-10" do |f| %>
-                <%= f.hidden_field :produto_id, value: @produto.id %>
-
-                <%= f.hidden_field :variante_id,
-                    value: inicial.id,
-                    data: { variante_target: "selecionada" } %>
-
-                <%= f.hidden_field :quantidade, value: 1 %>
-
-                <%= f.submit "Adicionar ao carrinho",
-                    class: "w-full rounded-full bg-[#485057] py-4 text-sm font-medium text-white hover:bg-[#748A9C] transition cursor-pointer" %>
+<% variantes = @produto.variantes.sort_by { |v| v.preco || 0 } %>
+<% inicial = variantes.find(&:disponivel?) %>
+<% imagens = (@produto.imagem.attached? ? [@produto.imagem] : []) + @produto.fotos.to_a %>
+<% detalhes = { "Categoria" => @produto.rotulo(:categoria), "Fragrância" => @produto.rotulo(:fragancia), "Intensidade" => @produto.rotulo(:intensidade), "Momento" => @produto.rotulo(:momento) }.select { |_, valor| valor.present? } %>
+<% content_for :title, "#{@produto.nome} | Maison Parfum" %>
+<div class="product-page">
+  <div class="product-container">
+    <nav class="product-breadcrumb" aria-label="Caminho da página">
+      <%= link_to "Início", root_path %><span aria-hidden="true">/</span>
+      <%= link_to(@produto.rotulo(:categoria).presence || "Perfumes", @produto.nicho? ? decants_nicho_path : (@produto.masculino? ? decants_masculinos_path : (@produto.feminino? ? decants_femininos_path : (@produto.unissex? ? decants_unissex_path : produtos_todos_path)))) %><span aria-hidden="true">/</span>
+      <span aria-current="page"><%= @produto.nome %></span>
+    </nav>
+    <div class="product-hero">
+      <div class="product-visual">
+        <div class="product-gallery" data-controller="product-gallery">
+          <div class="product-main-photo">
+            <% if configuracao_loja.percentual_vigente.positive? %>
+              <span class="product-sale-badge"><%= number_to_percentage(configuracao_loja.percentual_vigente, precision: 0) %><br>OFF</span>
+            <% end %>
+            <% if imagens.any? %>
+              <%= link_to imagem_loja(imagens.first), target: "_blank", rel: "noopener", data: { product_gallery_target: "link" }, aria: { label: "Ampliar foto de #{@produto.nome} (abre em nova aba)" } do %>
+                <%= image_tag imagem_loja(imagens.first), alt: @produto.nome, data: { product_gallery_target: "image" }, decoding: "async" %>
               <% end %>
             <% else %>
-              <button type="button" disabled class="mt-10 w-full rounded-full bg-[#485057] py-4 text-sm font-medium text-white opacity-60 cursor-not-allowed">
-                Indisponível
-              </button>
+              <div class="product-photo-empty"><span class="material-symbols-outlined" aria-hidden="true">water_drop</span><p>Foto em breve</p></div>
+            <% end %>
+          </div>
+          <% if imagens.size > 1 %>
+            <div class="product-thumbnails" role="group" aria-label="Fotos do perfume">
+              <% imagens.each_with_index do |imagem, index| %>
+                <button type="button" data-product-gallery-target="thumbnail" data-action="product-gallery#select" data-image-url="<%= imagem_loja(imagem) %>" data-image-alt="<%= @produto.nome %> — foto <%= index + 1 %>" aria-label="Ver foto <%= index + 1 %>" aria-pressed="<%= index.zero? %>">
+                  <%= image_tag imagem_loja(imagem, tamanho: :miniatura), alt: "", loading: "lazy", decoding: "async" %>
+                </button>
+              <% end %>
+            </div>
           <% end %>
+        </div>
+        <%= render "produto/quando_usar" %>
+      </div>
+      <div class="product-purchase" data-controller="variante">
+        <p class="product-eyebrow"><%= @produto.marca.presence || "Seleção Maison Parfum" %></p>
+        <h1><%= @produto.nome %></h1>
+        <a href="#avaliacoes" class="product-rating-link">
+          <%= estrelas_avaliacao(@media_avaliacoes || 0) %>
+          <span><%= @total_avaliacoes.positive? ? "#{@total_avaliacoes} avaliações" : "Seja o primeiro a avaliar" %></span>
+        </a>
+        <div class="product-price-block">
+          <% if configuracao_loja.percentual_vigente.positive? %>
+            <p class="product-original-price">De <del data-variante-target="original"><%= inicial ? moeda_loja(inicial.preco) : "—" %></del></p>
+          <% end %>
+          <p class="product-price" data-variante-target="preco"><%= inicial ? moeda_loja(preco_loja(inicial)) : "Indisponível" %></p>
+          <p class="product-caption" data-variante-target="parcela"><%= inicial ? "Parcelamento conforme condições no pagamento" : "" %></p>
+        </div>
+        <div class="product-payment-methods">
+          <p><i class="fa-brands fa-pix" aria-hidden="true"></i><span>Pix</span><span class="material-symbols-outlined" aria-hidden="true">credit_card</span><span>Cartão de crédito</span></p>
+          <p class="product-caption"><%= configuracao_loja.pagamento_configurado? ? "Escolha como pagar no checkout seguro do Mercado Pago." : "Consulte as condições de pagamento com a loja." %></p>
+        </div>
+        <% if variantes.any? %>
+          <fieldset class="product-sizes">
+            <legend>Escolha o tamanho</legend>
+            <div>
+              <% variantes.each do |variante| %>
+                <label>
+                  <%= radio_button_tag "variante_id", variante.id, variante == inicial, disabled: !variante.disponivel?, data: { quantidade_maxima: variante.quantidade_maxima, preco_formatado: moeda_loja(preco_loja(variante)), preco_original: moeda_loja(variante.preco), por_ml: rotulo_por_ml(variante), borrifadas: rotulo_borrifadas(variante), parcela: "Parcelamento conforme condições no pagamento", action: "change->variante#atualizar" } %>
+                  <span><%= Variante.tamanhos[variante.tamanho] %><%= " · esgotado" unless variante.disponivel? %></span>
+                </label>
+              <% end %>
+            </div>
+          </fieldset>
+        <% end %>
+        <div class="product-yield" aria-live="polite">
+          <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
+          <div><p data-variante-target="borrifadas"><%= rotulo_borrifadas(inicial) %></p><p class="product-caption" data-variante-target="porMl"><%= rotulo_por_ml(inicial) %></p></div>
+        </div>
+        <p class="product-caption">Rendimento estimado de <%= configuracao_loja.borrifadas_por_ml %> borrifadas/ml. Pode variar conforme o frasco e o uso.</p>
+        <% if inicial %>
+          <%= form_with url: adicionar_carrinho_path, method: :post, class: "product-add-form" do |form| %>
+            <%= form.hidden_field :produto_id, value: @produto.to_param %>
+            <%= form.hidden_field :variante_id, value: inicial.id, data: { variante_target: "selecionada" } %>
+            <div class="product-buy-row">
+              <div class="product-quantity" role="group" aria-label="Quantidade">
+                <button type="button" data-action="variante#diminuir" aria-label="Diminuir quantidade">−</button>
+                <%= form.number_field :quantidade, value: 1, min: 1, max: inicial.quantidade_maxima, required: true, step: 1, aria: { label: "Quantidade de unidades" }, data: { variante_target: "quantidade", action: "change->variante#ajustarQuantidade" } %>
+                <button type="button" data-action="variante#aumentar" aria-label="Aumentar quantidade">+</button>
+              </div>
+              <%= form.submit "Comprar", class: "product-button product-add-button" %>
+            </div>
+          <% end %>
+        <% else %>
+          <button type="button" disabled class="product-button product-add-button">Produto indisponível</button>
+        <% end %>
+        <div class="product-delivery">
+          <p>Entregas para o CEP: <strong><%= current_usuario&.cep.presence || "Não informado" %></strong></p>
+          <%= link_to current_usuario&.cep.present? ? "Mudar CEP" : "Informar CEP", perfil_path, class: "product-change-postcode" %>
+        </div>
+        <p class="product-address-notice">Favor verificar seu endereço antes de finalizar a compra!</p>
+        <%= render "shared/frete_gratis", total: total_brinde_flutuante %>
 
-         </div>
-       </div>
-     </div>
-   </div>
+        <% if detalhes.any? %>
+          <dl class="product-facts">
+            <% detalhes.each do |rotulo, valor| %><div><dt><%= rotulo %></dt><dd><%= valor %></dd></div><% end %>
+          </dl>
+        <% end %>
+      </div>
+    </div>
+    <% if @produto.descricao.present? %>
+      <section class="product-description product-description-full"><h2>Sobre a fragrância</h2><div class="trix-content"><%= @produto.descricao %></div></section>
+    <% end %>
+    <%= render "produto/notas_olfativas" %>
+    <%= render "produto/avaliacoes" %>
+  </div>
+</div>

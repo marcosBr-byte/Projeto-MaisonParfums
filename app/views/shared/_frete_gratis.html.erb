@@ -1,0 +1,27 @@
+<% if configuracao_loja.frete_gratis_ativo? %>
+  <% total = [local_assigns.fetch(:total, 0).to_d, 0.to_d].max %>
+  <% meta = configuracao_loja.meta_frete_gratis(cep: current_usuario&.cep, estado: current_usuario&.estado) %>
+  <% if meta.nil? %>
+    <aside class="shipping-reward" aria-label="Frete grátis" data-frete-gratis>
+      <p class="shipping-message">Frete grátis a partir de <strong><%= moeda_loja(configuracao_loja.frete_gratis_meta_nordeste) %> para o Nordeste</strong> e <strong><%= moeda_loja(configuracao_loja.frete_gratis_meta) %> para as demais regiões</strong>.</p>
+      <p class="shipping-note"><%= link_to "Informe ou confira o CEP e o estado no endereço de entrega", perfil_path %> para calcular seu benefício.</p>
+    </aside>
+  <% else %>
+  <% percentual = [(total / meta * 100).to_f, 100].min %>
+  <% restante = [meta - total, 0.to_d].max %>
+  <aside class="shipping-reward" aria-label="Frete grátis" data-frete-gratis>
+    <div class="shipping-road" data-controller="shipping-progress" data-shipping-progress-percent-value="<%= percentual %>" role="progressbar" aria-label="Progresso para frete grátis" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= percentual.round %>" aria-valuetext="<%= restante.zero? ? 'Frete grátis liberado' : "Faltam #{moeda_loja(restante)} para frete grátis" %>">
+      <div class="shipping-road-fill" data-shipping-progress-target="fill"></div>
+      <span class="shipping-truck" data-shipping-progress-target="truck" aria-hidden="true"><span class="material-symbols-outlined">local_shipping</span></span>
+    </div>
+    <% if restante.zero? %>
+      <p class="shipping-message"><strong>Você ganhou frete grátis na sua compra!</strong></p>
+    <% elsif total.zero? %>
+      <p class="shipping-message">Comprando a partir de <strong><%= moeda_loja(meta) %></strong>, você ganha <strong>frete grátis na sua compra!</strong></p>
+    <% else %>
+      <p class="shipping-message">Faltam <strong><%= moeda_loja(restante) %></strong> para ganhar <strong>frete grátis!</strong></p>
+    <% end %>
+    <p class="shipping-note">Entrega em <%= current_usuario.estado %>, CEP <%= current_usuario.cep %>. Calculado sobre os produtos após descontos. <%= link_to "Alterar endereço", perfil_path %></p>
+  </aside>
+<% end %>
+<% end %>

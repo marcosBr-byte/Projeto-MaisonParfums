@@ -3,7 +3,16 @@
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
 
+# As credenciais de teste precisam existir antes de inicializar Devise e as rotas.
+ENV["GOOGLE_CLIENT_ID"] = "google-client-test"
+ENV["GOOGLE_CLIENT_SECRET"] = "google-secret-test"
+ENV["FACEBOOK_APP_ID"] = "facebook-app-test"
+ENV["FACEBOOK_APP_SECRET"] = "facebook-secret-test"
+
 Rails.application.configure do
+  config.active_record.encryption.primary_key = "a" * 64
+  config.active_record.encryption.deterministic_key = "b" * 64
+  config.active_record.encryption.key_derivation_salt = "c" * 64
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.

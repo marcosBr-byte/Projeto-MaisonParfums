@@ -1,6 +1,7 @@
 class MensagensController < ApplicationController
   before_action :authenticate_usuario!
   before_action :bloquear_admin
+  rate_limit store: SecurityRateLimitStore, to: 10, within: 10.minutes, only: :create, by: -> { current_usuario.id }
 
   def new
     @mensagem = Mensagem.new

@@ -1,0 +1,30 @@
+<main class="max-w-3xl mx-auto px-5 py-12">
+  <h1 class="font-serif text-3xl text-[#485057]">Pedido #<%= @pedido.id %></h1>
+  <div class="mt-6 rounded-2xl bg-white border p-6 space-y-4">
+    <p>Situação: <strong><%= @pedido.status.humanize %></strong></p>
+    <% if @pedido.pendente? && @pedido.reserva_expira_em.present? %><p>Reserva até <%= @pedido.reserva_expira_em.in_time_zone("America/Fortaleza").strftime("%d/%m/%Y às %H:%M") %> (horário de Fortaleza).</p><% end %>
+    <% if @pedido.prazo_entrega.blank? %><p>Prazo de entrega: confirme com a loja pelo atendimento.</p><% end %>
+    <% if @pedido.transportadora.present? %><p>Entrega por: <%= @pedido.transportadora %></p><% end %>
+    <% if @pedido.codigo_rastreio.present? %><p>Código de rastreamento: <strong><%= @pedido.codigo_rastreio %></strong></p><% end %>
+    <% if @pedido.prazo_entrega.present? %><p>Previsão de entrega: <%= @pedido.prazo_entrega.strftime("%d/%m/%Y") %></p><% end %>
+    <% if @pedido.pagamento_requer_atencao? %><p>A loja está conferindo a situação do pagamento. Entre em contato com o atendimento.</p><% end %>
+    <p>Total: <strong><%= moeda_loja(@pedido.valor_total) %></strong></p>
+    <p>Frete: <%= @pedido.frete_gratis? ? "Grátis" : moeda_loja(@pedido.valor_frete) %></p>
+    <% if @pedido.pagamento_teste? %><p class="text-sm">Pedido de teste: não representa uma venda real.</p><% end %>
+    <% if @pedido.pago? || @pedido.enviado? || @pedido.entregue? %>
+      <p>Pagamento confirmado! Acompanhe as informações de entrega com a loja.</p>
+    <% elsif @pedido.cancelado? %>
+      <p>Este pedido foi cancelado.</p>
+    <% elsif @pedido.reserva_expira_em && @pedido.reserva_expira_em <= Time.current %>
+      <p>O prazo da reserva terminou. Entre em contato com a loja antes de pagar.</p>
+      <%= link_to "Falar com a loja", atendimento_path, class: "underline" %>
+    <% elsif configuracao_loja.pagamento_configurado? %>
+      <p>Escolha Pix ou cartão no ambiente seguro do Mercado Pago. A confirmação aparece aqui após o processamento.</p>
+      <%= button_to "Pagar com Pix ou cartão", pagar_pedido_path(@pedido), class: "rounded-lg bg-[#485057] px-6 py-3 text-white", form: { data: { turbo: false } } %>
+      <%= link_to "Atualizar situação", pagamento_pedido_path(@pedido), class: "block underline" %>
+    <% else %>
+      <p>O pagamento online está indisponível. Entre em contato com a loja para combinar o pagamento.</p>
+      <%= link_to "Falar com a loja", atendimento_path, class: "underline" %>
+    <% end %>
+  </div>
+</main>

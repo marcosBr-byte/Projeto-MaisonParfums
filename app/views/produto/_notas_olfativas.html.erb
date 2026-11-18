@@ -1,0 +1,33 @@
+<section id="notas-olfativas" class="product-notes" aria-labelledby="notas-titulo">
+  <header>
+    <p class="product-eyebrow">Da primeira impressão à memória</p>
+    <h2 id="notas-titulo">Pirâmide olfativa</h2>
+    <p class="product-caption">Conheça as notas que compõem esta fragrância.</p>
+  </header>
+  <% notas = @produto.notas_olfativas.includes(imagem_attachment: :blob).reject(&:new_record?) %>
+  <div class="notes-levels">
+    <% { "topo" => ["Notas de topo", "A primeira impressão"], "coracao" => ["Notas de coração", "A personalidade do perfume"], "base" => ["Notas de base", "O que permanece na pele"] }.each do |nivel, (titulo, descricao)| %>
+      <section class="notes-level" aria-label="<%= titulo %>">
+        <h3><%= titulo %></h3>
+        <p class="product-caption"><%= descricao %></p>
+        <% ingredientes = notas.select { |nota| nota.nivel == nivel } %>
+        <% if ingredientes.any? %>
+          <div class="notes-ingredients">
+            <% ingredientes.each do |nota| %>
+              <figure>
+                <% if nota.imagem.attached? %>
+                  <%= image_tag imagem_loja(nota.imagem, tamanho: :miniatura), alt: nota.nome, loading: "lazy", decoding: "async" %>
+                <% else %>
+                  <span class="note-illustration" aria-hidden="true"><%= ilustracao_nota(nota.nome) %></span>
+                <% end %>
+                <figcaption><%= nota.nome %></figcaption>
+              </figure>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="notes-empty">Notas ainda não informadas pela loja.</p>
+        <% end %>
+      </section>
+    <% end %>
+  </div>
+</section>

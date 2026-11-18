@@ -1,0 +1,23 @@
+<main class="max-w-5xl mx-auto p-6 md:p-8">
+  <h1 class="font-serif text-3xl text-[#485057]">Avaliações dos clientes</h1>
+  <p class="mt-3 text-sm text-[#748A9C]">Avaliações são publicadas automaticamente. Comentários com linguagem ofensiva ficam ocultos. Mostrando as 100 avaliações mais recentes, com as ocultas primeiro.</p>
+  <% if @avaliacoes.empty? %><p class="mt-8">Nenhuma avaliação recebida.</p><% end %>
+  <div class="mt-6 space-y-5">
+    <% @avaliacoes.each do |avaliacao| %>
+      <article class="rounded-xl border bg-white p-6">
+        <h2 class="font-semibold"><%= avaliacao.produto.nome %> · <%= avaliacao.nota %>/5</h2>
+        <p class="mt-2 text-sm"><%= avaliacao.usuario.nome %> · <%= avaliacao.created_at.strftime("%d/%m/%Y") %> · <%= avaliacao.publicada? ? "Publicada" : "Oculta" %></p>
+        <p class="mt-4 whitespace-pre-line"><%= avaliacao.comentario %></p>
+        <div class="review-photos mt-4">
+          <% avaliacao.fotos.each do |foto| %>
+            <%= link_to imagem_loja(foto), target: "_blank", rel: "noopener" do %><%= image_tag imagem_loja(foto), alt: "Foto enviada pelo cliente", loading: "lazy" %><% end %>
+          <% end %>
+        </div>
+        <div class="mt-5 flex flex-wrap gap-4">
+          <%= button_to(avaliacao.publicada? ? "Ocultar" : "Publicar", admin_avaliacao_path(avaliacao), method: :patch, params: { avaliacao: { publicada: !avaliacao.publicada? } }, class: "rounded-lg bg-[#485057] px-4 py-2 text-white") %>
+          <%= button_to "Excluir", admin_avaliacao_path(avaliacao), method: :delete, data: { turbo_confirm: "Excluir esta avaliação?" }, class: "rounded-lg border px-4 py-2 text-red-700" %>
+        </div>
+      </article>
+    <% end %>
+  </div>
+</main>

@@ -1,0 +1,19 @@
+<section id="marcas" class="home-brands" aria-labelledby="home-brands-title">
+  <div class="home-brands-inner">
+    <h2 id="home-brands-title">Grandes casas da perfumaria mundial</h2>
+    <p>Trabalhamos apenas com marcas reconhecidas pela qualidade, personalidade e excelência de suas fragrâncias.</p>
+    <ul class="home-brands-logos" role="list" aria-label="Marcas de perfumes">
+      <% [
+        ["Maison Alhambra", "maison-alhambra.webp"],
+        ["Al Wataniah", "al-wataniah.png"],
+        ["Lattafa", "lattafa.webp"],
+        ["Armaf", "armaf.webp"],
+        ["Jean Paul Gaultier", "jean-paul-gaultier.svg"]
+      ].each do |nome, arquivo| %>
+        <li class="home-brand">
+          <%= image_tag "marcas/#{arquivo}", alt: nome, loading: "lazy", decoding: "async", width: 112, height: 80 %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</section>

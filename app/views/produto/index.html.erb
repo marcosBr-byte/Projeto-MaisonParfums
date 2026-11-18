@@ -32,7 +32,7 @@
                   <td class="p-4">
                     <div class="flex items-center gap-4 min-w-[220px]">
                       <% if produto.imagem.attached? %>
-                        <%= image_tag produto.imagem, class: "w-16 h-16 object-cover rounded-xl border border-[#E5E6E7]" %>
+                        <%= image_tag imagem_loja(produto.imagem, tamanho: :miniatura), alt: produto.nome, class: "w-16 h-16 object-cover rounded-xl border border-[#E5E6E7]" %>
                       <% else %>
                         <div class="w-16 h-16 rounded-xl bg-[#E5E6E7] flex items-center justify-center">
                           <span class="text-xs text-[#748A9C]">Sem foto</span>
@@ -40,7 +40,7 @@
                       <% end %>
 
                       <div>
-                        <p class="font-medium text-[#485057]"><%= produto.nome %></p
+                        <p class="font-medium text-[#485057]"><%= produto.nome %></p>
                       </div>
                     </div>
                   </td>

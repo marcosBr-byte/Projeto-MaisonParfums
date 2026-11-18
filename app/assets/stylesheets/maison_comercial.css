@@ -1,0 +1,15 @@
+body { font-weight: 500; }
+h1, h2, h3, .font-serif { font-weight: 700; }
+input, select, textarea, button { font-weight: 500; }
+.maison-logo { display: block; width: 132px; height: 88px; object-fit: contain; border-radius: 8px; }
+.maison-logo-admin { width: 144px; height: 96px; }
+/* Enquadra a marca centralizada, removendo da exibição as margens vazias do PNG. */
+.maison-logo-storefront { width: 180px; height: 120px; object-fit: cover; object-position: center; }
+.trix-content { overflow-wrap: anywhere; }
+.trix-content ul { list-style: disc; padding-left: 1.5rem; }
+.trix-content ol { list-style: decimal; padding-left: 1.5rem; }
+.trix-content strong { font-weight: 750; }
+trix-editor { background: white; min-height: 9rem; border-radius: .75rem; padding: 1rem; }
+trix-editor:focus { border-color: #748a9c; outline: 2px solid #748a9c30; }
+@media (max-width: 640px) { .maison-logo { width: 96px; height: 64px; } }
+@media (max-width: 640px) { .maison-logo-storefront { width: 144px; height: 96px; } }

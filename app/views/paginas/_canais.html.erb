@@ -1,0 +1,9 @@
+<div class="grid sm:grid-cols-2 gap-4">
+  <% if @configuracao.whatsapp.present? %>
+    <%= link_to "https://wa.me/#{@configuracao.whatsapp.gsub(/\D/, '')}?text=#{ERB::Util.url_encode(local_assigns[:mensagem] || 'Olá! Gostaria de atendimento da Maison Parfum.')}", target: "_blank", rel: "noopener noreferrer", class: "rounded-xl border border-[#D9DADD] p-5 hover:bg-[#F7F7F5] text-[#485057]" do %><span class="font-medium">WhatsApp ↗</span><span class="block text-sm text-[#748A9C] mt-2">Conversar diretamente com a loja</span><% end %>
+  <% end %>
+  <% if @configuracao.email_contato.present? %>
+    <div class="rounded-xl border border-[#D9DADD] p-5 text-[#485057]"><p class="font-medium">E-mail</p><%= mail_to @configuracao.email_contato, nil, class: "block text-sm text-[#748A9C] mt-2 break-all" %></div>
+  <% end %>
+  <%= link_to new_mensagen_path, class: "rounded-xl border border-[#D9DADD] p-5 hover:bg-[#F7F7F5] text-[#485057]" do %><span class="font-medium">Mensagem pelo site →</span><span class="block text-sm text-[#748A9C] mt-2">Entre na sua conta para enviar uma mensagem e associá-la ao seu pedido.</span><% end %>
+</div>

@@ -1,0 +1,135 @@
+pt:
+  devise:
+    confirmations:
+      confirmed: "E-mail confirmado com sucesso."
+      send_instructions: "Você receberá um e-mail com as instruções para confirmar sua conta."
+      send_paranoid_instructions: "Se o e-mail estiver cadastrado, enviaremos as instruções para confirmar a conta."
+    failure:
+      already_authenticated: "Você já está conectado à sua conta."
+      inactive: "Sua conta ainda não foi ativada."
+      invalid: "E-mail ou senha incorretos. Confira os dados e tente novamente."
+      not_found_in_database: "E-mail ou senha incorretos. Confira os dados e tente novamente."
+      locked: "Sua conta está bloqueada. Siga as instruções de desbloqueio enviadas por e-mail."
+      last_attempt: "Você tem mais uma tentativa antes do bloqueio da conta."
+      timeout: "Sua sessão expirou. Entre novamente para continuar."
+      unauthenticated: "Entre na sua conta ou cadastre-se para continuar."
+      unconfirmed: "Confirme seu e-mail antes de continuar."
+    sessions:
+      signed_in: "Que bom ter você aqui! Você entrou na sua conta."
+      signed_out: "Você saiu da sua conta com segurança. Até a próxima!"
+      already_signed_out: "Você já saiu da sua conta. Até a próxima!"
+    passwords:
+      no_token: "Abra o link recebido por e-mail para criar uma nova senha."
+      send_instructions: "Enviamos por e-mail as instruções para redefinir sua senha."
+      send_paranoid_instructions: "Se este e-mail estiver cadastrado, você receberá um link para redefinir sua senha. Confira também a caixa de spam."
+      updated: "Senha alterada com sucesso. Você já está conectado à sua conta."
+      updated_not_active: "Sua senha foi alterada com sucesso."
+    registrations:
+      destroyed: "Sua conta foi excluída com sucesso. Esperamos ver você novamente."
+      signed_up: "Boas-vindas à Maison Parfum! Sua conta foi criada com sucesso."
+      signed_up_but_inactive: "Sua conta foi criada. Aguarde a ativação para entrar."
+      signed_up_but_locked: "Sua conta foi criada, mas está bloqueada. Confira as instruções enviadas por e-mail."
+      signed_up_but_unconfirmed: "Sua conta foi criada! Confirme seu e-mail pelo link que enviamos para você."
+      update_needs_confirmation: "Dados atualizados! Confirme seu novo e-mail pelo link que enviamos para você."
+      updated: "Seus dados foram atualizados com sucesso."
+      updated_but_not_signed_in: "Sua senha foi alterada. Entre novamente para continuar."
+    unlocks:
+      send_instructions: "Você receberá por e-mail as instruções para desbloquear sua conta."
+      send_paranoid_instructions: "Se a conta estiver cadastrada, enviaremos as instruções de desbloqueio por e-mail."
+      unlocked: "Conta desbloqueada com sucesso. Entre para continuar."
+    omniauth_callbacks:
+      success: "Você entrou com sua conta %{kind}."
+      failure: "Não foi possível entrar com %{kind}. Tente novamente."
+    mailer:
+      confirmation_instructions:
+        subject: "Confirme seu e-mail · Maison Parfum"
+      reset_password_instructions:
+        subject: "Redefina sua senha · Maison Parfum"
+      unlock_instructions:
+        subject: "Desbloqueie sua conta · Maison Parfum"
+      email_changed:
+        subject: "Seu e-mail foi alterado · Maison Parfum"
+      password_change:
+        subject: "Sua senha foi alterada · Maison Parfum"
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: "não pode ficar em branco"
+      present: "deve ficar em branco"
+      taken: "já está em uso"
+      invalid: "não é válido"
+      inclusion: "não está entre as opções disponíveis"
+      exclusion: "não está disponível"
+      confirmation: "não confere com %{attribute}"
+      accepted: "deve ser aceito"
+      empty: "não pode ficar vazio"
+      too_long:
+        one: "deve ter no máximo 1 caractere"
+        other: "deve ter no máximo %{count} caracteres"
+      too_short:
+        one: "deve ter pelo menos 1 caractere"
+        other: "deve ter pelo menos %{count} caracteres"
+      wrong_length:
+        one: "deve ter 1 caractere"
+        other: "deve ter %{count} caracteres"
+      not_a_number: "deve ser um número"
+      not_an_integer: "deve ser um número inteiro"
+      greater_than: "deve ser maior que %{count}"
+      greater_than_or_equal_to: "deve ser maior ou igual a %{count}"
+      equal_to: "deve ser igual a %{count}"
+      less_than: "deve ser menor que %{count}"
+      less_than_or_equal_to: "deve ser menor ou igual a %{count}"
+      other_than: "deve ser diferente de %{count}"
+      odd: "deve ser ímpar"
+      even: "deve ser par"
+      in: "deve estar entre %{count}"
+      required: "é obrigatório"
+      record_invalid: "Confira os dados: %{errors}"
+      restrict_dependent_destroy:
+        has_one: "não pode ser excluído porque existe um registro de %{record} vinculado"
+        has_many: "não pode ser excluído porque existem registros de %{record} vinculados"
+      already_confirmed: "já foi confirmado. Entre na sua conta"
+      confirmation_period_expired: "precisa ser confirmado em até %{period}. Solicite um novo link"
+      expired: "expirou. Solicite um novo link"
+      not_found: "não foi encontrado"
+      not_locked: "não está bloqueado"
+      not_saved:
+        one: "Confira o campo abaixo para salvar %{resource}:"
+        other: "Confira os %{count} campos abaixo para salvar %{resource}:"
+  activerecord:
+    models:
+      usuario: "conta"
+      produto: "produto"
+      variante: "tamanho"
+    attributes:
+      usuario:
+        nome: "Nome"
+        email: "E-mail"
+        password: "Senha"
+        password_confirmation: "Confirmação da senha"
+        current_password: "Senha atual"
+        telefone: "Telefone"
+        cpf: "CPF"
+        cep: "CEP"
+        cidade: "Cidade"
+        estado: "Estado"
+        bairro: "Bairro"
+        rua: "Rua"
+        numero_casa: "Número"
+        reset_password_token: "Link para redefinir a senha"
+        confirmation_token: "Link de confirmação"
+        unlock_token: "Link de desbloqueio"
+      produto:
+        nome: "Nome"
+        preco: "Preço"
+        origem: "Origem do perfume"
+        categoria: "Categoria"
+        descricao: "Descrição"
+        imagem: "Imagem"
+        fotos: "Fotos"
+        variantes: "Tamanhos"
+      variante:
+        preco: "Preço"
+        estoque: "Estoque"
+        tamanho: "Tamanho"
+        volume_lacrado_ml: "Volume do lacrado"

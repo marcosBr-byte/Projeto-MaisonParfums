@@ -1,0 +1,8 @@
+<%= form_with url: busca_path, method: :get, local: true, role: "search", class: "relative flex #{classes}", data: { controller: "busca", busca_url_value: busca_sugestoes_path, action: "click@window->busca#fecharFora keydown->busca#teclado" } do |form| %>
+  <%= form.label :q, "Buscar perfumes por nome, marca ou fragrância", for: identificador, class: "sr-only" %>
+  <%= form.search_field :q, id: identificador, value: params[:q], maxlength: 120, placeholder: "Nome, marca ou fragrância…", autocomplete: "off", class: "min-w-0 w-full border border-[#C9CDD1] bg-white rounded-l-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#748A9C]", aria: { expanded: false, controls: "#{identificador}-sugestoes", autocomplete: "list" }, data: { busca_target: "input", action: "input->busca#buscar focus->busca#buscar" } %>
+  <%= form.button type: "submit", aria: { label: "Buscar perfumes" }, class: "bg-[#485057] text-white px-4 rounded-r-xl cursor-pointer hover:bg-[#748A9C]" do %>
+    <span class="material-symbols-outlined" aria-hidden="true">search</span>
+  <% end %>
+  <div id="<%= identificador %>-sugestoes" data-busca-target="lista" aria-label="Sugestões de perfumes" class="hidden absolute left-0 right-0 top-full mt-2 bg-white border border-[#D9DADD] rounded-xl shadow-xl overflow-y-auto max-h-96 z-50"></div>
+<% end %>

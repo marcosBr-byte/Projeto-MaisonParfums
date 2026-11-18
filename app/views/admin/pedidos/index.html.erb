@@ -54,6 +54,7 @@
 
                 <td class="px-6 py-5">
                   <%= badge_status(pedido.status) %>
+                  <% if pedido.pagamento_requer_atencao? %><p class="mt-2 text-red-700">Conferir pagamento</p><% end %>
                 </td>
 
                 <td class="whitespace-nowrap px-6 py-5">

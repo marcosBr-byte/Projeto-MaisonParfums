@@ -1,0 +1,8 @@
+.shipping-reward { padding: 1.5rem 1.75rem 1.2rem; margin-bottom: 1.5rem; border: 1px solid #e5e6e7; border-radius: 16px; background: white; color: #485057; }
+.shipping-road { position: relative; height: 10px; margin: 12px 0 30px; background: #f0f1f2; border-radius: 999px; }
+.shipping-road-fill { height: 100%; width: 0; border-radius: inherit; background: #748a9c; transition: width 900ms ease; }
+.shipping-truck { position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%); display: grid; place-items: center; width: 44px; height: 44px; border: 5px solid #e5e6e7; border-radius: 50%; background: #748a9c; color: white; transition: left 900ms ease; }
+.shipping-truck .material-symbols-outlined { font-size: 24px; }
+.shipping-message { text-align: center; font-size: .875rem; line-height: 1.7; }
+.shipping-note { text-align: center; font-size: .7rem; margin-top: .4rem; color: #748a9c; }
+@media (prefers-reduced-motion: reduce) { .shipping-truck, .shipping-road-fill { transition: none; } }

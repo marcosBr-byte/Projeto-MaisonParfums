@@ -1,58 +1,42 @@
-<main class="bg-[#F7F7F5]">
-  <section id="secao-carrossel" class="relative w-full" data-controller="carousel" data-carousel-interval-value="5000">
-    <div class="relative h-64 md:h-96 overflow-hidden">
-
-       <div data-carousel-target="slide" class="absolute inset-0 transition-opacity duration-700 opacity-100">
-        <%= image_tag "slide-mais-vendidos.jpeg", alt: "mais vendidos", class: "absolute inset-0  w-full h-full object-cover" %>
-        <div class="absolute inset-0 bg-linear-to-r from-[#17232E]/90 via-[#17232E]/50 to-transparent"></div>
-        <div class="relative z-10 h-full max-w-7xl mx-auto px-6 md:16px flex flex-col justify-center items-start text-white">
-          <h2 class="font-serif text-5xl md:text-6xl leading-tight">Destaques</h2>
-          <p>Os mais vendidos por categoria</p>
-        </div>
-      </div>
-
-      <div data-carousel-target="slide" class="absolute inset-0 transition-opacity duration-700 opacity-100">
-        <%= image_tag "slide-frete.jpeg", alt: "frete", class: "absolute inset-0  w-full h-full object-cover" %>
-        <div class="absolute inset-0 bg-linear-to-r from-[#17232E]/90 via-[#17232E]/50 to-transparent"></div>
-        <div class="relative z-10 h-full max-w-7xl mx-auto px-6 md:16px flex flex-col justify-center items-start text-white">
-          <h2 class="font-serif text-5xl md:text-6xl leading-tight">Frete</h2>
-          <p>Para todo o Brasil</p>
-        </div>
-      </div>
-
-      <div data-carousel-target="slide" class="absolute inset-0 transition-opacity duration-700 opacity-100">
-        <%= image_tag "slide-quiz.jpeg", alt: "quiz", class: "absolute inset-0  w-full h-full object-cover" %>
-        <div class="absolute inset-0 bg-linear-to-r from-[#17232E]/90 via-[#17232E]/50 to-transparent"></div>
-        <div class="relative z-10 h-full max-w-7xl mx-auto px-6 md:16px flex flex-col justify-center items-start text-white">
-          <h2 class="font-serif text-5xl md:text-6xl leading-tight">Quiz Gratuito</h2>
-          <p>Descubra o seu perfume ideal</p>
-        </div>
-      </div>
-
-      <button type="button" data-action="carousel#previous" aria-label="Anterior" class="absolute left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-start bg-black/5 backdrop-blur-sm text-white rounded-full cursor-pointer hover:bg-black/50 transition-colors">
-        <span class="material-symbols-outlined leading-none text-[12px]">chevron_left</span>
-      </button>
-
-      <button type="button" data-action="carousel#previous" aria-label="Próximo" class="absolute right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-end bg-black/5 backdrop-blur-sm text-white rounded-full cursor-pointer hover:bg-black/50 transition-colors">
-        <span class="material-symbols-outlined leading-none text-[12px]">chevron_right</span>
-      </button>
-
-      <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
-        <% 3.times do |i| %>
-          <button type="button" data-carousel-target="dot" data-action="carousel#goTo" data-carousel-index-param="<%= i %>" aria-label="Slide <%= i + 1 %>" class="w-3 h-3 rounded-full cursor-pointer <%= i.zero? ? 'bg-white' : 'bg-white/50' %>"></button>
+<main class="maison-home bg-[#F7F7F5]">
+  <h1 class="sr-only">Maison Parfum — decantes e perfumes</h1>
+  <% if @banners_carrossel.any? %>
+    <section id="secao-carrossel" aria-label="Destaques da loja" class="home-carousel relative w-full" data-controller="carousel" data-carousel-interval-value="5000">
+      <div class="home-carousel-viewport relative overflow-hidden">
+        <% @banners_carrossel.each_with_index do |banner, index| %>
+          <div data-carousel-target="slide" class="absolute inset-0 bg-[#26323D] transition-opacity duration-700 <%= index.zero? ? 'opacity-100' : 'opacity-0 pointer-events-none' %>">
+            <% if banner.imagem_exibicao %>
+              <%= image_tag imagem_loja(banner.imagem_exibicao, tamanho: :banner), alt: banner.rotulo, class: "absolute inset-0 w-full h-full object-contain" %>
+            <% end %>
+            <% if banner.chave == "quiz" %>
+              <%= link_to "", quiz_path, aria: { label: "Descobrir meu perfume" }, class: "absolute inset-0 z-10" %>
+            <% end %>
+          </div>
+        <% end %>
+        <% if @banners_carrossel.size > 1 %>
+          <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-2 z-20">
+            <% @banners_carrossel.each_index do |index| %>
+              <button type="button" data-carousel-target="dot" data-action="carousel#goTo" data-carousel-index-param="<%= index %>" aria-label="Slide <%= index + 1 %>" class="w-3 h-3 rounded-full cursor-pointer <%= index.zero? ? 'bg-white' : 'bg-white/50' %>"></button>
+            <% end %>
+          </div>
         <% end %>
       </div>
-    </div>
-  </section>
+    </section>
+  <% end %>
 
-  <section class="bg-[#F0F1F2] border-30 border-[#F0F1F2]">
-    <div class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-      <% [["local_shipping", "Frete para todo o Brasil", "Em compras nos seus pedidos "],
-        ["credit_card", "Parcele sem juros", "Em até 3x em todo o site"],
-        ["pix", "3% off no Pix", "Desconto na finalização"],
+
+  <section aria-label="Benefícios da loja" class="home-benefits bg-[#F0F1F2]" data-controller="benefits-carousel">
+    <div data-benefits-carousel-target="track" aria-roledescription="carrossel" class="home-benefits-track max-w-7xl mx-auto px-4 py-4 text-sm">
+      <% [["local_shipping", "Envio para todo o Brasil", "Consulte as condições pelo seu CEP"],
+        ["credit_card", "Cartão de crédito", configuracao_loja.pagamento_configurado? ? "Pague no checkout seguro" : "Consulte as condições com a loja"],
+        ["pix", "Pague com Pix", configuracao_loja.pagamento_configurado? ? "Escolha Pix no pagamento" : "Consulte as condições com a loja"],
         ["lock", "Site seguro", "Seus dados protegidos"]].each do |icone, titulo, texto| %>
-        <div class="flex items-center gap-3">
-          <span class="material-symbols-outlined text-[#748A9C]"><%= icone %></span>
+        <div class="home-benefit flex items-center gap-3" data-benefits-carousel-target="slide">
+          <% if icone == "pix" %>
+            <span aria-hidden="true" class="home-pix-icon text-[#748A9C]"><i class="fa-brands fa-pix"></i></span>
+          <% else %>
+            <span aria-hidden="true" class="material-symbols-outlined text-[#748A9C]"><%= icone %></span>
+          <% end %>
           <div>
             <p class="font-semibold text-[#485057]"><%= titulo %></p>
             <p class="text-xs text-[#737980]"><%= texto %></p>
@@ -62,200 +46,111 @@
     </div>
   </section>
 
-  <section id="video" class="bg-[#748A9C] px-8 py-12">
-    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-10">
-      <div class="flex justify-center md:justify-start">
-        <%= video_tag "video_parfum.mp4", autoplay: true, muted: true, loop: true, playsinline: true, controls: true, preload: "metadata", class: "w-full max-w-xs rounded-xl shadow-lg" %>
+  <section id="video" class="home-story bg-[#748A9C] px-8 py-12">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 items-center gap-10">
+      <% if @videos_experiencia.any? %>
+      <div class="home-story-carousel" role="region" aria-roledescription="carrossel" aria-label="Vídeos da Maison Parfum" data-controller="video-carousel" tabindex="0" data-action="keydown.left->video-carousel#previous keydown.right->video-carousel#next touchstart->video-carousel#touchStart touchend->video-carousel#touchEnd">
+        <div class="home-story-viewport">
+          <% @videos_experiencia.each_with_index do |video, index| %>
+            <div class="home-story-slide" data-video-carousel-target="slide" role="group" aria-roledescription="slide" aria-label="Vídeo <%= index + 1 %> de <%= @videos_experiencia.size %>" <%= "hidden" unless index.zero? %>>
+              <%= video_tag(video.arquivo.attached? ? url_for(video.arquivo) : video.arquivo_padrao, autoplay: index.zero?, muted: true, playsinline: true, controls: true, preload: index.zero? ? "metadata" : "none", aria: { label: video.titulo }, class: "home-story-video", data: { action: "ended->video-carousel#next timeupdate->video-carousel#updateProgress" }) %>
+            </div>
+          <% end %>
+        </div>
+        <div class="home-story-progress" aria-hidden="true"><span data-video-carousel-target="progress"></span></div>
+        <% if @videos_experiencia.size > 1 %>
+          <div class="home-story-navigation">
+            <div class="home-story-dots">
+              <% @videos_experiencia.each_index do |index| %>
+                <button type="button" data-video-carousel-target="dot" data-action="video-carousel#goTo" data-video-carousel-index-param="<%= index %>" aria-label="Ver vídeo <%= index + 1 %>" aria-current="<%= index.zero? ? 'true' : 'false' %>"></button>
+              <% end %>
+            </div>
+          </div>
+          <p class="home-story-count" data-video-carousel-target="counter" aria-live="polite" aria-atomic="true">Vídeo 1 de <%= @videos_experiencia.size %></p>
+        <% end %>
       </div>
+      <% end %>
 
-      <div class="text-white text-center md:text-left">
+      <div class="text-white text-center">
         <p class="text-xs uppercase tracking-widest text-[#D9DDE0] mb-2">Maison Parfum</p>
         <h2 class="font-serif text-3xl mb-4">Uma experiência em cada fragrância</h2>
-        <p class="text-[#E5E6E7] mb-6">Conheça nossa seleção de decants e encontre o perfume que combina com você.</p>
+        <p class="text-[#E5E6E7] mb-6">Conheça nossa seleção de decantes e encontre o perfume que combina com você.</p>
         <%= link_to "Ver coleção", "#secao-decants", class: "inline-block bg-[#B8BDC3] text-[#343A40] font-semibold px-6 py-3 rounded hover:bg-[#D9DDE0]" %>
       </div>
     </div>
   </section>
 
-  
-  <section id="destaques" class="bg-[#F7F7F5] px-4 sm:px-6 lg:px-8 py-12">
-    <div class="max-w-7xl mx-auto">
-
-      <div class="text-center mb-10">
-        <h2 class="font-serif text-3xl md:text-4xl text-[#485057]">
-          Os mais vendidos
-        </h2>
-        <p class="text-sm text-gray-500 mt-3">
-          Conheça as fragrâncias favoritas dos nossos clientes.
-        </p>
-      </div>
-
-      <%# Decants masculinos %>
-      <div class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="font-serif text-2xl text-[#485057]">
-            Decants masculinos
-          </h3>
-
-          <%= link_to "Ver coleção →", decants_masculinos_path,
-              class: "text-sm text-[#748A9C] hover:text-[#485057] transition" %>
-        </div>
-
-        <% if @mais_vendidos_masculinos.any? %>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            <% @mais_vendidos_masculinos.each do |produto| %>
-              <div class="group bg-white rounded-xl border border-[#E5E6E7] overflow-hidden hover:shadow-lg transition duration-300">
-
-                <%= link_to produto_path(produto), class: "block" do %>
-                  <div class="aspect-square bg-[#F0F1F2] overflow-hidden">
-                    <% if produto.imagem.attached? %>
-                      <%= image_tag produto.imagem,
-                          alt: produto.nome,
-                          class: "w-full h-full object-cover group-hover:scale-105 transition duration-500" %>
-                    <% else %>
-                      <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                        Sem imagem
-                      </div>
-                    <% end %>
-                  </div>
-                <% end %>
-
-                <div class="p-3 sm:p-4">
-                  <h4 class="text-sm font-semibold text-[#485057] line-clamp-2 min-h-10">
-                    <%= produto.nome %>
-                  </h4>
-
-                  <p class="text-base font-semibold text-[#485057] mt-3">
-                    <%= number_to_currency(produto.preco) %>
-                  </p>
-
-                  <%= link_to "Ver detalhes", produto_path(produto),
-                      class: "block text-center mt-4 py-2.5 rounded-lg bg-[#485057] text-white text-xs sm:text-sm hover:bg-[#748A9C] transition" %>
-                </div>
-              </div>
+   <% destinos_atalhos = { "atalho_masculino" => decants_masculinos_path, "atalho_feminino" => decants_femininos_path, "atalho_nicho" => decants_nicho_path } %>
+  <% atalhos_visiveis = Banner::ATALHOS.keys.reject { |chave| @atalhos[chave] && !@atalhos[chave].ativo? }.sort_by { |chave| @atalhos[chave]&.ordem || 10 + Banner::ATALHOS.keys.index(chave) } %>
+  <% if atalhos_visiveis.any? %>
+    <nav class="home-category-shortcuts" aria-label="Explore as categorias">
+      <% atalhos_visiveis.each do |chave| %>
+        <% nome, icone = Banner::ATALHOS.fetch(chave) %>
+        <%= link_to destinos_atalhos.fetch(chave), class: "home-category-shortcut" do %>
+          <span class="home-category-circle">
+            <% if @atalhos[chave]&.imagem&.attached? %>
+              <%= image_tag imagem_loja(@atalhos[chave].imagem, tamanho: :miniatura), alt: "", loading: "lazy", decoding: "async", width: 104, height: 104 %>
+            <% else %>
+              <span class="material-symbols-outlined" aria-hidden="true"><%= icone %></span>
             <% end %>
+          </span>
+          <span><%= nome %></span>
+        <% end %>
+      <% end %>
+    </nav>
+  <% end %>
+
+
+  <% if configuracao_loja.percentual_vigente.positive? %>
+    <div class="max-w-6xl mx-auto px-5 py-6"><p class="rounded-xl bg-[#485057] p-5 text-white text-center"><strong><%= number_to_percentage(configuracao_loja.percentual_vigente, precision: 2, strip_insignificant_zeros: true) %> de desconto em todos os produtos!</strong> Os preços abaixo já incluem a promoção.</p></div>
+  <% end %>
+  <% if @produtos_destaque.any? %>
+    <section id="selecao-maison" aria-labelledby="selecao-maison-titulo" class="max-w-7xl mx-auto px-4 sm:px-8 py-12">
+      <div class="home-collection-heading flex flex-wrap items-center justify-between mb-6">
+        <div><h2 id="selecao-maison-titulo" class="font-serif text-3xl text-[#485057]">Seleção da Maison</h2><p class="mt-3 text-sm text-gray-500">Perfumes escolhidos para você conhecer.</p></div>
+        <%= link_to "Ver coleção →", produtos_todos_path, class: "text-sm text-[#748A9C]" %>
+      </div>
+      <% destaques_por_categoria = @produtos_destaque.group_by(&:categoria) %>
+      <% { "masculino" => "Masculino", "feminino" => "Feminino", "unissex" => "Unissex" }.each do |categoria, titulo| %>
+        <% produtos = destaques_por_categoria.fetch(categoria, []) %>
+        <% next if produtos.empty? %>
+        <div class="mb-12 last:mb-0" data-categoria="<%= categoria %>" data-controller="auto-scroll" data-action="mouseenter->auto-scroll#pause mouseleave->auto-scroll#resume focusin->auto-scroll#pause focusout->auto-scroll#resume">
+          <h3 id="destaques-<%= categoria %>-titulo" class="font-serif text-2xl text-[#485057] mb-6"><%= titulo %></h3>
+          <div data-auto-scroll-target="track" tabindex="0" aria-labelledby="destaques-<%= categoria %>-titulo" class="home-products-track">
+            <%= render partial: "home/produto_destaque", collection: produtos, as: :produto %>
           </div>
-        <% else %>
-          <p class="text-center text-sm text-gray-500 py-8">
-            Ainda não temos perfumes masculinos vendidos para destacar.
-          </p>
+        </div>
+      <% end %>
+    </section>
+  <% end %>
+
+   <% if @banners_colecoes.any? %>
+    <section id="secao-decants" class="bg-[#F7F7F5] px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+        <% @banners_colecoes.each do |banner| %>
+          <%= link_to ({ "masculino" => decants_masculinos_path, "feminino" => decants_femininos_path, "nicho" => decants_nicho_path }.fetch(banner.chave)), aria: { label: banner.rotulo }, class: "home-collection-card group relative isolate block h-64 sm:h-72 overflow-hidden rounded-xl bg-[#26323D] shadow-sm" do %>
+            <% if banner.imagem_exibicao %>
+              <%= image_tag imagem_loja(banner.imagem_exibicao, tamanho: :banner), alt: banner.rotulo, loading: "lazy", decoding: "async", class: "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" %>
+            <% end %>
+          <% end %>
         <% end %>
       </div>
+    </section>
+  <% end %>
 
-      <%# Decants femininos %>
-      <div>
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="font-serif text-2xl text-[#485057]">
-            Decants femininos
-          </h3>
 
-          <%= link_to "Ver coleção →", decants_femininos_path,
-              class: "text-sm text-[#748A9C] hover:text-[#485057] transition" %>
-        </div>
 
-        <% if @mais_vendidos_femininos.any? %>
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            <% @mais_vendidos_femininos.each do |produto| %>
-              <div class="group bg-white rounded-xl border border-[#E5E6E7] overflow-hidden hover:shadow-lg transition duration-300">
+  <%= render "home/avaliacoes", avaliacoes: @avaliacoes_home %>
 
-                <%= link_to produto_path(produto), class: "block" do %>
-                  <div class="aspect-square bg-[#F0F1F2] overflow-hidden">
-                    <% if produto.imagem.attached? %>
-                      <%= image_tag produto.imagem,
-                          alt: produto.nome,
-                          class: "w-full h-full object-cover group-hover:scale-105 transition duration-500" %>
-                    <% else %>
-                      <div class="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                        Sem imagem
-                      </div>
-                    <% end %>
-                  </div>
-                <% end %>
+  <%= render "marcas" %>
 
-                <div class="p-3 sm:p-4">
-                  <h4 class="text-sm font-semibold text-[#485057] line-clamp-2 min-h-10">
-                    <%= produto.nome %>
-                  </h4>
-
-                  <p class="text-base font-semibold text-[#485057] mt-3">
-                    <%= number_to_currency(produto.preco) %>
-                  </p>
-
-                  <%= link_to "Ver detalhes", produto_path(produto),
-                      class: "block text-center mt-4 py-2.5 rounded-lg bg-[#485057] text-white text-xs sm:text-sm hover:bg-[#748A9C] transition" %>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        <% else %>
-          <p class="text-center text-sm text-gray-500 py-8">
-            Ainda não temos perfumes femininos vendidos para destacar.
-          </p>
-        <% end %>
-      </div>
-
+  <section id="descubra" class="max-w-6xl mx-auto px-5 py-12">
+    <div class="rounded-2xl border border-[#E5E6E7] bg-white p-7 sm:p-10 text-center">
+      <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C]">Encontre seu perfil olfativo</p>
+      <h2 class="font-serif text-3xl text-[#485057] mt-3">Qual perfume combina com você?</h2>
+      <p class="mt-4 text-[#748A9C]">Responda a cinco perguntas e conheça sugestões do catálogo para suas preferências e seu orçamento.</p>
+      <%= link_to "Fazer o quiz →", quiz_path, class: "inline-block mt-6 rounded-full bg-[#485057] text-white px-7 py-3 text-sm" %>
     </div>
   </section>
 
-  <section id="secao-decants" class="bg-[#F7F7F5] px-4 sm:px-6 lg:px-8 py-8 md:py-10">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-
-      <%# Decants masculinos %>
-      <%= link_to decants_masculinos_path,
-          class: "group relative isolate block h-64 sm:h-72 lg:h-64 xl:h-72 overflow-hidden rounded-xl bg-[#26323D] shadow-sm hover:shadow-xl transition-all duration-500" do %>
-
-        <%= image_tag "destaques-masculino.jpeg",
-            alt: "Coleção de decants masculinos",
-            class: "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" %>
-
-        <div class="absolute inset-0 bg-linear-to-r from-[17232E]/95 via-[17232E]/65 to-transparent"></div>
-
-        <div class="absolute inset-y-0 left-0 z-10 flex flex-col justify-center items-start p-5 sm:p-7 lg:p-8 max-w-[75%]">
-          <h2 class="font-serif text-2xl sm:text-3xl text-white leading-tight mb-3">
-            Decants<br>Masculinos
-          </h2>
-
-          <p class="text-sm text-white/90 leading-relaxed max-w-xs mb-5">
-            Explore fragrâncias marcantes e encontre seu próximo perfume favorito.
-          </p>
-
-          <span class="inline-flex items-center gap-2 text-white text-sm font-medium">
-            Explorar coleção
-            <span class="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-2">
-              arrow_forward
-            </span>
-          </span>
-        </div>
-      <% end %>
-
-      <%# Decants femininos %>
-      <%= link_to decants_femininos_path,
-          class: "group relative isolate block h-64 sm:h-72 lg:h-64 xl:h-72 overflow-hidden rounded-xl bg-[#A88C7D] shadow-sm hover:shadow-xl transition-all duration-500" do %>
-
-        <%= image_tag "destaque-feminino.jpeg",
-            alt: "Coleção de decants femininos",
-            class: "absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" %>
-
-        <div class="absolute inset-0 bg-linear-to-r from-[#5C4037]/90 via-[#5C4037]/55 to-transparent"></div>
-
-        <div class="absolute inset-y-0 left-0 z-10 flex flex-col justify-center items-start p-5 sm:p-7 lg:p-8 max-w-[75%]">
-          <h2 class="font-serif text-2xl sm:text-3xl text-white leading-tight mb-3">
-            Decants<br>Femininos
-          </h2>
-
-          <p class="text-sm text-white/90 leading-relaxed max-w-xs mb-5">
-            Descubra fragrâncias delicadas, sofisticadas e inesquecíveis.
-          </p>
-
-          <span class="inline-flex items-center gap-2 text-white text-sm font-medium">
-            Explorar coleção
-            <span class="material-symbols-outlined transition-transform duration-300 group-hover:translate-x-2">
-              arrow_forward
-            </span>
-          </span>
-        </div>
-      <% end %>
-
-    </div>
-  </section>
 </main>

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
   <head>
-    <title>Admin · Maison Parfum</title>
+    <meta charset="utf-8">
+    <title><%= content_for(:title) || "Admin · Maison Parfum" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -10,13 +11,16 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-[#F7F7F5] text-[#485057]">
+  <body class="admin-shell bg-[#F7F7F5] text-[#485057]">
+    <a href="#admin-content" class="admin-skip-link">Pular para o conteúdo</a>
     <input type="checkbox" id="menu-admin" class="peer sr-only" aria-label="Abrir menu">
 
     <%# Barra de topo (só no celular) %>
@@ -33,17 +37,13 @@
 
     <%= render "admin/menu" %>
 
-    <main class="min-h-screen md:ml-64">
-      <% if notice.present? || alert.present? %>
-        <div class="max-w-7xl mx-auto px-4 pt-6 sm:px-8">
-          <% if notice.present? %>
-            <p class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><%= notice %></p>
-          <% end %>
-          <% if alert.present? %>
-            <p class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"><%= alert %></p>
-          <% end %>
-        </div>
-      <% end %>
+    <main id="admin-content" tabindex="-1" class="admin-content min-h-screen md:ml-64">
+      <div class="admin-workspace-bar">
+        <%= link_to root_path, class: "admin-store-link" do %>
+          <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span> Ver loja
+        <% end %>
+      </div>
+      <%= render "shared/notifications" %>
 
       <%= yield %>
     </main>

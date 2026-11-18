@@ -15,7 +15,33 @@ test:
   database: maison_parfum_test
 
 production:
-  <<: *default
-  database: maison_parfum_production
-  username: maison_parfum
-  password: <%= ENV["MAISON_PARFUM_DATABASE_PASSWORD"] %>
+<% if ENV["RENDER"] == "true" && ENV["DATABASE_URL"].present? %>
+  primary:
+    <<: *default
+    url: <%= ENV.fetch("DATABASE_URL").to_json %>
+<% %w[queue cache cable].each do |component| %>
+  <%= component %>:
+    <<: *default
+    url: <%= ENV.fetch("DATABASE_URL").to_json %>
+    schema_search_path: <%= component %>
+    migrations_paths: db/<%= component %>_migrate
+<% end %>
+<% else %>
+  primary: &production_primary
+    <<: *default
+    database: maison_parfum_production
+    username: maison_parfum
+    password: <%= ENV["MAISON_PARFUM_DATABASE_PASSWORD"] %>
+  queue:
+    <<: *production_primary
+    database: maison_parfum_production_queue
+    migrations_paths: db/queue_migrate
+  cache:
+    <<: *production_primary
+    database: maison_parfum_production_cache
+    migrations_paths: db/cache_migrate
+  cable:
+    <<: *production_primary
+    database: maison_parfum_production_cable
+    migrations_paths: db/cable_migrate
+<% end %>

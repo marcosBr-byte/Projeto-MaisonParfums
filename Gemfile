@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.1.3", ">= 8.1.3.1"
+gem "rails", "~> 8.1.4", ">= 8.1.4.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use postgresql as the database for Active Record
@@ -82,3 +82,8 @@ gem "tailwindcss-rails", "~> 4.6"
 gem "devise", "~> 5.0"
 
 gem "devise-argon2", "~> 2.0"
+
+gem "omniauth", "~> 2.3", ">= 2.3.1"
+gem "omniauth-google-oauth2", "~> 1.2"
+gem "omniauth-facebook", "~> 11.0"
+gem "omniauth-rails_csrf_protection", "~> 2.0"

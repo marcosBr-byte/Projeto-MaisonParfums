@@ -1,127 +1,35 @@
-<div class="p-8">
-  <div class="mb-8">
-    <h1 class="font-serif text-3xl text-[#343A40]"> Análise da loja</h1>
-    <p class="mt-2 text-sm text-[#748A9C]"> Acompanhe diariamente os resultados da Maison Parfum.
-    </p>
+<div class="admin-analytics max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-6">
+  <header class="admin-page-heading"><div><p class="admin-eyebrow">Desempenho</p><h1>Análise da loja</h1><p>Entenda a evolução das vendas e os produtos que mais se destacam.</p></div></header>
+  <div class="insight-period">
+    <%= link_to admin_analisar_path(mes: @mes.prev_month.strftime("%Y-%m")), aria: { label: "Mês anterior" }, class: "insight-date-button" do %><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span><% end %>
+    <div class="flex-1"><h2 class="font-serif text-xl sm:text-2xl"><%= l(@mes, format: "%B de %Y").capitalize %></h2><p class="text-xs text-[#748A9C] mt-1">Resumo do mês completo · comparação com o mês anterior completo</p></div>
+    <%= link_to admin_analisar_path(mes: @mes.next_month.strftime("%Y-%m")), aria: { label: "Próximo mês" }, class: "insight-date-button" do %><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span><% end %>
   </div>
-
-  <div class="rounded-xl border border-[#E5E6E7] bg-white p-6">
-    <div class="mb-6 flex items-center justify-between">
-
-      <%= link_to admin_analisar_path( mes: @mes.prev_month.strftime("%Y-%m"), data: @data_selecionada.iso8601), class: "rounded-lg p-2 hover:bg-[#F0F1F2]" do %> <span class="material-symbols-outlined">chevron_left</span>
-      <% end %>
-      <h2 class="font-serif text-xl text-[#343A40]">
-        <%= I18n.l(@mes, format: "%B de %Y").capitalize %>
-      </h2>
-      <%= link_to admin_analisar_path( mes: @mes.next_month.strftime("%Y-%m"), data: @data_selecionada.iso8601 ), class: "rounded-lg p-2 hover:bg-[#F0F1F2]" do %>
-        <span class="material-symbols-outlined">chevron_right</span>
-      <% end %>
-    </div>
-
-    <div class="grid grid-cols-7 gap-2 text-center">
-
-      <% %w[Dom Seg Ter Qua Qui Sex Sáb].each do |dia| %>
-        <div class="py-2 text-xs font-semibold text-[#748A9C]">
-          <%= dia %>
-        </div>
-      <% end %>
-
-      <% @dias_calendario.each do |dia| %>
-        <% quantidade = @pedidos_por_dia[dia] || 0 %>
-        <% selecionado = dia == @data_selecionada %>
-        <% outro_mes = dia.month != @mes.month %>
-
-        <%= link_to admin_analisar_path(data: dia.iso8601, mes: @mes.strftime("%Y-%m") ), class: "flex min-h-16 flex-col items-center justify-center rounded-xl border transition #{selecionado ? 'border-[#485057] bg-[#485057] text-white' : outro_mes ? 'border-transparent text-gray-300' : 'border-transparent text-[#485057] hover:bg-[#F0F1F2]'}" do %>
-          <span class="text-sm font-medium"> <%= dia.day %> </span>
-          <% if quantidade > 0 %> 
-          <span class="mt-1 h-1.5 w-1.5 rounded-full <%= selecionado ? 'bg-white' : 'bg-[#748A9C]' %>"></span>
-          <% end %>
-        <% end %>
-      <% end %>
-    </div>
-
-    <div class="mt-5 flex items-center gap-2 text-xs text-gray-500">
-      <span class="h-2 w-2 rounded-full bg-[#748A9C]"></span>
-       Dias com pedidos
-    </div>
-
+  <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <%= render "admin/compartilhado/indicador", chave: "receita-mes", titulo: "Vendas confirmadas", valor: moeda(@resumo.faturamento), icone: "payments", descricao: comparacao_vendas(@resumo.faturamento, @comparacao.faturamento) %>
+    <%= render "admin/compartilhado/indicador", chave: "pedidos-mes", titulo: "Pedidos do mês", valor: @resumo.total, icone: "shopping_bag", descricao: "#{@resumo.quantidade_confirmada} pagos, enviados ou entregues" %>
+    <%= render "admin/compartilhado/indicador", chave: "ticket-mes", titulo: "Ticket médio confirmado", valor: moeda(@resumo.ticket_medio), icone: "receipt_long", descricao: "Média dos pedidos confirmados do mês" %>
+    <%= render "admin/compartilhado/indicador", chave: "pendente-mes", titulo: "Valor em pedidos pendentes", valor: moeda(@resumo.valor_pendente), icone: "hourglass_top", descricao: "#{@resumo.pendentes} pedidos aguardando confirmação" %>
   </div>
-
-  <div class="mb-6 mt-8">
-    <h2 class="text-xl font-semibold text-[#343A40]"> Resultado de <%= l(@data_selecionada, format: "%d de %B de %Y") %></h2>
+  <%= render "admin/compartilhado/evolucao", titulo: "Evolução diária do mês", evolucao: @evolucao %>
+  <div class="grid lg:grid-cols-2 gap-6">
+    <section class="insight-panel"><div class="insight-panel-heading"><div><h2>Situação dos pedidos</h2><p>Todos os pedidos criados no mês selecionado.</p></div></div><div class="px-6 pb-6 space-y-4">
+      <% Pedido.statuses.each_key do |status| %><% quantidade = @resumo.por_status.fetch(status, 0) %><div><div class="flex justify-between items-center text-sm mb-2"><%= badge_status(status) %><strong><%= quantidade %></strong></div><progress max="<%= [@resumo.total, 1].max %>" value="<%= quantidade %>" class="w-full h-2 accent-[#748A9C]" aria-label="<%= status.humanize %>"></progress></div><% end %>
+      <p class="text-xs text-[#748A9C]">Pedidos pendentes e cancelados não entram nas vendas confirmadas.</p>
+    </div></section>
+    <section class="insight-panel"><div class="insight-panel-heading"><div><h2>Perfumes em destaque</h2><p>Unidades em pedidos pagos, enviados ou entregues no mês.</p></div></div>
+      <% if @produtos_em_alta.any? %><ol class="divide-y divide-[#E5E6E7]"><% @produtos_em_alta.each_with_index do |produto, indice| %><li class="p-5 flex items-center gap-4"><span class="insight-rank"><%= indice + 1 %></span><div class="flex-1"><%= link_to produto.nome, edit_produto_path(produto), class: "font-semibold text-sm hover:underline" %><p class="text-xs text-[#748A9C] mt-1"><%= produto.marca.presence || "Maison Parfum" %></p></div><strong class="text-sm"><%= produto[:unidades_vendidas] %> un.</strong></li><% end %></ol><% else %><p class="p-6 text-sm text-[#748A9C]">Os perfumes aparecerão aqui quando houver itens em pedidos confirmados.</p><% end %>
+      <div class="m-5 rounded-xl bg-[#F7F7F5] p-4 text-sm"><div class="flex justify-between gap-3"><span>Descontos concedidos</span><strong><%= moeda(@resumo.descontos) %></strong></div><div class="flex justify-between gap-3 mt-3"><span>Pedidos com brinde</span><strong><%= @resumo.brindes %></strong></div><p class="mt-3 text-xs text-[#748A9C]">Somente pedidos confirmados.</p></div>
+    </section>
   </div>
-
-  <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-
-    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6">
-      <p class="text-sm text-gray-500">Faturamento</p>
-      <p class="mt-3 text-2xl font-semibold text-[#343A40]"> <%= number_to_currency(@faturamento, unit: "R$ ", separator: ",", delimiter: ".") %>
-      </p>
-    </div>
-
-    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6">
-      <p class="text-sm text-gray-500">Total de pedidos</p>
-      <p class="mt-3 text-2xl font-semibold text-[#343A40]"> <%= @total_pedidos %> </p>
-    </div>
-
-    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6">
-      <p class="text-sm text-gray-500">Pedidos pagos</p>
-      <p class="mt-3 text-2xl font-semibold text-[#343A40]"> <%= @pedidos_pagos %>
-      </p>
-    </div>
-
-    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6">
-      <p class="text-sm text-gray-500">Pedidos pendentes</p>
-      <p class="mt-3 text-2xl font-semibold text-[#343A40]"> <%= @pedidos_pendentes %> </p>
-    </div>
-
-    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6">
-      <p class="text-sm text-gray-500">Pedidos entregues</p>
-      <p class="mt-3 text-2xl font-semibold text-[#343A40]"> <%= @pedidos_entregues %> </p>
-    </div>
-
-    <div class="rounded-xl border border-[#E5E6E7] bg-white p-6">
-      <p class="text-sm text-gray-500">Pedidos cancelados</p>
-      <p class="mt-3 text-2xl font-semibold text-[#343A40]"> <%= @pedidos_cancelados %> </p>
-    </div>
-
-  </div>
-
-  <div class="mt-8 overflow-hidden rounded-xl border border-[#E5E6E7] bg-white">
-    <div class="border-b border-[#E5E6E7] p-6">
-      <h2 class="text-lg font-semibold text-[#343A40]"> Pedidos do dia </h2>
-    </div>
-
-    <% if @ultimos_pedidos.any? %>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="bg-[#F7F7F5] text-[#485057]">
-            <tr>
-              <th class="p-4">Pedido</th>
-              <th class="p-4">Cliente</th>
-              <th class="p-4">Valor</th>
-              <th class="p-4">Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <% @ultimos_pedidos.each do |pedido| %>
-              <tr class="border-t border-[#E5E6E7]">
-                <td class="p-4">#<%= pedido.id %></td>
-                <td class="p-4"><%= pedido.usuario.email %></td>
-                <td class="p-4">
-                  <%= number_to_currency(pedido.valor_total, unit: "R$ ", separator: ",", delimiter: ".") %>
-                </td>
-                <td class="p-4"><%= pedido.status.humanize %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-    <% else %>
-      <p class="p-8 text-center text-sm text-gray-500">
-        Nenhum pedido encontrado nesta data.
-      </p>
-    <% end %>
-  </div>
+  <section class="insight-panel"><div class="insight-panel-heading"><div><h2>Explore um dia</h2><p>Selecione uma data no calendário ou use o filtro.</p></div>
+    <%= form_with url: admin_analisar_path, method: :get, class: "flex flex-wrap gap-2" do |form| %><%= form.label :data, "Data", class: "sr-only" %><%= form.date_field :data, value: @data_selecionada.iso8601, min: "1900-01-01", max: "2100-12-31", required: true, class: "rounded-lg border border-[#D9DADD] p-2 text-sm" %><%= form.submit "Consultar", class: "rounded-lg bg-[#485057] text-white px-4 py-2 text-sm cursor-pointer" %><% end %>
+  </div><div class="grid lg:grid-cols-2 gap-6 px-4 sm:px-6 pb-6">
+    <div><div class="grid grid-cols-7 gap-1 text-center"><% %w[Dom Seg Ter Qua Qui Sex Sáb].each do |dia| %><span class="text-xs text-[#748A9C] py-2"><%= dia %></span><% end %>
+      <% @dias_calendario.each do |dia| %><% quantidade = @pedidos_por_dia.fetch(dia, 0) %><%= link_to admin_analisar_path(data: dia.iso8601), class: "insight-calendar-day #{dia == @data_selecionada ? 'is-selected' : ''} #{dia.month != @mes.month ? 'is-muted' : ''}", aria: { label: "#{l(dia, format: '%d/%m/%Y')}: #{quantidade} pedido(s)", current: dia == @data_selecionada ? "date" : nil } do %><span><%= dia.day %></span><% if quantidade.positive? %><small><%= quantidade %></small><% end %><% end %><% end %>
+    </div><p class="mt-3 text-xs text-[#748A9C]">Os números menores indicam a quantidade de pedidos.</p></div>
+    <div class="rounded-2xl bg-[#F7F7F5] p-6" data-resumo-dia><p class="text-xs uppercase tracking-widest text-[#748A9C]">Dia selecionado</p><h3 class="font-serif text-xl mt-3"><%= l(@data_selecionada, format: "%d de %B de %Y") %></h3><dl class="mt-6 space-y-5 text-sm"><div class="flex justify-between gap-3"><dt>Vendas confirmadas</dt><dd class="font-bold"><%= moeda(@resumo_dia.faturamento) %></dd></div><div class="flex justify-between"><dt>Pedidos registrados</dt><dd class="font-bold"><%= @resumo_dia.total %></dd></div><div class="flex justify-between"><dt>Pendentes</dt><dd class="font-bold"><%= @resumo_dia.pendentes %></dd></div><div class="flex justify-between"><dt>Ticket médio confirmado</dt><dd class="font-bold"><%= moeda(@resumo_dia.ticket_medio) %></dd></div></dl></div>
+  </div></section>
+  <%= render "admin/compartilhado/pedidos", titulo: "Pedidos de #{l(@data_selecionada, format: '%d/%m/%Y')}", descricao: "Até 50 pedidos da data selecionada, dos mais recentes aos mais antigos.", pedidos: @ultimos_pedidos %>
+  <p class="text-xs text-[#748A9C]">Os resultados usam a data de criação do pedido e sua situação atual. Não representam conciliação de pagamentos por data de recebimento. Horário de Fortaleza.</p>
 </div>

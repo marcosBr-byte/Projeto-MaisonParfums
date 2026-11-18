@@ -1,0 +1,21 @@
+<% content_for :title, "Decantes Nicho · Maison Parfum" %>
+<section class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+  <%= link_to "← Voltar à loja", root_path, class: "text-sm text-[#748A9C]" %>
+  <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C] mt-8">Uma seleção especial</p>
+  <h1 class="font-serif text-4xl text-[#485057] mt-3">Decantes Nicho</h1>
+  <p class="text-[#748A9C] mt-4 mb-8">Explore os perfumes de nicho selecionados para o nosso catálogo.</p>
+  <nav class="catalog-filters mb-8" aria-label="Filtrar perfumes de nicho por origem">
+    <% [[nil, "Todos"], *Produto::ORIGENS_NICHO.to_a].each do |valor, nome| %>
+      <%= link_to nome, decants_nicho_path(origem: valor), class: "catalog-filter #{'catalog-filter--active' if @origem == valor}", aria: { current: (@origem == valor ? "page" : nil) } %>
+    <% end %>
+  </nav>
+  <% if @produtos.any? %>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"><%= render partial: "produto/produtos", collection: @produtos, as: :produto %></div>
+  <% else %>
+    <div class="rounded-2xl bg-white border border-[#E5E6E7] p-10 text-center">
+      <h2 class="font-serif text-2xl text-[#485057]">Novas descobertas a caminho</h2>
+      <p class="text-[#748A9C] mt-3">Ainda não há perfumes de nicho cadastrados. Conheça as outras fragrâncias da loja.</p>
+      <%= link_to "Explorar o catálogo", produtos_todos_path, class: "inline-block mt-6 rounded-full bg-[#485057] text-white px-6 py-3" %>
+    </div>
+  <% end %>
+</section>

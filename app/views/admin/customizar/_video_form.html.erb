@@ -1,0 +1,19 @@
+<%= form_with model: video, url: video.persisted? ? admin_videos_home_path(video) : admin_videos_home_index_path, multipart: true, class: "space-y-4" do |form| %>
+  <div>
+    <%= form.label :titulo, "Nome do vídeo", class: "mb-1 block text-sm font-medium", for: "video_#{video.id || 'novo'}_titulo" %>
+    <%= form.text_field :titulo, required: true, maxlength: 100, id: "video_#{video.id || 'novo'}_titulo", class: "w-full rounded-lg border border-gray-300 p-3" %>
+  </div>
+  <div>
+    <%= form.label :arquivo, video.persisted? ? "Substituir vídeo (opcional)" : "Arquivo de vídeo", for: "video_#{video.id || 'novo'}_arquivo", class: "mb-1 block text-sm font-medium" %>
+    <%= form.file_field :arquivo, accept: "video/mp4,video/webm", required: video.new_record?, id: "video_#{video.id || 'novo'}_arquivo", class: "w-full rounded-lg border border-gray-300 p-3 text-sm" %>
+  </div>
+  <div>
+    <%= form.label :ordem, "Ordem de exibição", for: "video_#{video.id || 'novo'}_ordem", class: "mb-1 block text-sm font-medium" %>
+    <%= form.number_field :ordem, min: 0, required: true, id: "video_#{video.id || 'novo'}_ordem", class: "w-full rounded-lg border border-gray-300 p-3" %>
+  </div>
+  <div class="flex items-center gap-3">
+    <%= form.check_box :ativo, id: "video_#{video.id || 'novo'}_ativo" %>
+    <%= form.label :ativo, "Exibir na página inicial", for: "video_#{video.id || 'novo'}_ativo", class: "text-sm" %>
+  </div>
+  <%= form.submit video.persisted? ? "Salvar vídeo" : "Adicionar ao carrossel", class: "cursor-pointer rounded-lg bg-[#485057] px-6 py-3 text-sm font-medium text-white" %>
+<% end %>

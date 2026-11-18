@@ -1,0 +1,46 @@
+<% content_for :title, "Suas sugestões de perfumes · Maison Parfum" %>
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+  <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C]">Seu resultado</p>
+  <h1 class="font-serif text-3xl md:text-4xl text-[#485057] mt-3">Fragrâncias para você descobrir</h1>
+  <p class="text-[#748A9C] mt-4 max-w-2xl">Selecionamos até três perfumes com as famílias que você escolheu, priorizando o momento e a intensidade desejados. Consideramos apenas opções disponíveis e dentro do orçamento informado.</p>
+  <details class="mt-6 rounded-xl border border-[#E5E6E7] bg-white p-4">
+    <summary class="cursor-pointer text-sm text-[#485057]">Ver minhas respostas</summary>
+    <dl class="mt-4 space-y-2 text-sm text-[#748A9C]">
+      <% PerfumeQuiz::PERGUNTAS.each do |campo, pergunta| %>
+        <div><dt class="font-medium text-[#485057]"><%= pergunta[:titulo] %></dt><dd><%= Array(@quiz.public_send(campo)).map { |v| pergunta[:opcoes][v] }.join(", ") %></dd></div>
+      <% end %>
+    </dl>
+  </details>
+  <% if @resultados.any? %>
+    <div class="grid md:grid-cols-3 gap-6 mt-8">
+      <% @resultados.each_with_index do |resultado, indice| %>
+        <article class="bg-white rounded-2xl border border-[#E5E6E7] overflow-hidden flex flex-col">
+          <div class="p-4 bg-[#F0F1F2] text-xs uppercase tracking-widest text-[#485057]"><%= indice == 0 ? "Nossa primeira sugestão" : "Outra descoberta para você" %></div>
+          <%= link_to produto_path(resultado.produto), class: "block aspect-square bg-[#F7F7F5]" do %>
+            <% if resultado.produto.imagem.attached? %><%= image_tag imagem_loja(resultado.produto.imagem), alt: resultado.produto.nome, class: "w-full h-full object-cover" %><% else %><div class="h-full flex items-center justify-center text-[#748A9C]">Maison Parfum</div><% end %>
+          <% end %>
+          <div class="p-6 flex flex-col flex-1">
+            <p class="text-xs uppercase tracking-widest text-[#748A9C]"><%= resultado.produto.marca %></p>
+            <h2 class="font-serif text-2xl text-[#485057] mt-2"><%= resultado.produto.nome %></h2>
+            <p class="mt-3 text-[#485057]"><%= number_to_currency(resultado.preco, unit: "R$ ", separator: ",", delimiter: ".") %><% if resultado.variante %> · <%= Variante.tamanhos[resultado.variante.tamanho] %><% end %></p>
+            <h3 class="mt-5 text-sm font-medium text-[#485057]">Por que sugerimos?</h3>
+            <ul class="list-disc pl-5 mt-2 mb-6 space-y-1 text-sm text-[#748A9C]"><% resultado.motivos.each do |motivo| %><li><%= motivo %></li><% end %></ul>
+            <%= link_to "Conhecer este perfume →", produto_path(resultado.produto), class: "mt-auto rounded-full bg-[#485057] px-5 py-3 text-center text-sm text-white" %>
+          </div>
+        </article>
+      <% end %>
+    </div>
+    <p class="mt-5 text-sm text-[#748A9C]">Estoque e preços podem mudar. A escolha final do tamanho acontece na página do produto. Experimente um decant para conhecer a fragrância na sua pele.</p>
+  <% else %>
+    <div class="mt-8 rounded-2xl bg-white border border-[#E5E6E7] p-8 text-center">
+      <h2 class="font-serif text-2xl text-[#485057]">Ainda não encontramos essa combinação</h2>
+      <p class="mt-3 text-[#748A9C]">Não há perfumes disponíveis que atendam às famílias, ao perfil e ao orçamento escolhidos neste momento. Você pode ampliar suas preferências ou pedir ajuda à loja.</p>
+      <%= link_to "Falar com a Maison", atendimento_path, class: "inline-block mt-5 text-[#485057] underline" %>
+    </div>
+  <% end %>
+  <div class="mt-8 flex flex-wrap gap-4 text-sm">
+    <%= link_to "Ajustar minhas respostas", quiz_path(revisar: 1), class: "rounded-full border border-[#B8BDC3] px-6 py-3 text-[#485057]" %>
+    <%= link_to "Refazer do início", quiz_path, class: "rounded-full border border-[#B8BDC3] px-6 py-3 text-[#485057]" %>
+    <%= link_to "Explorar todo o catálogo", produtos_todos_path, class: "rounded-full border border-[#B8BDC3] px-6 py-3 text-[#485057]" %>
+  </div>
+</section>

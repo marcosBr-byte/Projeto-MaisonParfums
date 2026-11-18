@@ -1,5 +1,7 @@
 <% campo = "w-full rounded-lg border border-[#D9DADD] bg-white px-4 py-2.5 text-sm text-[#343A40] focus:border-[#748A9C] focus:outline-none focus:ring-2 focus:ring-[#748A9C]/30" %>
 <% rotulo = "block text-sm font-medium text-[#485057] mb-1.5" %>
+<% secao = "rounded-2xl border border-[#E5E6E7] bg-[#F7F7F5] p-5 space-y-5" %>
+<% titulo = "font-serif text-lg text-[#485057]" %>
 
 <%= form_with model: produto, url: (produto.new_record? ? produtos_path : produto_path(produto)), class: "max-w-2xl mx-auto bg-white border border-[#E5E6E7] rounded-2xl p-6 md:p-8 space-y-6" do |form| %>
   <% if produto.errors.any? %>
@@ -13,84 +15,193 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :nome, "Nome", class: rotulo %>
-    <%= form.text_field :nome, class: campo %>
-  </div>
+  <section class="<%= secao %>">
+    <h3 class="<%= titulo %>">Informações básicas</h3>
+    <div class="rounded-xl border border-[#D9DADD] bg-white p-4">
+      <%= form.label :destaque, class: "flex items-center gap-3 cursor-pointer text-sm font-semibold text-[#485057]" do %>
+        <%= form.check_box :destaque, class: "h-5 w-5 rounded accent-[#748A9C]", aria: { describedby: "produto-destaque-ajuda" } %>
+        Destacar na página inicial
+      <% end %>
+      <p id="produto-destaque-ajuda" class="mt-2 text-xs text-[#748A9C]">Exibe este perfume na seção Seleção da Maison, mesmo sem vendas. Desmarque para retirar o destaque.</p>
+    </div>
 
-  <div>
-    <%= form.label :marca, "Marca", class: rotulo %>
-    <%= form.text_field :marca, class: campo %>
-  </div>
+    <div class="grid sm:grid-cols-2 gap-5">
+      <div>
+        <%= form.label :nome, "Nome", class: rotulo %>
+        <%= form.text_field :nome, class: campo %>
+      </div>
 
-  <div>
-    <%= form.label :descricao, "Descrição", class: rotulo %>
-    <%= form.text_area :descricao, rows: 4, class: campo %>
-  </div>
-
-  <div class="grid sm:grid-cols-2 gap-6">
-    <div>
-      <%= form.label :categoria, "Categoria", class: rotulo %>
-      <%= form.select :categoria, ["Feminino", "Masculino", "Unissex"], { include_blank: "Selecione" }, class: campo %>
+      <div>
+        <%= form.label :marca, "Marca", class: rotulo %>
+        <%= form.text_field :marca, class: campo %>
+      </div>
     </div>
 
     <div>
+      <%= form.label :descricao, "Descrição", class: rotulo %>
+      <%= form.rich_text_area :descricao, class: "trix-content" %>
+    </div>
+  </section>
+
+  <section class="<%= secao %>" data-controller="produto-origem" data-produto-origem-comuns-value="<%= Produto::ORIGENS.to_json %>" data-produto-origem-nicho-value="<%= Produto::ORIGENS_NICHO.to_json %>">
+    <h3 class="<%= titulo %>">Perfil do perfume</h3>
+
+    <div class="grid sm:grid-cols-3 gap-5">
+      <div>
+        <%= form.label :categoria, "Categoria", class: rotulo %>
+        <%= form.select :categoria, Produto.defined_enums.fetch("categoria").map { |valor, nome| [nome, valor] }, { include_blank: "Selecione" }, class: campo, data: { produto_origem_target: "categoria", action: "change->produto-origem#atualizar" } %>
+      </div>
+
+      <div>
+        <%= form.label :intensidade, "Intensidade", class: rotulo %>
+        <%= form.select :intensidade, ["Baixa", "Média", "Alta"], { include_blank: "Selecione" }, class: campo %>
+      </div>
+
+      <div>
+        <%= form.label :momento, "Momento", class: rotulo %>
+        <%= form.select :momento, ["Dia", "Noite", "Ambos"], { include_blank: "Selecione" }, class: campo %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :origem, "Origem do perfume", class: rotulo %>
+      <%= form.select :origem, produto.origens_disponiveis.map { |valor, nome| [nome, valor] }, { include_blank: "Selecione" }, class: campo, data: { produto_origem_target: "origem" } %>
+    </div>
+
+    <%= tag.div class: "pt-4 border-t border-[#E5E6E7]", data: {
+          controller: "fragrancia",
+          fragrancia_selecionadas_value: form.object.fragrancias,
+          fragrancia_sugestoes_value: Produto::FRAGRANCIAS_SUGERIDAS
+        } do %>
       <%= form.label :fragancia, "Fragrância", class: rotulo %>
-      <%= form.text_field :fragancia, list: "fragrancias-sugeridas", placeholder: "Ex: Floral, Amadeirada", class: campo %>
-      <datalist id="fragrancias-sugeridas">
-        <option value="Floral">
-        <option value="Cítrica">
-        <option value="Amadeirada">
-        <option value="Oriental">
-        <option value="Fougère">
-        <option value="Chipre">
-        <option value="Gourmand">
-        <option value="Aromática">
-        <option value="Aquática">
-      </datalist>
-    </div>
+      <%= form.hidden_field :fragancia, data: { fragrancia_target: "campo" } %>
 
-    <div>
-      <%= form.label :intensidade, "Intensidade", class: rotulo %>
-      <%= form.select :intensidade, ["Baixa", "Média", "Alta"], { include_blank: "Selecione" }, class: campo %>
-    </div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-xs text-[#748A9C]" data-fragrancia-target="contador"></span>
+        <button type="button"
+                data-fragrancia-target="acao"
+                data-action="fragrancia#alternarTodas"
+                class="text-xs underline text-[#485057] hover:text-[#748A9C]">Selecionar todas</button>
+      </div>
 
-    <div>
-      <%= form.label :momento, "Momento", class: rotulo %>
-      <%= form.select :momento, ["Dia", "Noite", "Ambos"], { include_blank: "Selecione" }, class: campo %>
-    </div>
-  </div>
+      <div data-fragrancia-target="opcoes" class="flex flex-wrap gap-2 mb-4"></div>
 
-  <div>
-    <%= form.label :frasco_mae_id, "Frasco Mãe (de onde sai o líquido)", class: rotulo %>
-    <%= form.collection_select :frasco_mae_id, FrascoMae.order(:nome), :id, :nome, { include_blank: "Nenhum (produto lacrado)" }, class: campo %>
-  </div>
+      <div class="flex gap-2">
+        <input type="text"
+               placeholder="Outra fragrância..."
+               class="<%= campo %>"
+               data-fragrancia-target="entrada"
+               data-action="keydown->fragrancia#teclar">
+        <button type="button"
+                data-action="fragrancia#adicionar"
+                class="shrink-0 px-5 rounded-lg bg-[#485057] text-white text-sm hover:bg-[#748A9C] transition">Adicionar</button>
+      </div>
+    <% end %>
+  </section>
 
-  <div class="rounded-xl bg-[#F7F7F5] border border-[#E5E6E7] p-4">
-    <h3 class="font-serif text-lg text-[#485057]">Tamanhos e preços</h3>
-    <p class="text-sm text-[#748A9C] mb-4">Preencha só os tamanhos que você vende. Preço vazio = tamanho não disponível.</p>
-
-    <div class="space-y-3">
-      <%= form.fields_for :variantes do |v| %>
-        <div class="flex flex-wrap items-center gap-3">
-          <%= v.hidden_field :tamanho %>
-          <span class="w-20 text-sm font-medium text-[#485057]"><%= Variante.tamanhos[v.object.tamanho] %></span>
-          <%= v.number_field :preco, step: 0.01, placeholder: "Preço (R$)", class: "#{campo} !w-36" %>
-          <% if v.object.tamanho == "lacrado" %>
-            <%= v.number_field :estoque, placeholder: "Estoque (unidades)", class: "#{campo} !w-44" %>
-          <% end %>
+  <section class="<%= secao %>">
+    <h3 class="<%= titulo %>">Quando usar</h3>
+    <p class="text-sm text-[#748A9C]">Indique de 0 a 100 a recomendação para cada ocasião. Deixe vazio quando não houver informação.</p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <% Produto::USOS.each do |chave, (nome, icone)| %>
+        <div>
+          <%= form.label "uso_#{chave}", nome, class: rotulo %>
+          <%= form.number_field "uso_#{chave}", min: 0, max: 100, step: 1, class: campo %>
         </div>
       <% end %>
     </div>
-  </div>
+  </section>
 
-  <div>
-    <%= form.label :imagem, "Imagem do produto", class: rotulo %>
-    <%= form.file_field :imagem, accept: "image/png,image/jpeg,image/webp", class: "block w-full text-sm text-[#485057] file:mr-4 file:rounded-full file:border-0 file:bg-[#485057] file:px-5 file:py-2.5 file:text-sm file:text-white hover:file:bg-[#748A9C] file:cursor-pointer" %>
-    <% if produto.imagem.attached? %>
-      <%= image_tag produto.imagem, class: "mt-3 w-24 h-24 rounded-lg object-cover border border-[#E5E6E7]" %>
+  <section class="<%= secao %>">
+    <h3 class="<%= titulo %>">Notas olfativas ilustradas</h3>
+    <p class="text-sm text-[#748A9C]">Selecione várias fotos de uma vez em cada grupo. Os nomes vêm dos arquivos e podem ser editados. Você também pode colar uma lista de nomes separados por vírgula ou por linha.</p>
+    <% { "topo" => "Notas de topo", "coracao" => "Notas de coração", "base" => "Notas de base" }.each do |nivel, nome_grupo| %>
+      <fieldset class="notes-upload-group" data-controller="notes-upload" data-notes-upload-level-value="<%= nivel %>">
+        <legend><%= nome_grupo %></legend>
+        <div class="notes-upload-tools">
+          <label for="notas-fotos-<%= nivel %>">Selecionar fotos de <%= nome_grupo.downcase %></label>
+          <input id="notas-fotos-<%= nivel %>" type="file" multiple accept="image/png,image/jpeg,image/webp" data-notes-upload-target="picker" data-action="change->notes-upload#addFiles">
+          <p class="notes-upload-help">JPG, PNG ou WebP de até 5 MB por foto. Confira o nome em cada miniatura antes de salvar.</p>
+          <label for="notas-nomes-<%= nivel %>">Nomes das novas notas, na ordem das fotos (opcional)</label>
+          <textarea id="notas-nomes-<%= nivel %>" rows="2" placeholder="Ex.: Pera, Melão" data-notes-upload-target="names"></textarea>
+          <button type="button" class="notes-upload-button" data-action="notes-upload#applyNames">Aplicar nomes à seleção</button>
+          <p class="notes-upload-help">Sem fotos selecionadas, a lista adiciona as notas apenas com os nomes.</p>
+          <p class="notes-upload-status" role="status" data-notes-upload-target="status"></p>
+        </div>
+        <div class="notes-upload-grid" data-notes-upload-target="rows">
+          <%= form.fields_for :notas_olfativas, produto.notas_olfativas.select { |nota| nota.nivel == nivel } do |nota| %>
+            <div class="notes-upload-card" <%= 'data-new-note=true' if nota.object.new_record? %>>
+              <%= nota.hidden_field :nivel %>
+              <% if nota.object.imagem.attached? && nota.object.imagem.blob.persisted? %>
+                <%= image_tag imagem_loja(nota.object.imagem, tamanho: :miniatura), alt: nota.object.nome, class: "notes-upload-preview" %>
+              <% else %>
+                <span class="notes-upload-placeholder material-symbols-outlined" aria-hidden="true">eco</span>
+              <% end %>
+              <%= nota.label :nome, "Nome da nota" %>
+              <%= nota.text_field :nome, maxlength: 80, required: true %>
+              <%= nota.label :imagem, "Substituir foto (opcional)" %>
+              <%= nota.file_field :imagem, accept: "image/png,image/jpeg,image/webp" %>
+              <% if nota.object.persisted? %>
+                <label class="notes-upload-remove"><%= nota.check_box :_destroy %> Remover esta nota</label>
+              <% else %>
+                <button type="button" class="notes-upload-remove-button" data-action="notes-upload#removeRow">Remover da seleção</button>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </fieldset>
     <% end %>
-  </div>
+    <% if produto.errors.any? %><p class="text-sm text-red-700">Se enviou novas fotos, selecione-as novamente antes de salvar.</p><% end %>
+  </section>
+
+  <section class="<%= secao %>">
+    <h3 class="<%= titulo %>">Estoque e preços</h3>
+
+    <div class="pt-4 border-t border-[#E5E6E7]">
+      <p class="text-sm text-[#748A9C] mb-3">Informe o preço e o estoque em unidades para cada tamanho. Nos tamanhos novos, deixe o preço vazio para não cadastrá-los. Para suspender vendas de um tamanho existente, zere seu estoque.</p>
+
+      <div class="space-y-3">
+        <%= form.fields_for :variantes do |v| %>
+          <div class="flex flex-wrap items-center gap-3 rounded-lg bg-white border border-[#E5E6E7] px-4 py-3">
+            <%= v.hidden_field :tamanho %>
+            <span class="w-20 text-sm font-medium text-[#485057]"><%= Variante.tamanhos[v.object.tamanho] %></span>
+            <%= v.number_field :preco, step: 0.01, placeholder: "Preço (R$)", class: "#{campo} !w-36" %>
+            <%= v.number_field :estoque, min: 0, step: 1, placeholder: "Estoque (unidades)", class: "#{campo} !w-44" %>
+            <% if v.object.tamanho == "lacrado" %>
+              <%= v.number_field :volume_lacrado_ml, min: 1, placeholder: "Volume do lacrado (ml)", class: "#{campo} !w-44" %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# ---------- Imagem ---------- %>
+  <section class="<%= secao %>">
+    <h3 class="<%= titulo %>">Imagem</h3>
+
+    <div class="flex items-center gap-4">
+      <% if produto.imagem.attached? %>
+        <%= image_tag imagem_loja(produto.imagem, tamanho: :miniatura), alt: produto.nome, class: "w-24 h-24 rounded-lg object-cover border border-[#E5E6E7]" %>
+      <% end %>
+      <div class="flex-1">
+        <%= form.label :imagem, "Imagem do produto (JPG, PNG ou WebP, até 5 MB)", class: rotulo %>
+        <%= form.file_field :imagem, accept: "image/png,image/jpeg,image/webp", class: "block w-full text-sm text-[#485057] file:mr-4 file:rounded-full file:border-0 file:bg-[#485057] file:px-5 file:py-2.5 file:text-sm file:text-white hover:file:bg-[#748A9C] file:cursor-pointer" %>
+      </div>
+    </div>
+  </section>
+
+  <section class="<%= secao %>">
+    <h3 class="<%= titulo %>">Galeria de fotos</h3>
+    <p class="text-sm text-[#748A9C]">Envie até 8 fotos adicionais do perfume. As novas imagens são otimizadas automaticamente para WebP, sem cortar o produto. Selecione todas de uma vez para substituir a galeria. A imagem principal continua separada.</p>
+    <div class="flex flex-wrap gap-3">
+      <% produto.fotos.each do |foto| %>
+        <% if foto.blob.persisted? %><%= image_tag imagem_loja(foto, tamanho: :miniatura), class: "w-20 h-20 rounded-lg border object-contain", alt: produto.nome %><% end %>
+      <% end %>
+    </div>
+    <%= form.label :fotos, "Fotos adicionais (até 5 MB cada)", class: rotulo %>
+    <%= form.file_field :fotos, multiple: true, accept: "image/png,image/jpeg,image/webp", class: campo %>
+  </section>
 
   <div class="flex items-center gap-4 pt-2">
     <%= form.submit "Salvar", class: "px-8 py-3 rounded-full bg-[#485057] text-white text-sm font-medium hover:bg-[#748A9C] transition duration-300 cursor-pointer" %>

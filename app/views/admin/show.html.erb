@@ -1,100 +1,37 @@
-<div class="min-h-screen bg-[#F7F7F5] px-4 py-10 sm:py-14">
-  <div class="max-w-2xl mx-auto">
-
-    <%= link_to admin_path, class: "inline-flex items-center gap-2 text-sm text-[#748A9C] hover:text-[#485057] transition mb-8" do %>
-      <span>←</span>
-      <span>Voltar ao painel</span>
+<% content_for :title, "Meu perfil · Maison Parfum" %>
+<div class="account-page">
+  <nav class="account-breadcrumb" aria-label="Navegação estrutural">
+    <%= link_to "Painel", admin_path %><span aria-hidden="true">/</span><span aria-current="page">Meu perfil</span>
+  </nav>
+  <header class="account-heading">
+    <div><p class="account-eyebrow">Sua conta</p><h1>Meu perfil</h1><p>Um espaço para cuidar dos seus dados e do seu acesso à Maison.</p></div>
+    <%= link_to edit_usuario_registration_path, class: "account-button account-button--primary" do %>
+      <span class="material-symbols-outlined" aria-hidden="true">edit</span> Editar meus dados
     <% end %>
+  </header>
 
-    <div class="bg-white border border-[#E5E6E7] rounded-2xl shadow-sm overflow-hidden">
-
-      <div class="bg-[#485057] px-6 py-9 sm:px-10 text-center">
-        <p class="text-xs uppercase tracking-[0.25em] text-gray-300 mb-3">Maison Parfum</p>
-        <h1 class="font-serif text-3xl sm:text-4xl text-white">Meu perfil </h1>
-        <p class="text-sm text-gray-300 mt-2"> Informações da conta administrativa </p>
-      </div>
-
-      <div class="px-6 sm:px-10 pt-8 pb-6 text-center border-b border-[#E5E6E7]">
-        <% if @usuario.imagem.attached? %>
-          <%= image_tag @usuario.imagem, class: "w-28 h-28 rounded-full object-cover border-4 border-white shadow-md mx-auto" %>
-        <% else %>
-          <div class="w-28 h-28 rounded-full bg-[#E5E6E7] flex items-center justify-center mx-auto border-4 border-white shadow-md">
-            <span class="font-serif text-4xl text-[#485057]">
-              <%= @usuario.nome.to_s.first&.upcase || "A" %>
-            </span>
-          </div>
-        <% end %>
-
-        <h2 class="font-serif text-2xl text-[#485057] mt-4">
-          <%= @usuario.nome.presence || "Administrador" %>
-        </h2>
-
-        <span class="inline-block mt-2 px-4 py-1 rounded-full bg-[#F1F2F2] text-xs font-medium text-[#485057]">
-          Administrador
-        </span>
-      </div>
-
-      <div class="px-6 sm:px-10 py-8">
-
-        <h3 class="text-xs uppercase tracking-[0.18em] text-[#748A9C] font-semibold mb-5"> Dados da conta</h3>
-
-        <dl class="divide-y divide-[#E5E6E7]">
-
-          <div class="py-4 sm:flex sm:items-center sm:justify-between">
-            <dt class="text-sm text-gray-500">Nome completo</dt>
-            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
-              <%= @usuario.nome.presence || "Não informado" %>
-            </dd>
-          </div>
-          <div class="py-4 sm:flex sm:items-center sm:justify-between">
-            <dt class="text-sm text-gray-500">E-mail</dt>
-            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0 break-all">
-              <%= @usuario.email %>
-            </dd>
-          </div>
-          <div class="py-4 sm:flex sm:items-center sm:justify-between">
-            <dt class="text-sm text-gray-500">Telefone</dt>
-            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
-              <%= @usuario.telefone.presence || "Não informado" %>
-            </dd>
-          </div>
-          <div class="py-4 sm:flex sm:items-center sm:justify-between">
-            <dt class="text-sm text-gray-500">Estado</dt>
-            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
-              <%= @usuario.estado.presence || "Não informado" %>
-            </dd>
-          </div>
-          <div class="py-4 sm:flex sm:items-center sm:justify-between">
-            <dt class="text-sm text-gray-500">Cidade</dt>
-            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
-              <%= @usuario.cidade.presence || "Não informado" %>
-            </dd>
-          </div>
-          <div class="py-4 sm:flex sm:items-center sm:justify-between">
-            <dt class="text-sm text-gray-500">Bairro</dt>
-            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
-              <%= @usuario.bairro.presence || "Não informado" %>
-            </dd>
-          </div>
-          <div class="py-4 sm:flex sm:items-center sm:justify-between">
-            <dt class="text-sm text-gray-500">Membro desde</dt>
-            <dd class="text-sm font-medium text-[#485057] mt-1 sm:mt-0">
-              <%= @usuario.created_at.strftime("%d/%m/%Y") %>
-            </dd>
-          </div>
-        </dl>
-
-        <div class="mt-8 pt-6 border-t border-[#E5E6E7]">
-          <%= link_to edit_usuario_registration_path,class: "flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[#485057] text-white text-sm font-medium hover:bg-[#748A9C] transition duration-300" do %>
-            <span>Editar meus dados</span>
-            <span>→</span>
+  <div class="account-layout">
+    <aside class="account-sidebar" aria-label="Resumo da conta">
+      <%= render "shared/profile_identity", usuario: @usuario %>
+      <div class="account-note"><span class="material-symbols-outlined" aria-hidden="true">manage_accounts</span><p>Seus dados de perfil são pessoais. Os contatos públicos da loja ficam em <%= link_to "Configurações", admin_configuracoes_path %>.</p></div>
+    </aside>
+    <div class="account-panels">
+      <section class="account-card" aria-labelledby="dados-conta">
+        <div class="account-card-heading"><span class="account-section-icon material-symbols-outlined" aria-hidden="true">person</span><div><h2 id="dados-conta">Dados pessoais</h2><p>As informações que identificam sua conta.</p></div></div>
+        <dl class="account-data">
+          <% [["Nome completo", @usuario.nome], ["E-mail de acesso", @usuario.email], ["Telefone com DDD", @usuario.telefone]].each do |rotulo, valor| %>
+            <div><dt><%= rotulo %></dt><dd class="<%= 'account-empty' if valor.blank? %>"><%= valor.presence || "Não informado" %></dd></div>
           <% end %>
-        </div>
+        </dl>
+        <div class="account-card-bottom"><span>Precisa atualizar seu telefone ou e-mail?</span><%= link_to "Alterar dados →", edit_usuario_registration_path(anchor: "dados-pessoais") %></div>
+      </section>
 
-      </div>
+      <% if Usuario.omniauth_providers.any? %>
+        <section class="account-card" aria-labelledby="contas-conectadas">
+          <div class="account-card-heading"><span class="account-section-icon material-symbols-outlined" aria-hidden="true">link</span><div><h2 id="contas-conectadas">Contas conectadas</h2><p>Outra forma de acessar sua conta na loja.</p></div></div>
+          <div class="account-social"><%= render "devise/shared/social_login", conectar: true %></div>
+        </section>
+      <% end %>
     </div>
-    <p class="text-center text-xs text-gray-400 mt-6">
-      Maison Parfum · Área administrativa
-    </p>
   </div>
 </div>

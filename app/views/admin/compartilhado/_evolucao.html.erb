@@ -1,0 +1,25 @@
+<section class="insight-panel">
+  <div class="insight-panel-heading"><div><h2><%= titulo %></h2><p>Clique em um dia para consultar os pedidos. Vendas de pedidos pagos, enviados e entregues.</p></div></div>
+  <div class="px-5 sm:px-6 pb-6" data-controller="grafico-vendas">
+    <div class="flex flex-wrap items-center gap-2 mb-5" role="group" aria-label="Métrica do gráfico">
+      <button type="button" data-action="grafico-vendas#receita" data-grafico-vendas-target="botaoReceita" class="insight-toggle" aria-pressed="true">Vendas (R$)</button>
+      <button type="button" data-action="grafico-vendas#pedidos" data-grafico-vendas-target="botaoPedidos" class="insight-toggle" aria-pressed="false">Pedidos</button>
+      <span class="text-xs text-[#748A9C] ml-auto" data-grafico-vendas-target="legenda" aria-live="polite">Vendas confirmadas por dia</span>
+    </div>
+    <% max_receita = [evolucao.map { |l| l[:receita] }.max.to_d, 1.to_d].max %>
+    <% max_pedidos = [evolucao.map { |l| l[:pedidos] }.max.to_i, 1].max %>
+    <div class="overflow-x-auto">
+      <div class="insight-chart" style="grid-template-columns: repeat(<%= evolucao.size %>, minmax(24px, 1fr)); min-width: <%= [evolucao.size * 25, 210].max %>px">
+        <% evolucao.each do |linha| %>
+          <% descricao = "#{l(linha[:dia], format: '%d/%m')}: #{moeda(linha[:receita])} · #{linha[:pedidos]} pedido(s)" %>
+          <%= link_to admin_analisar_path(data: linha[:dia].iso8601), class: "insight-chart-column", title: descricao, aria: { label: descricao } do %>
+            <div class="insight-chart-track"><span data-grafico-vendas-target="barra" data-receita="<%= (linha[:receita] * 100 / max_receita).round(2) %>" data-pedidos="<%= (linha[:pedidos] * 100.0 / max_pedidos).round(2) %>" class="insight-chart-bar" style="height: <%= (linha[:receita] * 100 / max_receita).round(2) %>%"></span></div>
+            <span class="text-[10px] text-[#748A9C]"><%= linha[:dia].day %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <p class="mt-4 text-xs text-[#748A9C]">Passe sobre uma coluna para ver os valores. Horário de Fortaleza.</p>
+    <% if evolucao.all? { |linha| linha[:pedidos].zero? } %><p class="mt-3 text-sm text-[#748A9C]">Sem pedidos neste período. Os resultados aparecerão aqui conforme as compras forem registradas.</p><% end %>
+  </div>
+</section>

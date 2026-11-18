@@ -1,0 +1,8 @@
+.social-login { display: grid; gap: 12px; margin: 24px 0; }
+.social-login__button { width: 100%; min-height: 48px; display: flex; justify-content: center; align-items: center; gap: 12px; padding: 12px 18px; border: 1px solid #d9dadd; border-radius: 10px; background: white; color: #343a40; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s; }
+.social-login__button:hover { background: #f4f5f6; }
+.social-login__button:focus-visible { outline: 3px solid #748a9c; outline-offset: 3px; }
+.social-login__symbol { font-family: Arial, sans-serif; font-size: 22px; font-weight: 700; }
+.social-login__button--facebook { background: #1877f2; color: white; border-color: #1877f2; }
+.social-login__button--facebook:hover { background: #1264cf; }
+.social-login__connected { display: flex; justify-content: space-between; padding: 14px 18px; border: 1px solid #c8ded2; border-radius: 10px; color: #245344; background: #f0f8f3; font-size: 14px; }

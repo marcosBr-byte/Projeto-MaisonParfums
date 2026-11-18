@@ -51,7 +51,7 @@
 
         <div>
           <%= f.label :conteudo, "Sua mensagem", class: "mb-2 block text-sm font-medium text-[#485057]" %>
-          <%= f.text_area :conteudo, rows: 6, placeholder: "Descreva como podemos ajudar...", class: "w-full rounded-lg border border-[#D0D3D6] p-3 text-sm focus:border-[#748A9C] focus:outline-none" %>
+          <%= f.rich_text_area :conteudo, class: "trix-content" %>
         </div>
         <div class="pt-2">
           <%= f.submit "Enviar mensagem",class: "w-full cursor-pointer rounded-lg bg-[#485057] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#343A40] md:w-auto" %>

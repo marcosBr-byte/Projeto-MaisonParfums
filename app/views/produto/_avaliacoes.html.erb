@@ -1,0 +1,103 @@
+<section id="avaliacoes" class="product-reviews" aria-labelledby="avaliacoes-titulo">
+  <header class="reviews-header">
+    <p class="product-eyebrow">Experiências de quem conhece</p>
+    <h2 id="avaliacoes-titulo">Avaliações do produto <span class="review-count">(<%= @total_avaliacoes %>)</span></h2>
+  </header>
+  <div class="reviews-overview">
+    <div class="reviews-average">
+      <strong><%= @media_avaliacoes ? number_with_precision(@media_avaliacoes, precision: 1, separator: ",") : "—" %></strong>
+      <%= estrelas_avaliacao(@media_avaliacoes || 0) %>
+      <p><%= @total_avaliacoes.positive? ? pluralize(@total_avaliacoes, "avaliação", "avaliações") : "Seja o primeiro a avaliar" %></p>
+    </div>
+    <div class="reviews-distribution">
+      <% 5.downto(1) do |nota| %>
+        <% quantidade = @distribuicao_avaliacoes.fetch(nota, 0) %>
+        <% percentual = @total_avaliacoes.positive? ? (quantidade * 100.0 / @total_avaliacoes).round : 0 %>
+        <div class="review-distribution-row">
+          <span><%= nota %> <%= nota == 1 ? "estrela" : "estrelas" %></span>
+          <meter min="0" max="100" value="<%= percentual %>" aria-label="Avaliações com <%= nota %> estrelas"><%= percentual %>%</meter>
+          <span><%= percentual %>%</span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="reviews-toolbar">
+    <% if current_usuario&.admin? %>
+      <%= link_to "Gerenciar avaliações", admin_avaliacoes_path, class: "product-button product-button-small" %>
+    <% else %>
+      <%= link_to @minha_avaliacao ? "Minha avaliação" : "Faça uma avaliação", usuario_signed_in? ? "#avaliar-produto" : avaliar_produto_path(@produto), class: "product-button product-button-small" %>
+    <% end %>
+    <%= form_with url: produto_path(@produto, anchor: "avaliacoes"), method: :get, class: "review-filter" do |form| %>
+      <%= form.label :avaliacoes, "Mostrar", class: "sr-only" %>
+      <%= form.select :avaliacoes, [["Todas as avaliações", "todas"], ["Com fotos", "com_fotos"]], selected: @com_fotos ? "com_fotos" : "todas" %>
+      <%= form.submit "Filtrar", class: "review-filter-button" %>
+    <% end %>
+  </div>
+  <% if @avaliacoes.any? %>
+    <div class="reviews-grid">
+      <% @avaliacoes.each do |avaliacao| %>
+        <article class="review-card">
+          <%= estrelas_avaliacao(avaliacao.nota) %>
+          <p class="review-comment"><%= avaliacao.comentario %></p>
+          <% if avaliacao.fotos.attached? %>
+            <div class="review-photos">
+              <% avaliacao.fotos.each do |foto| %>
+                <%= link_to imagem_loja(foto), target: "_blank", rel: "noopener", aria: { label: "Ampliar foto da avaliação (abre em nova aba)" } do %>
+                  <%= image_tag imagem_loja(foto), alt: "Foto do perfume enviada por #{avaliacao.usuario.nome.split.first}", loading: "lazy", decoding: "async" %>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+          <footer>
+            <div class="review-person">
+              <% nome = avaliacao.usuario.nome.to_s.split.first.presence || "Cliente" %>
+              <% if avaliacao.usuario.imagem.attached? %>
+                <%= image_tag imagem_loja(avaliacao.usuario.imagem, tamanho: :miniatura), alt: "Foto de perfil de #{nome}", width: 40, height: 40, loading: "lazy", class: "review-avatar" %>
+              <% else %>
+                <span class="review-avatar review-avatar-initial" aria-hidden="true"><%= nome.first.upcase %></span>
+              <% end %>
+              <strong><%= nome %></strong>
+            </div>
+            <% if @compradores_verificados.include?(avaliacao.usuario_id) %><span class="verified-purchase">Compra verificada</span><% end %>
+            <time datetime="<%= avaliacao.created_at.iso8601 %>"><%= avaliacao.created_at.strftime("%d/%m/%Y") %></time>
+          </footer>
+        </article>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="reviews-empty"><%= @com_fotos ? "Ainda não há avaliações publicadas com fotos." : "Este perfume ainda não recebeu avaliações publicadas. Conte como foi sua experiência." %></p>
+  <% end %>
+  <nav class="reviews-pagination" aria-label="Páginas de avaliações">
+    <% if @pagina_avaliacoes > 1 %><%= link_to "← Anteriores", produto_path(@produto, avaliacoes: @com_fotos ? "com_fotos" : "todas", pagina: @pagina_avaliacoes - 1, anchor: "avaliacoes") %><% end %>
+    <% if @pagina_avaliacoes * 9 < @quantidade_filtrada %><%= link_to "Próximas →", produto_path(@produto, avaliacoes: @com_fotos ? "com_fotos" : "todas", pagina: @pagina_avaliacoes + 1, anchor: "avaliacoes") %><% end %>
+  </nav>
+  <section id="avaliar-produto" class="review-form-section" aria-labelledby="avaliar-titulo">
+    <h3 id="avaliar-titulo">Sua experiência com esta fragrância</h3>
+    <% if @nova_avaliacao.errors.any? %>
+      <div class="review-form-errors" role="alert"><%= @nova_avaliacao.errors.full_messages.to_sentence %></div>
+    <% end %>
+    <% if !usuario_signed_in? %>
+      <p><%= link_to "Entre na sua conta", avaliar_produto_path(@produto) %> para avaliar o perfume e enviar suas fotos.</p>
+    <% elsif current_usuario.admin? %>
+      <p>As avaliações são enviadas pelos clientes. <%= link_to "Gerenciar avaliações recebidas", admin_avaliacoes_path %>.</p>
+    <% elsif @minha_avaliacao&.publicada? %>
+      <p>Obrigado! Sua avaliação está publicada.</p>
+    <% else %>
+      <% if @minha_avaliacao %><p class="review-form-errors" role="status">Sua avaliação está oculta. Revise o comentário para remover linguagem ofensiva e envie novamente.</p><% end %>
+      <%= form_with model: @nova_avaliacao, url: @nova_avaliacao.persisted? ? produto_avaliacao_path(@produto) : produto_avaliacoes_path(@produto), method: @nova_avaliacao.persisted? ? :patch : :post, multipart: true, class: "review-form" do |form| %>
+        <fieldset class="rating-input">
+          <legend>Sua nota</legend>
+          <% 1.upto(5) do |nota| %>
+            <label><%= form.radio_button :nota, nota, required: true %><span><%= nota %> ★</span></label>
+          <% end %>
+        </fieldset>
+        <%= form.label :comentario, "Como foi sua experiência?" %>
+        <%= form.text_area :comentario, rows: 4, maxlength: 3000, required: true, placeholder: "Conte o que achou da fragrância, da fixação e da sua compra." %>
+        <%= form.label :fotos, "Fotos da sua experiência (opcional)" %>
+        <%= form.file_field :fotos, multiple: true, accept: "image/jpeg,image/png,image/webp", class: "review-file-picker" %>
+        <p class="product-caption">Até 4 fotos de 5 MB cada. Sua avaliação aparece automaticamente. Comentários com linguagem ofensiva ficam ocultos.</p>
+        <%= form.submit "Enviar avaliação", class: "product-button" %>
+      <% end %>
+    <% end %>
+  </section>
+</section>

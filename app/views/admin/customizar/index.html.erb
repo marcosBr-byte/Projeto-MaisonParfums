@@ -9,18 +9,29 @@
     </p>
   </div>
 
+  <%= render "admin/customizar/videos" %>
+
   <div class="space-y-6">
-    <% @banners.each do |banner| %>
+    <p class="rounded-xl border border-[#E5E6E7] bg-white p-4 text-sm text-[#485057]">As imagens mantêm as cores e a estrutura da sua loja. Para as coleções, prefira fotos horizontais. Gerencie os vídeos da seção de experiência acima. Envie a imagem e marque a opção de ativação para publicar na home.</p>
+    <% @banners.reject { |banner| banner.chave == "experiencia" }.each do |banner| %>
       <div class="rounded-2xl border border-[#E5E6E7] bg-white p-6 shadow-sm">
 
         <div class="mb-5 flex items-center justify-between">
           <div>
             <h2 class="text-lg font-semibold text-[#343A40]">
-              <%= banner.titulo %>
+              <%= banner.rotulo %>
             </h2>
 
             <p class="text-xs text-gray-500">
-              Identificador: <%= banner.chave %>
+              <%= if Banner::ATALHOS.key?(banner.chave)
+                    "Tamanho ideal: 600 × 600 px (1:1). A foto aparece em um círculo: centralize o perfume e deixe margem nas bordas."
+                  elsif %w[masculino feminino nicho].include?(banner.chave)
+                    "Tamanho recomendado: 1200 × 600 px (2:1), horizontal. Mantenha o perfume e os textos longe das bordas."
+                  elsif banner.chave == "experiencia"
+                    "Foto opcional no lugar do vídeo da home"
+                  else
+                    "Imagem exibida na página inicial"
+                  end %>
             </p>
           </div>
 
@@ -35,9 +46,16 @@
           <% end %>
         </div>
 
-        <% if banner.imagem.attached? %>
+        <% if banner.errors.any? %>
+          <p class="mb-2 text-sm text-red-700">Corrija os campos abaixo e selecione novamente a imagem antes de salvar.</p>
+          <div role="alert" class="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
+            <%= banner.errors.full_messages.to_sentence %>
+          </div>
+        <% end %>
+
+        <% if banner.imagem_exibicao %>
           <div class="mb-5">
-            <%= image_tag banner.imagem, class: "h-48 w-full rounded-xl object-cover" %>
+            <%= image_tag imagem_loja(banner.imagem_exibicao), alt: banner.rotulo, class: "h-48 w-full rounded-xl object-cover" %>
           </div>
         <% else %>
           <div class="mb-5 flex h-40 items-center justify-center rounded-xl bg-[#F7F7F5] text-sm text-gray-400">
@@ -48,28 +66,18 @@
         <%= form_with model: banner, url: admin_atualizar_banner_path(banner), method: :patch, multipart: true, class: "space-y-4" do |form| %>
 
           <div>
-            <%= form.label :titulo, "Título", class: "mb-1 block text-sm font-medium text-gray-700" %>
-            <%= form.text_field :titulo, class: "w-full rounded-lg border border-gray-300 p-3 focus:border-[#748A9C] focus:outline-none" %>
-          </div>
-
-          <div>
-            <%= form.label :subtitulo, "Subtítulo", class: "mb-1 block text-sm font-medium text-gray-700" %>
-            <%= form.text_field :subtitulo, class: "w-full rounded-lg border border-gray-300 p-3 focus:border-[#748A9C] focus:outline-none" %>
-          </div>
-
-          <div>
             <%= form.label :imagem, "Nova imagem", class: "mb-1 block text-sm font-medium text-gray-700" %>
-            <%= form.file_field :imagem, accept: "image/*", class: "w-full rounded-lg border border-gray-300 p-3 text-sm" %>
+            <%= form.file_field :imagem, accept: "image/jpeg,image/png,image/webp", class: "w-full rounded-lg border border-gray-300 p-3 text-sm" %>
           </div>
 
           <div>
             <%= form.label :ordem, "Ordem de exibição", class: "mb-1 block text-sm font-medium text-gray-700" %>
-            <%= form.number_field :ordem, min: 1, class: "w-full rounded-lg border border-gray-300 p-3" %>
+            <%= form.number_field :ordem, min: 0, class: "w-full rounded-lg border border-gray-300 p-3" %>
           </div>
 
           <div class="flex items-center gap-3">
             <%= form.check_box :ativo, class: "h-4 w-4 rounded border-gray-300 text-[#748A9C]" %>
-            <%= form.label :ativo, "Banner ativo", class: "text-sm text-gray-700" %>
+            <%= form.label :ativo, "Exibir na página inicial", class: "text-sm text-gray-700" %>
           </div>
 
           <div class="pt-2">

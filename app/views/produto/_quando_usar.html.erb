@@ -1,0 +1,22 @@
+<section class="product-usage" aria-labelledby="quando-usar-titulo">
+  <p class="product-eyebrow">O ritmo da sua fragrância</p>
+  <h2 id="quando-usar-titulo">Quando usar</h2>
+  <div class="usage-grid">
+    <% Produto::USOS.each do |chave, (nome, icone)| %>
+      <% valor = @produto.public_send("uso_#{chave}") %>
+      <% indicado = (chave == :dia && (@produto.dia? || @produto.ambos?)) || (chave == :noite && (@produto.noite? || @produto.ambos?)) %>
+      <div class="usage-item usage-<%= chave %> <%= 'usage-unset' if valor.nil? %>">
+        <span class="material-symbols-outlined" aria-hidden="true"><%= icone %></span>
+        <span class="usage-name"><%= nome %></span>
+        <% if valor %>
+          <meter min="0" max="100" value="<%= valor %>" aria-label="Indicação para <%= nome %>"><%= valor %>%</meter>
+          <span class="usage-value"><%= valor %>%</span>
+        <% else %>
+          <span class="usage-empty <%= 'usage-recommended' if indicado %>" aria-hidden="true"></span>
+          <span class="usage-value"><%= indicado ? "Indicado" : "A informar" %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <p class="product-caption">Indicações da loja. A escolha também depende do clima e da sua preferência.</p>
+</section>

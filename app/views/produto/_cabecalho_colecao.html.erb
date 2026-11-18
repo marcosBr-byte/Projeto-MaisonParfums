@@ -1,0 +1,11 @@
+<header class="catalog-heading">
+  <%= link_to "← Voltar à loja", root_path, class: "catalog-heading__back" %>
+  <p class="catalog-heading__eyebrow">Curadoria Maison Parfum</p>
+  <h1><%= titulo %><% if @origem %><span><%= Produto::ORIGENS[@origem] %></span><% end %></h1>
+  <p class="catalog-heading__description">Encontre sua próxima assinatura. Explore as fragrâncias e escolha o tamanho ideal para você.</p>
+  <nav class="catalog-filters" aria-label="Filtrar perfumes por origem">
+    <% [[nil, "Todos"], *Produto::ORIGENS.to_a].each do |valor, nome| %>
+      <%= link_to nome, (valor ? "#{caminho}?origem=#{valor}" : caminho), class: "catalog-filter #{'catalog-filter--active' if @origem == valor}", aria: { current: (@origem == valor ? "page" : nil) } %>
+    <% end %>
+  </nav>
+</header>

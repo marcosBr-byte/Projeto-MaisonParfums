@@ -5,12 +5,13 @@ class ItensCarrinhoController < ApplicationController
   def create
     @carrinho = current_usuario.carrinho || current_usuario.create_carrinho
 
-    produto = Produto.find(params[:produto_id])
+    produto = Produto.por_link!(params[:produto_id])
     variante = produto.variantes.find(params[:variante_id])
 
     item = @carrinho.itens_carrinhos.find_or_initialize_by(produto: produto, variante: variante)
 
     quantidade = Integer(params[:quantidade], 10)
+    raise ArgumentError unless quantidade.positive?
     item.quantidade = item.quantidade.to_i + quantidade
 
     if item.save
@@ -67,7 +68,7 @@ class ItensCarrinhoController < ApplicationController
 
   def bloquear_admin
     if current_usuario.admin?
-      redirect_to root_path, alert: "Administradores não podem realizar compras."
+      redirect_to root_path, alert: "Você está usando uma conta de administrador. Para adicionar produtos ao carrinho e comprar, entre com uma conta de cliente."
     end
   end
 end

@@ -1,0 +1,37 @@
+.admin-overview, .admin-analytics { color: #485057; }
+.insight-hero { border-radius: 24px; padding: 2rem; color: white; background: radial-gradient(ellipse at top right, #748a9c80, transparent 65%), #35434d; position: relative; overflow: hidden; }
+.insight-eyebrow { color: #e0c591; font-size: .65rem; letter-spacing: .2em; }
+.insight-button-light, .insight-button-outline { display: inline-flex; align-items: center; padding: .75rem 1.1rem; border-radius: 12px; font-size: .8rem; font-weight: 600; }
+.insight-button-light { background: #f2e8d4; color: #485057; }
+.insight-button-outline { border: 1px solid #ffffff40; color: white; }
+.insight-button-light:hover { background: white; }
+.insight-button-outline:hover { background: #ffffff15; }
+.insight-card { background: white; border: 1px solid #e5e6e7; border-radius: 18px; padding: 1.4rem; box-shadow: 0 5px 20px #343a4004; }
+.insight-icon { color: #748a9c; background: #f2f4f5; padding: .55rem; border-radius: 12px; font-size: 21px; }
+.insight-panel { background: white; border: 1px solid #e5e6e7; border-radius: 20px; overflow: hidden; height: 100%; }
+.insight-panel-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.4rem; }
+.insight-panel-heading h2 { font-family: var(--app-font); font-size: 1.25rem; font-weight: 700; }
+.insight-panel-heading p { font-size: .75rem; line-height: 1.6; margin-top: .35rem; color: #748a9c; }
+.insight-action { display: flex; align-items: center; gap: 1rem; border: 1px solid #e5e6e7; background: white; border-radius: 16px; padding: 1.2rem; transition: border-color .2s, box-shadow .2s; }
+.insight-action:hover { border-color: #c6ac76; box-shadow: 0 5px 20px #48505709; }
+.insight-toggle { border: 1px solid #d9dadd; border-radius: 8px; font-size: .75rem; padding: .45rem .8rem; cursor: pointer; }
+.insight-toggle[aria-pressed=true] { background: #485057; color: white; border-color: #485057; }
+.insight-chart { display: grid; gap: 5px; align-items: end; border-bottom: 1px solid #e5e6e7; padding-bottom: .5rem; }
+.insight-chart-column { text-align: center; border-radius: 5px; padding: 0 2px; }
+.insight-chart-column:hover { background: #f0f1f2; }
+.insight-chart-column:focus-visible { outline: 2px solid #a07a43; outline-offset: 1px; }
+.insight-chart-track { height: 155px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 1px solid #d9dadd; background: repeating-linear-gradient(to top, transparent 0, transparent 50px, #f0f1f2 51px); }
+.insight-chart-bar { display: block; width: 100%; max-width: 44px; border-radius: 5px 5px 0 0; background: linear-gradient(to top, #748a9c, #a9bbc9); transition: height .25s ease; }
+.insight-chart-column:hover .insight-chart-bar { background: #a07a43; }
+.insight-period { display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid #e5e6e7; border-radius: 16px; background: white; }
+.insight-date-button { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e5e6e7; border-radius: 10px; flex-shrink: 0; }
+.insight-date-button:hover { background: #f0f1f2; }
+.insight-calendar-day { min-height: 54px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px; font-size: .85rem; }
+.insight-calendar-day:hover { background: #f0f1f2; }
+.insight-calendar-day.is-muted { color: #bbc1c6; }
+.insight-calendar-day.is-selected { background: #485057; color: white; }
+.insight-calendar-day small { font-size: .6rem; padding: 0 .3rem; margin-top: .2rem; border-radius: 4px; background: #748a9c20; }
+.insight-rank { display: inline-flex; align-items: center; justify-content: center; height: 32px; width: 32px; flex-shrink: 0; border-radius: 50%; background: #f7f2e8; color: #9b7c47; font-size: .8rem; font-weight: bold; }
+.insight-footer-strip { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; padding: 1rem .5rem; font-size: .75rem; color: #748a9c; }
+@media (max-width: 640px) { .insight-hero { padding: 1.5rem; } .insight-panel-heading { padding: 1.2rem; } .insight-calendar-day { min-height: 45px; } }
+@media (prefers-reduced-motion: reduce) { .insight-chart-bar { transition: none; } }

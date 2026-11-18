@@ -1,6 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  slug: perfume-exemplo-um
   nome: MyString
   marca: MyString
   descricao: MyString
@@ -13,6 +14,7 @@ one:
   estoque: 1
 
 two:
+  slug: perfume-exemplo-dois
   nome: MyString
   marca: MyString
   descricao: MyString

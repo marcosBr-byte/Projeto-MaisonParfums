@@ -1,0 +1,20 @@
+<% if configuracao_loja.brinde_ativo? %>
+  <% total = local_assigns.fetch(:total, 0).to_d %>
+  <% restante = [configuracao_loja.brinde_meta - total, 0.to_d].max %>
+  <aside class="rounded-2xl border border-[#C6AC76] bg-[#FBF6E9] p-5 sm:p-6 text-[#485057]" aria-label="Brinde da Maison" data-brinde>
+    <div class="flex gap-4 items-start">
+      <span class="material-symbols-outlined text-3xl" aria-hidden="true">redeem</span>
+      <div class="flex-1">
+        <h2 class="font-semibold text-lg">Sua amostra de presente</h2>
+        <% if restante.zero? %>
+          <p class="mt-2 text-sm">Você ganhou um brinde! <%= configuracao_loja.brinde_descricao %>.</p>
+        <% else %>
+          <p class="mt-2 text-sm">Faltam <strong><%= moeda_loja(restante) %></strong> em produtos para ganhar sua amostra.</p>
+          <p class="mt-1 text-xs"><%= configuracao_loja.brinde_descricao %> em compras a partir de <%= moeda_loja(configuracao_loja.brinde_meta) %>.</p>
+        <% end %>
+        <progress max="<%= configuracao_loja.brinde_meta %>" value="<%= [total, configuracao_loja.brinde_meta].min %>" aria-label="Progresso para ganhar um brinde" class="mt-3 w-full h-2 accent-[#A48445]"></progress>
+        <p class="text-xs mt-2">O brinde é incluído automaticamente no pedido ao atingir o valor. Consideramos o total dos produtos após descontos, sem frete.</p>
+      </div>
+    </div>
+  </aside>
+<% end %>

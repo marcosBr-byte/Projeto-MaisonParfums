@@ -1,0 +1,16 @@
+<% if Usuario.omniauth_providers.any? %>
+  <div class="social-login" aria-label="<%= local_assigns[:conectar] ? 'Conectar conta' : 'Entrar com uma conta social' %>">
+    <% Usuario.omniauth_providers.each do |provider| %>
+      <% nome = LoginSocial::NOMES.fetch(provider.to_s) %>
+      <% conectado = local_assigns[:conectar] && current_usuario.identidades_sociais.exists?(provider: provider) %>
+      <% if conectado %>
+        <p class="social-login__connected"><%= nome %> conectado <span aria-hidden="true">✓</span></p>
+      <% else %>
+        <%= button_to omniauth_authorize_path(:usuario, provider), method: :post, form: { data: { turbo: false } }, class: "social-login__button social-login__button--#{provider}" do %>
+          <span class="social-login__symbol" aria-hidden="true"><%= provider.to_s == "facebook" ? "f" : "G" %></span>
+          <%= local_assigns[:conectar] ? "Conectar #{nome}" : "Entrar com #{nome}" %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,11 +1,10 @@
-<%= turbo_stream_from "produtos_masculino" %>
+<%= turbo_stream_from "produtos_masculino" unless @origem %>
 
 <div class="max-w-7xl mx-auto px-4 py-10">
-  <%= link_to "← Voltar", root_path, class: "text-sm text-stone-600 hover:text-marinho" %>
-  <h1 class="font-serif text-3xl text-marinho my-6">Decants Masculinos</h1>
+  <%= render "produto/cabecalho_colecao", titulo: "Decantes Masculinos", caminho: decants_masculinos_path %>
 
   <div id="produtos" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
     <%= render partial: "produto/produtos", collection: @produtos, as: :produto %>
-    <p class="hidden only:block col-span-full text-stone-500">Nenhum produto cadastrado ainda.</p>
+    <p class="hidden only:block col-span-full text-stone-500">Nenhum perfume disponível nesta seleção.</p>
   </div>
 </div>

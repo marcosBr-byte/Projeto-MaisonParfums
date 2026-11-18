@@ -8,7 +8,7 @@
       <p class="text-[#748A9C] mt-4">Encontre sua próxima fragrância.</p>
     </div>
     <section class="mb-20">
-      <h2 class="font-serif text-3xl text-[#343A40] mb-8">Decants Masculinos</h2>
+      <h2 class="font-serif text-3xl text-[#343A40] mb-8">Decantes Masculinos</h2>
 
       <% if @masculinos.any? %>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -22,7 +22,7 @@
     </section>
 
     <section class="mb-20">
-      <h2 class="font-serif text-3xl text-[#343A40] mb-8"> Decants Femininos</h2>
+      <h2 class="font-serif text-3xl text-[#343A40] mb-8"> Decantes Femininos</h2>
 
       <% if @femininos.any? %>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -36,7 +36,7 @@
     </section>
 
     <section class="mb-10">
-      <h2 class="font-serif text-3xl text-[#343A40] mb-8">Decants Unissex</h2>
+      <h2 class="font-serif text-3xl text-[#343A40] mb-8">Decantes Unissex</h2>
 
       <% if @unissex.any? %>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -44,6 +44,15 @@
             <%= render "produtos", produto: produto %>
           <% end %>
         </div>
+      <% else %>
+        <p class="text-[#748A9C]">Nenhum produto disponível nesta categoria.</p>
+      <% end %>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="font-serif text-3xl text-[#343A40] mb-8">Decantes Nicho</h2>
+      <% if @nichos.any? %>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"><%= render partial: "produtos", collection: @nichos, as: :produto %></div>
       <% else %>
         <p class="text-[#748A9C]">Nenhum produto disponível nesta categoria.</p>
       <% end %>

@@ -1,47 +1,38 @@
 module Admin
   class AnalisarController < ApplicationController
     layout "admin"
-
     before_action :authenticate_usuario!
     before_action :exigir_admin
+    around_action :horario_local
 
     def index
+      data = params[:data].present? ? Date.iso8601(params[:data]) : Date.current
+      raise ArgumentError unless data.year.between?(1900, 2100)
       if params[:mes].present?
+        raise ArgumentError unless params[:mes].is_a?(String) && params[:mes].match?(/\A\d{4}-\d{2}\z/)
         @mes = Date.strptime(params[:mes], "%Y-%m").beginning_of_month
-        @data_selecionada =
-          if params[:data].present?
-            Date.iso8601(params[:data])
-          else
-            @mes
-          end
+        raise ArgumentError unless @mes.year.between?(1900, 2100)
+        @data_selecionada = data.beginning_of_month == @mes ? data : @mes
       else
-        @data_selecionada =
-          params[:data].present? ? Date.iso8601(params[:data]) : Date.current
-
-      @mes = @data_selecionada.beginning_of_month
+        @data_selecionada = data
+        @mes = data.beginning_of_month
+      end
+      @resumo = ResumoVendas.new(inicio: @mes, fim: @mes.end_of_month)
+      @comparacao = ResumoVendas.new(inicio: @mes.prev_month, fim: @mes.prev_month.end_of_month)
+      @resumo_dia = ResumoVendas.new(inicio: @data_selecionada, fim: @data_selecionada)
+      @evolucao = @resumo.evolucao
+      @pedidos_por_dia = @evolucao.to_h { |linha| [linha[:dia], linha[:pedidos]] }
+      @dias_calendario = (@mes.beginning_of_week(:sunday)..@mes.end_of_month.end_of_week(:sunday)).to_a
+      @produtos_em_alta = @resumo.produtos_em_alta
+      @ultimos_pedidos = @resumo_dia.pedidos.includes(:usuario).order(created_at: :desc).limit(50)
+    rescue ArgumentError, TypeError
+      redirect_to admin_analisar_path, alert: "Data inválida. Escolha uma data entre 1900 e 2100."
     end
 
-      inicio = @mes.beginning_of_week(:sunday)
-      fim = @mes.end_of_month.end_of_week(:sunday)
-      @dias_calendario = (inicio..fim).to_a
+    private
 
-      periodo_mes = @mes.beginning_of_month.beginning_of_day..@mes.end_of_month.end_of_day
-      @pedidos_por_dia = Pedido.where(created_at: periodo_mes).group("DATE(created_at)").count
-
-      periodo_dia =
-      @data_selecionada.beginning_of_day..
-      @data_selecionada.end_of_day
-      @pedidos_dia = Pedido.where(created_at: periodo_dia)
-      @total_pedidos = @pedidos_dia.count
-      @pedidos_pendentes = @pedidos_dia.where(status: "pendente").count
-      @pedidos_pagos = @pedidos_dia.where(status: "pago").count
-      @pedidos_entregues = @pedidos_dia.where(status: "entregue").count
-      @pedidos_cancelados = @pedidos_dia.where(status: "cancelado").count
-      @faturamento = @pedidos_dia.where(status: %w[pago enviado entregue]).sum(:valor_total)
-      @ultimos_pedidos = @pedidos_dia.includes(:usuario).order(created_at: :desc)
-
-    rescue ArgumentError
-      redirect_to admin_analisar_path, alert: "Data inválida."
+    def horario_local(&acao)
+      Time.use_zone(ResumoVendas::FUSO, &acao)
     end
   end
 end

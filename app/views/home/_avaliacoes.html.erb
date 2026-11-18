@@ -1,0 +1,23 @@
+<section id="avaliacoes-clientes" class="home-testimonials" aria-labelledby="avaliacoes-clientes-titulo">
+  <header class="home-testimonials-heading">
+    <p class="product-eyebrow">Experiências de quem conhece</p>
+    <h2 id="avaliacoes-clientes-titulo">O que nossos clientes dizem</h2>
+    <p>Opiniões de quem compartilhou sua experiência com as nossas fragrâncias.</p>
+  </header>
+  <% if avaliacoes.any? %>
+    <% repeticoes = (4.0 / avaliacoes.size).ceil %>
+    <div class="home-testimonials-viewport" aria-roledescription="carrossel">
+      <div class="home-testimonials-track" style="--reviews-duration: <%= avaliacoes.size * repeticoes * 6 %>s">
+        <% 2.times do |grupo| %>
+          <div class="home-testimonials-group" <%= tag.attributes(aria: { hidden: true }) if grupo.positive? %>>
+            <% repeticoes.times do |repeticao| %>
+              <%= render partial: "home/avaliacao", collection: avaliacoes, as: :avaliacao, locals: { decorativa: grupo.positive? || repeticao.positive? } %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <p class="home-testimonials-empty">As experiências dos nossos clientes aparecerão aqui após a publicação das primeiras avaliações.</p>
+  <% end %>
+</section>
