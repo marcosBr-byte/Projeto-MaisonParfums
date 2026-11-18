@@ -1,0 +1,123 @@
+{
+  "banners": [
+    {
+      "chave": "mais_vendidos",
+      "titulo": "Destaques",
+      "subtitulo": "Os mais vendidos por categoria",
+      "ordem": 1,
+      "ativo": false
+    },
+    {
+      "chave": "frete",
+      "titulo": "Frete",
+      "subtitulo": "",
+      "ordem": 2,
+      "ativo": true,
+      "imagem": "frete.png"
+    },
+    {
+      "chave": "quiz",
+      "titulo": "Quiz Gratuito",
+      "subtitulo": "",
+      "ordem": 3,
+      "ativo": true,
+      "imagem": "quiz.png"
+    },
+    {
+      "chave": "amostra",
+      "titulo": "Amostra de presente",
+      "subtitulo": null,
+      "ordem": 3,
+      "ativo": true,
+      "imagem": "amostra.png"
+    },
+    {
+      "chave": "masculino",
+      "titulo": "Masculino",
+      "subtitulo": "Descubra nossas fragrâncias masculinas",
+      "ordem": 4,
+      "ativo": true
+    },
+    {
+      "chave": "feminino",
+      "titulo": "Feminino",
+      "subtitulo": "Descubra nossas fragrâncias femininas",
+      "ordem": 5,
+      "ativo": true
+    },
+    {
+      "chave": "nicho",
+      "titulo": "",
+      "subtitulo": null,
+      "ordem": 6,
+      "ativo": false
+    },
+    {
+      "chave": "experiencia",
+      "titulo": "",
+      "subtitulo": null,
+      "ordem": 7,
+      "ativo": false
+    },
+    {
+      "chave": "atalho_masculino",
+      "titulo": "",
+      "subtitulo": null,
+      "ordem": 10,
+      "ativo": true
+    },
+    {
+      "chave": "atalho_feminino",
+      "titulo": "",
+      "subtitulo": null,
+      "ordem": 11,
+      "ativo": true
+    },
+    {
+      "chave": "atalho_nicho",
+      "titulo": "",
+      "subtitulo": null,
+      "ordem": 12,
+      "ativo": true
+    },
+    {
+      "chave": "atalho_mais_vendidos",
+      "titulo": "",
+      "subtitulo": null,
+      "ordem": 13,
+      "ativo": true
+    }
+  ],
+  "videos": [
+    {
+      "titulo": "Vídeo Maison 1",
+      "arquivo_padrao": "video1.mp4",
+      "ordem": 0,
+      "ativo": true
+    },
+    {
+      "titulo": "Vídeo Maison 2",
+      "arquivo_padrao": "video2.mp4",
+      "ordem": 1,
+      "ativo": true
+    },
+    {
+      "titulo": "Vídeo Maison 3",
+      "arquivo_padrao": "video3.mp4",
+      "ordem": 2,
+      "ativo": true
+    },
+    {
+      "titulo": "Vídeo Maison 4",
+      "arquivo_padrao": "video4.mp4",
+      "ordem": 3,
+      "ativo": true
+    },
+    {
+      "titulo": "Vídeo Maison 5",
+      "arquivo_padrao": "video_parfum.mp4",
+      "ordem": 4,
+      "ativo": true
+    }
+  ]
+}
