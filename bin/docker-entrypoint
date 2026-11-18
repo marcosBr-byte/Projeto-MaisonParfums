@@ -1,11 +1,20 @@
 #!/bin/bash -e
 
 # If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+if [ "${1:-}" = "./bin/thrust" ]; then
+  rails_command="${2:-}"
+  rails_action="${3:-}"
+else
+  rails_command="${1:-}"
+  rails_action="${2:-}"
+fi
+
+if [ "$rails_command" = "./bin/rails" ] && [ "$rails_action" = "server" ]; then
   if [ "${RENDER:-}" = "true" ]; then
     : "${DATABASE_URL:?Configure DATABASE_URL com a conexão interna do PostgreSQL do Render}"
     ./bin/rails runner '%w[queue cache cable].each { |schema| ActiveRecord::Base.connection.execute("CREATE SCHEMA IF NOT EXISTS #{schema}") }'
   fi
+  echo "Preparando o banco de dados antes de iniciar o Rails..."
   ./bin/rails db:prepare
 fi
 
