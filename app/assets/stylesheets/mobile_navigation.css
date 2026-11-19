@@ -1,0 +1,19 @@
+.mobile-navigation__toggle {
+  list-style: none;
+}
+
+.mobile-navigation__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-navigation[open] > summary .mobile-navigation__chevron,
+.mobile-navigation__category[open] > summary .mobile-navigation__chevron {
+  transform: rotate(180deg);
+}
+
+.mobile-navigation__panel {
+  max-height: 50vh;
+  max-height: 50dvh;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}

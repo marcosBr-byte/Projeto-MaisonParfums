@@ -1,0 +1,39 @@
+<div class="md:hidden">
+  <div class="relative z-10 px-4 pb-3">
+    <%= render "shared/perfume_search", identificador: "busca-mobile", classes: "w-full" %>
+  </div>
+
+  <details class="mobile-navigation border-t border-[#D0D3D6]">
+    <summary class="mobile-navigation__toggle flex min-h-11 cursor-pointer items-center gap-2 px-4 text-sm font-bold text-[#485057]">
+      <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+      Menu da loja
+      <span class="material-symbols-outlined mobile-navigation__chevron ml-auto" aria-hidden="true">expand_more</span>
+    </summary>
+
+    <nav aria-label="Menu da loja" class="mobile-navigation__panel space-y-3 px-4 pb-4 pt-1 text-sm text-[#485057]">
+      <div class="rounded-xl border border-[#D0D3D6] bg-white">
+        <h2 class="px-3 pt-3 text-xs font-bold uppercase tracking-wide">Decantes</h2>
+        <% [["Masculinos", :decants_masculinos_path], ["Femininos", :decants_femininos_path], ["Unissex", :decants_unissex_path]].each do |categoria, rota| %>
+          <details name="mobile-decants" class="mobile-navigation__category border-b border-[#E5E6E7]">
+            <summary class="mobile-navigation__toggle flex min-h-11 cursor-pointer items-center justify-between px-3 font-semibold">
+              <%= categoria %>
+              <span class="material-symbols-outlined mobile-navigation__chevron" aria-hidden="true">expand_more</span>
+            </summary>
+            <ul class="grid grid-cols-3 gap-1 px-2 pb-2 text-center">
+              <% [["Todos", nil], ["Árabes", "arabe"], ["Importados", "importado"]].each do |nome, origem| %>
+                <li><%= link_to nome, public_send(rota, origem ? { origem: origem } : {}), class: "flex min-h-11 items-center justify-center rounded-lg bg-[#F7F7F5] px-1 text-xs font-semibold", aria: { label: "#{nome} · #{categoria}" } %></li>
+              <% end %>
+            </ul>
+          </details>
+        <% end %>
+        <%= link_to "Nicho", decants_nicho_path, class: "flex min-h-11 items-center px-3 font-semibold" %>
+      </div>
+
+      <ul class="grid grid-cols-2 gap-2">
+        <% [["Início", root_path], ["Descubra seu Perfume", quiz_path], ["Grupo VIP", grupo_vip_path], ["Contato", atendimento_path]].each do |nome, destino| %>
+          <li><%= link_to nome, destino, class: "flex min-h-11 items-center justify-center rounded-lg border border-[#D0D3D6] bg-white px-2 py-1 text-center font-semibold" %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </details>
+</div>

@@ -106,28 +106,7 @@
         </ul>
       </nav>
 
-      <details class="<%= login_page ? "hidden" : "md:hidden" %> border-t border-[#D9DADD]">
-        <summary class="px-4 py-3 text-sm font-medium text-[#485057] cursor-pointer">Menu</summary>
-        <ul class="px-4 pb-3 flex flex-col gap-2 text-sm text-[#485057]">
-          <li><%= link_to "Início", root_path %></li>
-          <li><%= link_to "Decantes Masculinos", decants_masculinos_path %></li>
-          <li class="pl-4"><%= link_to "Árabes masculinos", decants_masculinos_path(origem: "arabe") %></li>
-          <li class="pl-4"><%= link_to "Importados masculinos", decants_masculinos_path(origem: "importado") %></li>
-          <li><%= link_to "Decantes Femininos", decants_femininos_path %></li>
-          <li class="pl-4"><%= link_to "Árabes femininos", decants_femininos_path(origem: "arabe") %></li>
-          <li class="pl-4"><%= link_to "Importados femininos", decants_femininos_path(origem: "importado") %></li>
-          <li><%= link_to "Decantes Unissex", decants_unissex_path %></li>
-          <li class="pl-4"><%= link_to "Árabes unissex", decants_unissex_path(origem: "arabe") %></li>
-          <li class="pl-4"><%= link_to "Importados unissex", decants_unissex_path(origem: "importado") %></li>
-          <li><%= link_to "Decantes Nicho", decants_nicho_path %></li>
-          <li><%= link_to "Descubra seu Perfume", quiz_path %></li>
-          <li><%= link_to "Grupo VIP", grupo_vip_path %></li>
-          <li><%= link_to "Contato", atendimento_path %></li>
-        </ul>
-      </details>
-      <div class="<%= login_page ? "hidden" : "md:hidden" %> px-4 pb-3">
-        <%= render "shared/perfume_search", identificador: "busca-mobile", classes: "w-full" %>
-      </div>
+      <%= render "shared/mobile_navigation" unless login_page %>
     </header>
 
      <main>
