@@ -12,11 +12,11 @@ function controlador(arquivo) {
 
 test("calculadora converte borrifadas em ml e rejeita entradas invalidas", () => {
   const c = controlador("borrifadas")
-  c.fatorValue = 10
-  c.quantidadeTarget = { value: "25" }
+  c.fatorValue = 16
+  c.quantidadeTarget = { value: "80" }
   c.resultadoTarget = { textContent: "" }
   c.calcular()
-  assert.equal(c.resultadoTarget.textContent, "Volume estimado: 2,5 ml.")
+  assert.equal(c.resultadoTarget.textContent, "Volume estimado: 5 ml.")
   for (const entrada of ["", "-1", "1.5", "abc"]) {
     c.quantidadeTarget.value = entrada
     c.calcular()
@@ -37,11 +37,11 @@ test("troca de tamanho atualiza preco volume borrifadas e parcela", () => {
   c.selecionadaTarget = { value: "" }
   c.atualizar({ target: { tagName: "INPUT", value: "8", dataset: {
     precoFormatado: "R$ 80,00", precoOriginal: "R$ 100,00", porMl: "R$ 8,00/ml",
-    borrifadas: "Aproximadamente 100 borrifadas", parcela: "Em até 6x"
+    borrifadas: "Aproximadamente 160 borrifadas", parcela: "Em até 6x"
   } } })
   assert.equal(c.precoTarget.textContent, "R$ 80,00")
   assert.equal(c.porMlTarget.textContent, "R$ 8,00/ml")
-  assert.equal(c.borrifadasTarget.textContent, "Aproximadamente 100 borrifadas")
+  assert.equal(c.borrifadasTarget.textContent, "Aproximadamente 160 borrifadas")
   assert.equal(c.selecionadaTarget.value, "8")
 })
 

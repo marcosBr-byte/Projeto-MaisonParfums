@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_18_195100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,7 +96,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_18_195100) do
     t.boolean "brinde_ativo", default: true, null: false
     t.decimal "brinde_meta", precision: 10, scale: 2, default: "199.99", null: false
     t.string "brinde_descricao", default: "1 amostra exclusiva da Maison Parfum", null: false
-    t.integer "borrifadas_por_ml", default: 10, null: false
+    t.integer "borrifadas_por_ml", default: 16, null: false
     t.boolean "whatsapp_notificacoes_ativas", default: false, null: false
     t.string "whatsapp_notificacao"
     t.boolean "frete_gratis_ativo", default: true, null: false

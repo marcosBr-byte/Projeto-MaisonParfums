@@ -107,7 +107,7 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
     assert_select '.notes-ingredients figcaption', text: "Pera"
     assert_select '.notes-ingredients img[alt="Pera"]'
     assert_select '.product-main-photo img', count: 1
-    assert_select '[data-variante-target="borrifadas"]', text: /50 borrifadas/
+    assert_select '[data-variante-target="borrifadas"]', text: /80 borrifadas/
     assert_select 'input[name="variante_id"][disabled]', count: 1
     assert_select '.reviews-average strong', text: "—"
     assert_select '#avaliar-produto', text: /Entre na sua conta/

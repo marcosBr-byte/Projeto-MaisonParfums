@@ -6,7 +6,7 @@ class ComercialTest < ActionDispatch::IntegrationTest
 
   setup do
     @configuracao = Configuracao.atual
-    @configuracao.update!(desconto_ativo: true, desconto_percentual: 20, brinde_ativo: true, brinde_meta: 199, brinde_descricao: "Amostra especial", borrifadas_por_ml: 10)
+    @configuracao.update!(desconto_ativo: true, desconto_percentual: 20, brinde_ativo: true, brinde_meta: 199, brinde_descricao: "Amostra especial")
     @usuario = Usuario.create!(nome: "Cliente", email: "comercial@example.com", telefone: "83999999999", password: "senha-teste-123",
       cep: "58000000", estado: "PB", cidade: "João Pessoa", bairro: "Centro", rua: "Rua teste", numero_casa: "1")
     @produto = Produto.create!(nome: "Perfume comercial", categoria: :masculino, fragancia: "Amadeirada", descricao: "<div><strong>Descrição formatada</strong></div>",
@@ -92,7 +92,7 @@ class ComercialTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select '[data-variante-target="preco"]', text: /80,00/
     assert_select '[data-variante-target="porMl"]', text: /8,00\/ml/
-    assert_select '[data-variante-target="borrifadas"]', text: /100 borrifadas/
+    assert_select '[data-variante-target="borrifadas"]', text: /160 borrifadas/
     assert_select 'strong', text: "Descrição formatada"
     assert_select 'header a', text: "Maison Parfum"
     assert_select 'input[name="produto[frasco_mae_id]"]', count: 0
