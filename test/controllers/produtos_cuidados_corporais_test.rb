@@ -48,6 +48,19 @@ class ProdutosCuidadosCorporaisTest < ActionDispatch::IntegrationTest
     assert_select "form[action='#{adicionar_carrinho_path}']"
   end
 
+  test "menus do cabeçalho oferecem os três públicos nas duas categorias" do
+    get body_splash_path
+    assert_response :success
+
+    [:body_splash_path, :hidratantes_path].each do |rota|
+      Produto::PUBLICOS.each do |valor, nome|
+        caminho = public_send(rota, publico: valor)
+        assert_select "header > nav a[href='#{caminho}']", text: nome
+        assert_select "header .mobile-navigation nav a[href='#{caminho}']", text: nome
+      end
+    end
+  end
+
   test "administrador cadastra os novos produtos com embalagem lacrada" do
     admin = Usuario.create!(nome: "Admin", email: "cuidados@example.com", password: "senha-teste-123", role: :admin)
     sign_in admin

@@ -29,10 +29,21 @@
         <%= link_to "Nicho", decants_nicho_path, class: "flex min-h-11 items-center px-3 font-semibold" %>
       </div>
 
-      <ul class="grid grid-cols-2 gap-2">
-        <li><%= link_to "Body Splash", body_splash_path, class: "flex min-h-11 items-center justify-center rounded-lg border border-[#D0D3D6] bg-white px-2 py-1 text-center font-semibold" %></li>
-        <li><%= link_to "Hidratantes", hidratantes_path, class: "flex min-h-11 items-center justify-center rounded-lg border border-[#D0D3D6] bg-white px-2 py-1 text-center font-semibold" %></li>
-      </ul>
+      <div class="rounded-xl border border-[#D0D3D6] bg-white divide-y divide-[#E5E6E7]">
+        <% [["Body Splash", :body_splash_path], ["Hidratantes", :hidratantes_path]].each do |categoria, rota| %>
+          <details name="mobile-cuidados" class="mobile-navigation__category">
+            <summary class="mobile-navigation__toggle flex min-h-11 cursor-pointer items-center justify-between px-3 font-semibold">
+              <%= categoria %>
+              <span class="material-symbols-outlined mobile-navigation__chevron" aria-hidden="true">expand_more</span>
+            </summary>
+            <ul class="grid grid-cols-4 gap-1 px-2 pb-2 text-center">
+              <% [[nil, "Todos"], *Produto::PUBLICOS.to_a].each do |valor, nome| %>
+                <li><%= link_to nome, public_send(rota, publico: valor), class: "flex min-h-11 items-center justify-center rounded-lg bg-[#F7F7F5] px-1 text-xs font-semibold", aria: { label: "#{nome} · #{categoria}" } %></li>
+              <% end %>
+            </ul>
+          </details>
+        <% end %>
+      </div>
 
       <ul class="grid grid-cols-2 gap-2">
         <% [["Início", root_path], ["Descubra seu Perfume", quiz_path], ["Grupo VIP", grupo_vip_path], ["Contato", atendimento_path]].each do |nome, destino| %>

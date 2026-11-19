@@ -80,27 +80,29 @@
           <li class="py-3"><%= link_to "Início", root_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
 
           <% [
-               ["Decantes Masculinos", decants_masculinos_path, %w[Árabes Importados]],
-               ["Decantes Femininos", decants_femininos_path, %w[Árabes Importados]],
-               ["Decantes Unissex", decants_unissex_path, %w[Árabes Importados]],
-               ["Decantes Nicho", decants_nicho_path, %w[Xerjoff Nishane Sospiro]]
-             ].each do |titulo, caminho, marcas| %>
+               ["Decantes Masculinos", :decants_masculinos_path, :origem, Produto::ORIGENS],
+               ["Decantes Femininos", :decants_femininos_path, :origem, Produto::ORIGENS],
+               ["Decantes Unissex", :decants_unissex_path, :origem, Produto::ORIGENS],
+               ["Decantes Nicho", :decants_nicho_path, :origem, Produto::ORIGENS_NICHO],
+               ["Body Splash", :body_splash_path, :publico, Produto::PUBLICOS],
+               ["Hidratantes", :hidratantes_path, :publico, Produto::PUBLICOS]
+             ].each do |titulo, rota, filtro, opcoes| %>
             <li class="relative group py-3">
-              <%= link_to titulo, caminho, class: "hover:text-[#748A9C] transition-colors duration-300" %>
+              <%= link_to public_send(rota), class: "inline-flex items-center gap-1 hover:text-[#748A9C] transition-colors duration-300" do %>
+                <%= titulo %>
+                <span class="material-symbols-outlined text-base" aria-hidden="true">expand_more</span>
+              <% end %>
 
-              <%# Menu suspenso com animação %>
-              <ul class="invisible opacity-0 translate-y-2 pointer-events-none group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 ease-out absolute left-0 top-full pt-2 bg-white/95 backdrop-blur-md border border-[#D9DADD]/70 shadow-[0_10px_30px_rgba(72,80,87,0.18)] rounded-lg min-w-44 z-20">
-                <% marcas.each do |marca| %>
+              <ul class="invisible opacity-0 translate-y-2 pointer-events-none group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto transition-all duration-300 ease-out absolute left-0 top-full pt-2 bg-white/95 backdrop-blur-md border border-[#D9DADD]/70 shadow-[0_10px_30px_rgba(72,80,87,0.18)] rounded-lg min-w-44 z-20">
+                <% opcoes.each do |valor, nome| %>
                   <li>
-                    <%= link_to marca, (marca == "Árabes" ? "#{caminho}?origem=arabe" : marca == "Importados" ? "#{caminho}?origem=importado" : (caminho == decants_nicho_path ? decants_nicho_path(origem: marca.downcase) : busca_path(q: marca))), class: "block px-4 py-2 text-[#485057] hover:bg-[#F0F1F2] hover:pl-6 transition-all duration-300" %>
+                    <%= link_to nome, public_send(rota, filtro => valor), class: "block px-4 py-2 text-[#485057] hover:bg-[#F0F1F2] hover:pl-6 transition-all duration-300" %>
                   </li>
                 <% end %>
               </ul>
             </li>
           <% end %>
 
-          <li class="py-3"><%= link_to "Body Splash", body_splash_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
-          <li class="py-3"><%= link_to "Hidratantes", hidratantes_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
           <li class="py-3"><%= link_to "Destaques", root_path(anchor: "selecao-maison"), class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
           <li class="py-3"><%= link_to "Descubra seu Perfume", quiz_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
           <li class="py-3"><%= link_to "Contato", atendimento_path, class: "hover:text-[#748A9C] transition-colors duration-300" %></li>
