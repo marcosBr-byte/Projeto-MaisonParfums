@@ -32,9 +32,10 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-[#F7F7F5] ">
+  <% login_page = content_for?(:login_page) %>
+  <body class="bg-[#F7F7F5]">
 
-    <header class="bg-[#E5E6E7] border-b border-[#D0D3D6] shrink-0 sticky top-0 z-50">
+    <header class="bg-[#E5E6E7] border-b border-[#D0D3D6] shrink-0 <%= login_page ? "md:sticky md:top-0 md:z-50" : "sticky top-0 z-50" %>">
       <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-6">
         <%= link_to root_path, class: "shrink-0 font-bold rounded-md text-2xl tracking-wide text-[#748A9C]" do %>
           Maison Parfum
@@ -105,7 +106,7 @@
         </ul>
       </nav>
 
-      <details class="md:hidden border-t border-[#D9DADD]">
+      <details class="<%= login_page ? "hidden" : "md:hidden" %> border-t border-[#D9DADD]">
         <summary class="px-4 py-3 text-sm font-medium text-[#485057] cursor-pointer">Menu</summary>
         <ul class="px-4 pb-3 flex flex-col gap-2 text-sm text-[#485057]">
           <li><%= link_to "Início", root_path %></li>
@@ -124,13 +125,13 @@
           <li><%= link_to "Contato", atendimento_path %></li>
         </ul>
       </details>
-      <div class="md:hidden px-4 pb-3">
+      <div class="<%= login_page ? "hidden" : "md:hidden" %> px-4 pb-3">
         <%= render "shared/perfume_search", identificador: "busca-mobile", classes: "w-full" %>
       </div>
     </header>
 
      <main>
-      <%= render "shared/notifications" %>
+      <%= render "shared/notifications" unless login_page %>
       <%= yield %>
     </main>
 
@@ -227,7 +228,11 @@
       </div>
     </footer>
     <% unless current_usuario&.admin? || controller_path.start_with?("admin") %>
-      <%= render "shared/atalhos_flutuantes" %>
+      <% if login_page %>
+        <div class="hidden md:block"><%= render "shared/atalhos_flutuantes" %></div>
+      <% else %>
+        <%= render "shared/atalhos_flutuantes" %>
+      <% end %>
     <% end %>
   </body>
 </html>

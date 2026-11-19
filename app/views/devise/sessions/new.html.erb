@@ -1,29 +1,36 @@
-<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-3 py-6 sm:px-6 sm:py-10">
+<% content_for :login_page, "true" %>
 
-  <div class="w-full max-w-xl lg:max-w-2xl mx-auto">
+<div class="bg-gray-50 px-4 py-6 sm:px-6 sm:py-10">
 
-    <div class="bg-white px-4 py-6 sm:px-8 sm:py-9 lg:px-10 lg:py-10 rounded-xl border border-gray-200 shadow-sm">
+  <div class="w-full max-w-md mx-auto">
 
-      <h2 class="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900 text-center mb-2 sm:mb-3">
+    <div class="bg-white px-5 py-6 sm:p-8 rounded-xl border border-gray-200 shadow-sm">
+
+      <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 text-center mb-4">
         Entrar na sua conta
-      </h2>
+      </h1>
 
-      <p class="text-xs sm:text-sm lg:text-base text-gray-500 text-center mb-6 sm:mb-8">
-        Acesse sua conta e acompanhe seus pedidos em um só lugar.
-      </p>
+      <%= render "shared/notifications", compact: true %>
 
-      <%= render "devise/shared/social_login" %>
+      <% if Usuario.omniauth_providers.any? %>
+        <%= render "devise/shared/social_login" %>
+        <div class="flex items-center gap-3 my-4 text-sm text-gray-600">
+          <span class="h-px bg-gray-200 flex-1" aria-hidden="true"></span>
+          ou entre com e-mail
+          <span class="h-px bg-gray-200 flex-1" aria-hidden="true"></span>
+        </div>
+      <% end %>
 
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 
-        <% field_classes = "w-full h-11 sm:h-12 px-3 sm:px-4 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg outline-none placeholder:text-gray-400 transition duration-200 hover:border-gray-400 focus:border-gray-700 focus:ring-2 focus:ring-gray-200" %>
+        <% field_classes = "w-full h-12 px-3 sm:px-4 text-base text-gray-900 bg-white border border-gray-300 rounded-lg outline-none placeholder:text-gray-400 transition duration-200 hover:border-gray-400 focus:border-gray-700 focus:ring-2 focus:ring-gray-200" %>
 
         <% label_classes = "block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2" %>
 
         <!-- E-mail -->
         <div class="mb-4 sm:mb-5">
           <%= f.label :email, "E-mail", class: label_classes %>
-          <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "ex: seuemail@gmail.com", class: field_classes %>
+          <%= f.email_field :email, autocomplete: "email", class: field_classes %>
         </div>
 
         <div class="mb-4 sm:mb-5">
@@ -39,28 +46,17 @@
         <% end %>
 
         <div class="actions">
-          <%= f.submit "Entrar", class: "w-full h-11 sm:h-12 bg-gray-900 hover:bg-gray-700 active:bg-gray-950 text-white text-sm font-semibold rounded-lg cursor-pointer transition duration-200" %>
+          <%= f.submit "Entrar", class: "w-full h-12 bg-gray-900 hover:bg-gray-700 active:bg-gray-950 text-white text-sm font-semibold rounded-lg cursor-pointer transition duration-200" %>
         </div>
 
       <% end %>
 
-      <div class="flex items-center gap-2 sm:gap-3 my-6 sm:my-7">
-        <div class="h-px bg-gray-200 flex-1"></div>
-        <span class="text-xs text-gray-400 uppercase tracking-wide">ou</span>
-        <div class="h-px bg-gray-200 flex-1"></div>
+      <div class="text-center text-sm text-gray-600 mt-4 space-y-2">
+        <%= render "devise/shared/links", show_registration: false %>
+        <% if devise_mapping.registerable? %>
+          <p>Não tem uma conta? <%= link_to "Cadastre-se", new_registration_path(resource_name), class: "font-semibold text-gray-900 underline" %></p>
+        <% end %>
       </div>
-
-      <div class="text-center text-sm text-gray-600">
-        <%= render "devise/shared/links" %>
-      </div>
-
     </div>
-
-    <div class="bg-white border border-gray-200 rounded-xl mt-4 sm:mt-5 py-4 sm:py-5 px-3 sm:px-4 text-center text-xs sm:text-sm shadow-sm">
-      <span class="text-gray-600">Não tem uma conta?</span>
-      <%= link_to "Cadastre-se", new_registration_path(resource_name), class: "font-semibold text-gray-900 hover:text-gray-500 transition duration-200" %>
-    </div>
-
   </div>
-
 </div>

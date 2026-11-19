@@ -2,12 +2,12 @@
   <p><%= link_to "Entrar", new_session_path(resource_name) %></p>
 <% end %>
 
-<% if devise_mapping.registerable? && controller_name != "registrations" %>
+<% if local_assigns.fetch(:show_registration, true) && devise_mapping.registerable? && controller_name != "registrations" %>
   <p><%= link_to "Cadastrar", new_registration_path(resource_name) %></p>
 <% end %>
 
 <% if devise_mapping.recoverable? && controller_name != "passwords" && controller_name != "registrations" %>
-  <p><%= link_to "Esqueceu sua senha?", new_password_path(resource_name) %></p>
+  <p><%= link_to "Esqueceu sua senha?", new_password_path(resource_name), class: "underline" %></p>
 <% end %>
 
 <% if devise_mapping.confirmable? && controller_name != "confirmations" %>

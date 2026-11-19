@@ -12,3 +12,7 @@
 .system-form-errors { margin-bottom: 24px; }
 .system-form-errors ul { margin: 8px 0 0; padding-left: 20px; list-style: disc; font-size: 14px; line-height: 1.7; }
 @media (max-width: 480px) { .system-notifications { padding: 16px 12px 0; } .system-message { padding: 16px 12px; gap: 10px; } }
+.system-notifications--compact { margin: 0 0 16px; padding: 0; }
+.system-notifications--compact .system-message { padding: 12px; gap: 8px; border-radius: 12px; }
+.system-notifications--compact .system-message__icon { font-size: 20px; }
+.system-notifications--compact .system-message__text { line-height: 1.5; }

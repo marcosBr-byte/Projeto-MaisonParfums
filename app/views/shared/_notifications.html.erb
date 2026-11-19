@@ -1,13 +1,15 @@
 <% messages = flash.to_hash.slice("notice", "alert", "error", "success", "warning") %>
 <% if messages.values.any?(&:present?) %>
-  <div class="system-notifications" data-turbo-temporary>
+  <div class="system-notifications<%= ' system-notifications--compact' if local_assigns[:compact] %>" data-turbo-temporary>
     <% messages.each do |kind, message| %>
       <% next if message.blank? %>
       <% attention = %w[alert error warning].include?(kind) %>
       <div class="system-message system-message--<%= attention ? 'attention' : 'success' %>" role="<%= attention ? 'alert' : 'status' %>" data-controller="notification">
         <span class="material-symbols-outlined system-message__icon" aria-hidden="true"><%= attention ? 'info' : 'check_circle' %></span>
         <div class="system-message__content">
-          <p class="system-message__title"><%= attention ? 'Um aviso para você' : 'Tudo certo!' %></p>
+          <% unless local_assigns[:compact] %>
+            <p class="system-message__title"><%= attention ? 'Um aviso para você' : 'Tudo certo!' %></p>
+          <% end %>
           <% Array(message).each do |text| %><p class="system-message__text"><%= text %></p><% end %>
         </div>
         <button type="button" class="system-message__close" aria-label="Fechar mensagem" data-action="notification#dismiss"><span aria-hidden="true">×</span></button>
