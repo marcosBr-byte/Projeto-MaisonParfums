@@ -7,7 +7,7 @@
   <div class="product-container">
     <nav class="product-breadcrumb" aria-label="Caminho da página">
       <%= link_to "Início", root_path %><span aria-hidden="true">/</span>
-      <%= link_to(@produto.rotulo(:categoria).presence || "Perfumes", @produto.nicho? ? decants_nicho_path : (@produto.masculino? ? decants_masculinos_path : (@produto.feminino? ? decants_femininos_path : (@produto.unissex? ? decants_unissex_path : produtos_todos_path)))) %><span aria-hidden="true">/</span>
+      <%= link_to(@produto.rotulo(:categoria).presence || "Produtos", caminho_categoria_produto(@produto)) %><span aria-hidden="true">/</span>
       <span aria-current="page"><%= @produto.nome %></span>
     </nav>
     <div class="product-hero">
@@ -61,8 +61,8 @@
             <div>
               <% variantes.each do |variante| %>
                 <label>
-                  <%= radio_button_tag "variante_id", variante.id, variante == inicial, disabled: !variante.disponivel?, data: { quantidade_maxima: variante.quantidade_maxima, preco_formatado: moeda_loja(preco_loja(variante)), preco_original: moeda_loja(variante.preco), por_ml: rotulo_por_ml(variante), borrifadas: rotulo_borrifadas(variante), parcela: "Parcelamento conforme condições no pagamento", action: "change->variante#atualizar" } %>
-                  <span><%= Variante.tamanhos[variante.tamanho] %><%= " · esgotado" unless variante.disponivel? %></span>
+                  <%= radio_button_tag "variante_id", variante.id, variante == inicial, disabled: !variante.disponivel?, data: { quantidade_maxima: variante.quantidade_maxima, preco_formatado: moeda_loja(preco_loja(variante)), preco_original: moeda_loja(variante.preco), por_ml: rotulo_por_ml(variante), borrifadas: (@produto.hidratante? ? nil : rotulo_borrifadas(variante)), parcela: "Parcelamento conforme condições no pagamento", action: "change->variante#atualizar" } %>
+                  <span><%= rotulo_tamanho_variante(variante) %><%= " · esgotado" unless variante.disponivel? %></span>
                 </label>
               <% end %>
             </div>
@@ -70,9 +70,16 @@
         <% end %>
         <div class="product-yield" aria-live="polite">
           <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
-          <div><p data-variante-target="borrifadas"><%= rotulo_borrifadas(inicial) %></p><p class="product-caption" data-variante-target="porMl"><%= rotulo_por_ml(inicial) %></p></div>
+          <div>
+            <% unless @produto.hidratante? %>
+              <p data-variante-target="borrifadas"><%= rotulo_borrifadas(inicial) %></p>
+            <% end %>
+            <p class="product-caption" data-variante-target="porMl"><%= rotulo_por_ml(inicial) %></p>
+          </div>
         </div>
-        <p class="product-caption">Rendimento estimado de <%= configuracao_loja.borrifadas_por_ml %> borrifadas/ml. Pode variar conforme o frasco e o uso.</p>
+        <% unless @produto.hidratante? %>
+          <p class="product-caption">Rendimento estimado de <%= configuracao_loja.borrifadas_por_ml %> borrifadas/ml. Pode variar conforme o frasco e o uso.</p>
+        <% end %>
         <% if inicial %>
           <%= form_with url: adicionar_carrinho_path, method: :post, class: "product-add-form" do |form| %>
             <%= form.hidden_field :produto_id, value: @produto.to_param %>

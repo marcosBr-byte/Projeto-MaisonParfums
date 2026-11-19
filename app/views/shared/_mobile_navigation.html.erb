@@ -30,6 +30,11 @@
       </div>
 
       <ul class="grid grid-cols-2 gap-2">
+        <li><%= link_to "Body Splash", body_splash_path, class: "flex min-h-11 items-center justify-center rounded-lg border border-[#D0D3D6] bg-white px-2 py-1 text-center font-semibold" %></li>
+        <li><%= link_to "Hidratantes", hidratantes_path, class: "flex min-h-11 items-center justify-center rounded-lg border border-[#D0D3D6] bg-white px-2 py-1 text-center font-semibold" %></li>
+      </ul>
+
+      <ul class="grid grid-cols-2 gap-2">
         <% [["Início", root_path], ["Descubra seu Perfume", quiz_path], ["Grupo VIP", grupo_vip_path], ["Contato", atendimento_path]].each do |nome, destino| %>
           <li><%= link_to nome, destino, class: "flex min-h-11 items-center justify-center rounded-lg border border-[#D0D3D6] bg-white px-2 py-1 text-center font-semibold" %></li>
         <% end %>

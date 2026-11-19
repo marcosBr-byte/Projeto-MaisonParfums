@@ -1,0 +1,7 @@
+<% if produtos.any? %>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <%= render partial: "produto/produtos", collection: produtos, as: :produto %>
+  </div>
+<% else %>
+  <p class="text-[#485057]">Nenhum produto disponível nesta categoria.</p>
+<% end %>

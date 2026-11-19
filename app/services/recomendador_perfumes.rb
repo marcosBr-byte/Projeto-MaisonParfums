@@ -11,6 +11,7 @@ class RecomendadorPerfumes
     return [] unless @quiz.valid?
 
     @produtos.filter_map do |produto|
+      next if produto.body_splash? || produto.hidratante?
       next unless @quiz.categoria == "qualquer" || [@quiz.categoria, "unissex"].include?(produto.categoria)
       ofertas = produto.variantes.select { |v| v.preco&.positive? && v.disponivel? }
       variante = ofertas.min_by(&:preco)

@@ -1,4 +1,24 @@
 module ProdutoHelper
+  def caminho_categoria_produto(produto)
+    rotas = {
+      "masculino" => :decants_masculinos_path,
+      "feminino" => :decants_femininos_path,
+      "unissex" => :decants_unissex_path,
+      "nicho" => :decants_nicho_path,
+      "body_splash" => :body_splash_path,
+      "hidratante" => :hidratantes_path
+    }
+    public_send(rotas.fetch(produto.categoria, :produtos_todos_path))
+  end
+
+  def rotulo_tamanho_variante(variante)
+    if (variante.produto.body_splash? || variante.produto.hidratante?) && variante.lacrado? && variante.volume_ml.present?
+      return "#{variante.volume_ml} ml"
+    end
+
+    Variante.tamanhos.fetch(variante.tamanho, variante.tamanho)
+  end
+
   def estrelas_avaliacao(nota)
     preenchidas = nota.to_f.round.clamp(0, 5)
     tag.span(class: "product-stars", role: "img", aria: { label: "#{nota.to_f.round(1)} de 5 estrelas" }) do

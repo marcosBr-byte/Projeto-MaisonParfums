@@ -83,7 +83,9 @@ class Produto < ApplicationRecord
     feminino: "Feminino",
     masculino: "Masculino",
     unissex: "Unissex",
-    nicho: "Nicho"
+    nicho: "Nicho",
+    body_splash: "Body Splash",
+    hidratante: "Hidratantes"
   }
 
   enum :tamanho, {

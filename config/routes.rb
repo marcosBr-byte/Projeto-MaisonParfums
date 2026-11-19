@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   get "decants/unissex", to: "produto#decants_unissex", as: :decants_unissex
   get "decants/nicho", to: "produto#decants_nicho", as: :decants_nicho
   get "produtos_todos", to: "produto#pag_todos_prod", as: :produtos_todos
+  get "body-splash", to: "produto#body_splash", as: :body_splash
+  get "hidratantes", to: "produto#hidratantes", as: :hidratantes
   get "busca", to: "produto#busca", as: :busca
   get "busca/sugestoes", to: "produto#sugestoes", as: :busca_sugestoes
 

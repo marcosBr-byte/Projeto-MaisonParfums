@@ -18,7 +18,7 @@
     <% if variantes.any? %>
       <div class="catalog-card__sizes" aria-label="Tamanhos disponíveis">
         <% variantes.each do |variante| %>
-          <span class="catalog-card__size <%= 'catalog-card__size--unavailable' unless variante.disponivel? %>" <%= tag.attributes(title: "Tamanho esgotado") unless variante.disponivel? %>><%= Variante.tamanhos[variante.tamanho] || variante.tamanho %><%= " · esgotado" unless variante.disponivel? %></span>
+          <span class="catalog-card__size <%= 'catalog-card__size--unavailable' unless variante.disponivel? %>" <%= tag.attributes(title: "Tamanho esgotado") unless variante.disponivel? %>><%= rotulo_tamanho_variante(variante) %><%= " · esgotado" unless variante.disponivel? %></span>
         <% end %>
       </div>
     <% end %>

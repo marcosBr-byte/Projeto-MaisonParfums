@@ -13,6 +13,8 @@ class ProdutoController < ApplicationController
     @femininos = Produto.feminino.order(:nome)
     @unissex = Produto.unissex.order(:nome)
     @nichos = Produto.nicho.order(:nome)
+    @body_splashes = Produto.body_splash.order(:nome)
+    @hidratantes = Produto.hidratante.order(:nome)
     
     render "produto/produtos_todos"
   end
@@ -33,6 +35,18 @@ class ProdutoController < ApplicationController
     @origem = params[:origem].presence_in(Produto::ORIGENS_NICHO.keys)
     @produtos = Produto.nicho.order(:nome)
     @produtos = @produtos.where(origem: @origem) if @origem
+  end
+
+  def body_splash
+    @titulo = Produto.defined_enums.fetch("categoria").fetch("body_splash")
+    @produtos = Produto.body_splash.order(:nome)
+    render :categoria
+  end
+
+  def hidratantes
+    @titulo = Produto.defined_enums.fetch("categoria").fetch("hidratante")
+    @produtos = Produto.hidratante.order(:nome)
+    render :categoria
   end
 
   def busca
