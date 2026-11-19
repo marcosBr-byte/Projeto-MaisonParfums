@@ -40,10 +40,3 @@ bin/dev
 ```
 
 A aplicação roda em `http://localhost:3000`. Execute os testes com `bin/rails test`.
-
-## Configuração
-
-- [Publicação no Render](docs/publicacao.md)
-- [Mercado Pago](docs/pagamentos.md)
-- [WhatsApp](docs/whatsapp.md)
-- [Login social](docs/login-social.md)
