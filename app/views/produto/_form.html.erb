@@ -43,7 +43,7 @@
     </div>
   </section>
 
-  <section class="<%= secao %>" data-controller="produto-origem" data-produto-origem-comuns-value="<%= Produto::ORIGENS.to_json %>" data-produto-origem-nicho-value="<%= Produto::ORIGENS_NICHO.to_json %>">
+  <section class="<%= secao %>" data-controller="produto-origem" data-produto-origem-comuns-value="<%= Produto::ORIGENS.to_json %>" data-produto-origem-nicho-value="<%= Produto::ORIGENS_NICHO.to_json %>" data-produto-origem-cuidados-value="<%= Produto::CATEGORIAS_CUIDADOS_CORPORAIS.to_json %>">
     <h3 class="<%= titulo %>">Perfil do perfume</h3>
 
     <div class="grid sm:grid-cols-3 gap-5">
@@ -61,6 +61,11 @@
         <%= form.label :momento, "Momento", class: rotulo %>
         <%= form.select :momento, ["Dia", "Noite", "Ambos"], { include_blank: "Selecione" }, class: campo %>
       </div>
+    </div>
+
+    <div data-produto-origem-target="campoPublico">
+      <%= form.label :publico, "Público (Body Splash e Hidratantes)", class: rotulo %>
+      <%= form.select :publico, Produto::PUBLICOS.map { |valor, nome| [nome, valor] }, { include_blank: "Selecione" }, class: campo, data: { produto_origem_target: "publico" } %>
     </div>
 
     <div>

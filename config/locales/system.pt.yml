@@ -124,6 +124,7 @@ pt:
         preco: "Preço"
         origem: "Origem do perfume"
         categoria: "Categoria"
+        publico: "Público"
         descricao: "Descrição"
         imagem: "Imagem"
         fotos: "Fotos"

@@ -1,5 +1,5 @@
 <% variantes = produto.variantes.sort_by { |v| v.preco || 0 } %>
-<% detalhes = [produto.rotulo(:categoria), produto.rotulo(:fragancia)].compact_blank %>
+<% detalhes = [produto.rotulo(:categoria), Produto::PUBLICOS[produto.publico], produto.rotulo(:fragancia)].compact_blank %>
 <% disponivel = variantes.any?(&:disponivel?) %>
 <%= link_to produto_path(produto), id: dom_id(produto), class: "catalog-card #{local_assigns[:card_class]}" do %>
   <div class="catalog-card__image">

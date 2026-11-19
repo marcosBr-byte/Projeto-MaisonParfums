@@ -12,7 +12,7 @@ module ProdutoHelper
   end
 
   def rotulo_tamanho_variante(variante)
-    if (variante.produto.body_splash? || variante.produto.hidratante?) && variante.lacrado? && variante.volume_ml.present?
+    if variante.produto.cuidados_corporais? && variante.lacrado? && variante.volume_ml.present?
       return "#{variante.volume_ml} ml"
     end
 

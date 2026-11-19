@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_18_195100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -251,6 +251,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_130000) do
     t.integer "uso_noite"
     t.string "slug", null: false
     t.string "origem"
+    t.string "publico"
     t.index ["frasco_mae_id"], name: "index_produtos_on_frasco_mae_id"
     t.index ["slug"], name: "index_produtos_on_slug", unique: true
     t.check_constraint "origem IS NULL OR (origem::text = ANY (ARRAY[''::character varying, 'arabe'::character varying, 'importado'::character varying, 'xerjoff'::character varying, 'nishane'::character varying, 'sospiro'::character varying]::text[]))", name: "produto_origem_valida"

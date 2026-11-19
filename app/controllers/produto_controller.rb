@@ -39,13 +39,13 @@ class ProdutoController < ApplicationController
 
   def body_splash
     @titulo = Produto.defined_enums.fetch("categoria").fetch("body_splash")
-    @produtos = Produto.body_splash.order(:nome)
+    @produtos = filtrar_publico(Produto.body_splash)
     render :categoria
   end
 
   def hidratantes
     @titulo = Produto.defined_enums.fetch("categoria").fetch("hidratante")
-    @produtos = Produto.hidratante.order(:nome)
+    @produtos = filtrar_publico(Produto.hidratante)
     render :categoria
   end
 
@@ -102,6 +102,12 @@ class ProdutoController < ApplicationController
 
   private
      
+  def filtrar_publico(produtos)
+    @publico = params[:publico].presence_in(Produto::PUBLICOS.keys)
+    produtos = produtos.where(publico: @publico) if @publico
+    produtos.order(:nome)
+  end
+
   def filtrar_origem(produtos)
     @origem = params[:origem].presence_in(Produto::ORIGENS.keys)
     @origem ? produtos.where(origem: @origem) : produtos
@@ -110,7 +116,7 @@ class ProdutoController < ApplicationController
   def produtos_da_busca(termo)
     return Produto.none if termo.blank?
 
-    texto = "translate(lower(concat_ws(' ', nome, marca, descricao, fragancia, categoria, origem)), 'áàâãäéèêëíìîïóòôõöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')"
+    texto = "translate(lower(concat_ws(' ', nome, marca, descricao, fragancia, categoria, origem, publico)), 'áàâãäéèêëíìîïóòôõöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')"
     palavras = I18n.transliterate(termo).downcase.split.first(8)
     equivalentes = { "arabes" => "arabe", "importados" => "importado", "unisex" => "unissex", "unisexy" => "unissex", "amadeirado" => "amadeirad", "amadeirada" => "amadeirad" }
     produtos = Produto.all
@@ -128,7 +134,7 @@ class ProdutoController < ApplicationController
   def produto_params
     permitidos = params.require(:produto).permit(
       :destaque,
-      :nome, :marca, :descricao, :categoria, :origem, :fragancia, :intensidade,
+      :nome, :marca, :descricao, :categoria, :publico, :origem, :fragancia, :intensidade,
       :momento, :piramide_olfativa, :concentracao, :imagem,
       :uso_inverno, :uso_primavera, :uso_verao, :uso_outono, :uso_dia, :uso_noite,
       fotos: [], notas_olfativas_attributes: [:id, :nome, :nivel, :imagem, :_destroy],

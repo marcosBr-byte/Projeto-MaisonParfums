@@ -1,8 +1,20 @@
 class Produto < ApplicationRecord
   include OtimizaImagens
+  PUBLICOS = { "masculino" => "Masculino", "feminino" => "Feminino", "unissex" => "Unissex" }.freeze
+  CATEGORIAS_CUIDADOS_CORPORAIS = %w[body_splash hidratante].freeze
   ORIGENS = { "arabe" => "Árabes", "importado" => "Importados" }.freeze
   ORIGENS_NICHO = { "xerjoff" => "Xerjoff", "nishane" => "Nishane", "sospiro" => "Sospiro" }.freeze
   validates :origem, inclusion: { in: ->(produto) { produto.origens_disponiveis.keys } }, allow_blank: true
+
+  before_validation { self.publico = cuidados_corporais? ? publico.presence : nil }
+  validates :publico, inclusion: { in: PUBLICOS.keys }, allow_nil: true
+  validates :publico, presence: true, if: -> {
+    cuidados_corporais? && (new_record? || will_save_change_to_categoria? || will_save_change_to_publico?)
+  }
+
+  def cuidados_corporais?
+    categoria.in?(CATEGORIAS_CUIDADOS_CORPORAIS)
+  end
 
   def origens_disponiveis
     nicho? ? ORIGENS_NICHO : ORIGENS

@@ -18,6 +18,23 @@ class ProdutosCuidadosCorporaisTest < ActionDispatch::IntegrationTest
     assert_select "main a[href='#{produto_path(hidratante)}']"
     assert_select "main a[href='#{produto_path(splash)}']", count: 0
 
+    get body_splash_path(publico: :masculino)
+    assert_response :success
+    assert_select "main a[href='#{body_splash_path(publico: :masculino)}'][aria-current=page]"
+    assert_select "main a[href='#{produto_path(splash)}']"
+
+    get body_splash_path(publico: :feminino)
+    assert_response :success
+    assert_select "main a[href='#{produto_path(splash)}']", count: 0
+
+    get hidratantes_path(publico: :masculino)
+    assert_response :success
+    assert_select "main a[href='#{produto_path(hidratante)}']"
+
+    get hidratantes_path(publico: :unissex)
+    assert_response :success
+    assert_select "main a[href='#{produto_path(hidratante)}']", count: 0
+
     get produtos_todos_path
     assert_response :success
     assert_select "main a[href='#{produto_path(splash)}']"
@@ -40,18 +57,22 @@ class ProdutosCuidadosCorporaisTest < ActionDispatch::IntegrationTest
     assert_select 'select[name="produto[categoria]"] option[value=body_splash]', text: "Body Splash"
     assert_select 'select[name="produto[categoria]"] option[value=hidratante]', text: "Hidratantes"
 
+    assert_select 'select[name="produto[publico]"] option[value=unissex]', text: "Unissex"
+
     %w[body_splash hidratante].each do |categoria|
-      post produtos_path, params: { produto: { nome: "Produto #{categoria}", categoria: categoria,
+      post produtos_path, params: { produto: { nome: "Produto #{categoria}", categoria: categoria, publico: "unissex",
         variantes_attributes: { "0" => { tamanho: "lacrado", volume_lacrado_ml: "200", preco: "60", estoque: "2" } } } }
       assert_redirected_to admin_path
-      assert_equal 200, Produto.find_by!(nome: "Produto #{categoria}", categoria: categoria).variantes.first.volume_ml
+      produto = Produto.find_by!(nome: "Produto #{categoria}", categoria: categoria)
+      assert_equal "unissex", produto.publico
+      assert_equal 200, produto.variantes.first.volume_ml
     end
   end
 
   private
 
   def criar_produto(nome, categoria)
-    Produto.create!(nome: nome, categoria: categoria,
+    Produto.create!(nome: nome, categoria: categoria, publico: :masculino,
       variantes_attributes: [{ tamanho: :lacrado, volume_lacrado_ml: 200, preco: 60, estoque: 2 }])
   end
 end
