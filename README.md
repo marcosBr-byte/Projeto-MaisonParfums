@@ -4,7 +4,7 @@ A Maison Parfum precisava de um sistema robusto para vender decantes online e ce
 
 Para quem compra, a loja facilita a descoberta de fragrâncias com busca por nome, marca ou fragrância e um quiz olfativo que recomenda perfumes do catálogo. Os decantes permitem experimentar essas fragrâncias em pequenos volumes antes de investir em um frasco inteiro.
 
-[Visite a loja](https://maison-parfum.onrender.com) · [<img src="https://cdn.simpleicons.org/instagram" alt="Instagram" width="16" height="16"> @maisonparfumoficiall](https://www.instagram.com/maisonparfumoficiall)
+[Visite a loja](https://maison-parfum.onrender.com) · [![Instagram](docs/icons/instagram.png) @maisonparfumoficiall](https://www.instagram.com/maisonparfumoficiall)
 
 ## O sistema
 
@@ -24,9 +24,9 @@ Para quem compra, a loja facilita a descoberta de fragrâncias com busca por nom
 
 ## APIs e serviços externos
 
-- <img src="https://cdn.simpleicons.org/mercadopago" alt="Mercado Pago" width="16" height="16"> **Mercado Pago Checkout Pro (Orders API)** — checkout por Pix e cartão, com confirmação via webhook.
-- <img src="https://cdn.simpleicons.org/google" alt="Google" width="16" height="16"> <img src="https://cdn.simpleicons.org/facebook" alt="Facebook" width="16" height="16"> **Google OAuth 2.0 e Facebook Login** — acesso e vínculo de contas quando o provedor está habilitado.
-- <img src="https://cdn.simpleicons.org/whatsapp" alt="WhatsApp" width="16" height="16"> **WhatsApp Business Cloud API (Meta)** — avisos automáticos de pedidos pagos para a loja.
+- ![Mercado Pago](docs/icons/mercadopago.png) **Mercado Pago Checkout Pro (Orders API)** — checkout por Pix e cartão, com confirmação via webhook.
+- ![Google](docs/icons/google.png) ![Facebook](docs/icons/facebook.png) **Google OAuth 2.0 e Facebook Login** — acesso e vínculo de contas quando o provedor está habilitado.
+- ![WhatsApp](docs/icons/whatsapp.png) **WhatsApp Business Cloud API (Meta)** — avisos automáticos de pedidos pagos para a loja.
 - **SMTP** — envio de e-mails da loja, incluindo recuperação de senha.
 
 ## Desenvolvimento local
