@@ -14,7 +14,7 @@ module MaisonParfum
     config.middleware.insert_before 0, RequestBodyLimit
     config.action_dispatch.rescue_responses["RequestBodyLimit::Exceeded"] = "content_too_large"
     config.i18n.default_locale = :pt
-    config.i18n.available_locales = [:pt, :en]
+    config.i18n.available_locales = [ :pt, :en ]
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

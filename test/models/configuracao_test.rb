@@ -11,7 +11,7 @@ class ConfiguracaoTest < ActiveSupport::TestCase
       "MERCADO_PAGO_ATIVO" => "false",
       "MERCADO_PAGO_TESTE" => "true"
     }
-    anteriores = valores.keys.to_h { |chave| [chave, ENV[chave]] }
+    anteriores = valores.keys.to_h { |chave| [ chave, ENV[chave] ] }
     valores.each { |chave, valor| ENV[chave] = valor }
     configuracao = Configuracao.new(pagamento_ativo: true, pagamento_teste: false)
     assert_equal "token-ficticio", configuracao.pagamento_token

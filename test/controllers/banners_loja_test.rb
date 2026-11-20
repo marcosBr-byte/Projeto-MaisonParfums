@@ -12,22 +12,22 @@ class BannersLojaTest < ActionDispatch::IntegrationTest
 
   test "atalhos circulares permitem foto ordem e desativacao pelo admin" do
     get root_path
-    assert_select '.home-category-shortcut', count: 3
-    assert_select '#destaques', count: 0
-    assert_select '.home-category-shortcut', text: 'Mais Vendidos', count: 0
-    assert_select '.home-category-shortcut[href=?]', decants_nicho_path
+    assert_select ".home-category-shortcut", count: 3
+    assert_select "#destaques", count: 0
+    assert_select ".home-category-shortcut", text: "Mais Vendidos", count: 0
+    assert_select ".home-category-shortcut[href=?]", decants_nicho_path
     sign_in @admin
     get admin_customizar_path
     atalho = Banner.find_by!(chave: "atalho_nicho")
     patch admin_atualizar_banner_path(atalho), params: { banner: { ordem: 0, ativo: "1", imagem: fixture_file_upload(Rails.root.join("app/assets/images/slide-frete.jpeg"), "image/jpeg") } }
     assert_redirected_to admin_customizar_path
     get root_path
-    assert_select '.home-category-shortcut:first-child[href=?] img', decants_nicho_path
-    assert_select '#secao-carrossel img', count: 1
+    assert_select ".home-category-shortcut:first-child[href=?] img", decants_nicho_path
+    assert_select "#secao-carrossel img", count: 1
     patch admin_atualizar_banner_path(atalho), params: { banner: { ativo: "0" } }
     get root_path
-    assert_select '.home-category-shortcut', count: 2
-    assert_select '.home-category-shortcut[href=?]', decants_nicho_path, count: 0
+    assert_select ".home-category-shortcut", count: 2
+    assert_select ".home-category-shortcut[href=?]", decants_nicho_path, count: 0
   end
 
   test "personalizacao oferece videos e fotos de colecoes sem a antiga foto de experiencia" do
@@ -35,24 +35,24 @@ class BannersLojaTest < ActionDispatch::IntegrationTest
     get admin_customizar_path
     assert_response :success
     assert_not Banner.find_by!(chave: "nicho").ativo?
-    assert_select '#videos-home'
-    assert_select 'h2', text: "Foto da seção Uma experiência em cada fragrância", count: 0
+    assert_select "#videos-home"
+    assert_select "h2", text: "Foto da seção Uma experiência em cada fragrância", count: 0
     get root_path
     assert_response :success
-    assert_select '#video img', count: 0
-    assert_select '#video video', count: VideoHome.ativos.count
-    assert_select '#busca-mobile', count: 1
+    assert_select "#video img", count: 0
+    assert_select "#video video", count: VideoHome.ativos.count
+    assert_select "#busca-mobile", count: 1
   end
 
   test "colecao nicho usa foto enviada e link correto" do
     banner = Banner.create!(chave: "nicho", ordem: 6, ativo: true)
     get root_path
-    assert_select '#secao-decants', count: 0
+    assert_select "#secao-decants", count: 0
     banner.imagem.attach(io: File.open(Rails.root.join("app/assets/images/slide-frete.jpeg")), filename: "nicho.jpeg", content_type: "image/jpeg")
     get root_path
     assert_response :success
-    assert_select '#secao-decants a[href=?] img', decants_nicho_path
-    assert_select '#secao-carrossel img', count: 1
+    assert_select "#secao-decants a[href=?] img", decants_nicho_path
+    assert_select "#secao-carrossel img", count: 1
   end
 
   test "personalizacao salva imagem sem titulo ou subtitulo" do
@@ -66,9 +66,9 @@ class BannersLojaTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_customizar_path
     get root_path
     assert_response :success
-    assert_select '#secao-carrossel h2, #secao-carrossel p', count: 0
+    assert_select "#secao-carrossel h2, #secao-carrossel p", count: 0
     assert_select '#secao-carrossel img[alt="Destaques da loja"]' do |images|
-      assert_equal foto_path(chave: @banner.reload.imagem.blob.key, tamanho: :banner), images.first['src']
+      assert_equal foto_path(chave: @banner.reload.imagem.blob.key, tamanho: :banner), images.first["src"]
     end
   end
 
@@ -77,8 +77,8 @@ class BannersLojaTest < ActionDispatch::IntegrationTest
     Banner.create!(chave: "quiz", ordem: 3, ativo: false)
     get root_path
     assert_response :success
-    assert_select '#secao-carrossel img' do |imagens|
-      assert_equal ["Envio para o Brasil", "Destaques da loja"], imagens.map { |i| i['alt'] }
+    assert_select "#secao-carrossel img" do |imagens|
+      assert_equal [ "Envio para o Brasil", "Destaques da loja" ], imagens.map { |i| i["alt"] }
     end
     assert_select 'button[data-action="carousel#next"]', count: 0
     assert_select '[data-carousel-target="dot"]', count: 2
@@ -87,11 +87,11 @@ class BannersLojaTest < ActionDispatch::IntegrationTest
   test "colecoes mostram imagem sem texto e somem quando desativadas" do
     banner = Banner.create!(chave: "masculino", titulo: "Antigo titulo", subtitulo: "Antigo subtitulo", ordem: 4)
     get root_path
-    assert_select '#secao-decants h2, #secao-decants p', count: 0
-    assert_select '#secao-decants a[href=?] img', decants_masculinos_path
+    assert_select "#secao-decants h2, #secao-decants p", count: 0
+    assert_select "#secao-decants a[href=?] img", decants_masculinos_path
     banner.update!(ativo: false)
     get root_path
-    assert_select '#secao-decants', count: 0
+    assert_select "#secao-decants", count: 0
   end
 
   test "ordem invalida com upload mostra erro sem quebrar previa" do
@@ -120,13 +120,13 @@ class BannersLojaTest < ActionDispatch::IntegrationTest
     @banner.update!(ativo: false)
     get root_path
     assert_response :success
-    assert_select '#secao-carrossel', count: 0
+    assert_select "#secao-carrossel", count: 0
   end
 
   test "banner do quiz permanece clicavel sem texto sobre a imagem" do
     Banner.create!(chave: "quiz", ordem: 3)
     get root_path
     assert_select '#secao-carrossel a[href=?][aria-label="Descobrir meu perfume"]', quiz_path
-    assert_select '#secao-carrossel h2, #secao-carrossel p', count: 0
+    assert_select "#secao-carrossel h2, #secao-carrossel p", count: 0
   end
 end

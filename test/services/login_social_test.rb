@@ -21,7 +21,7 @@ class LoginSocialTest < ActiveSupport::TestCase
   end
 
   test "nao permite cadastro sem email nem email google sem verificacao" do
-    assert_no_difference ["Usuario.count", "IdentidadeSocial.count"] do
+    assert_no_difference [ "Usuario.count", "IdentidadeSocial.count" ] do
       assert_raises(LoginSocial::Erro) { LoginSocial.autenticar(auth(email: "")) }
       assert_raises(LoginSocial::Erro) { LoginSocial.autenticar(auth(verified: false)) }
       assert_raises(LoginSocial::Erro) { LoginSocial.autenticar(nil) }
@@ -30,7 +30,7 @@ class LoginSocialTest < ActiveSupport::TestCase
 
   test "email existente inclusive admin nao e vinculado automaticamente" do
     usuario = Usuario.create!(nome: "Admin", email: "social@example.com", telefone: "85999999999", password: "senha-teste-123", role: :admin)
-    assert_no_difference ["Usuario.count", "IdentidadeSocial.count"] do
+    assert_no_difference [ "Usuario.count", "IdentidadeSocial.count" ] do
       assert_raises(LoginSocial::Erro) { LoginSocial.autenticar(auth) }
     end
     assert usuario.reload.admin?

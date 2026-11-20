@@ -1,5 +1,5 @@
 class AdminController < ApplicationController
-  layout "admin", only: [:index, :show]
+  layout "admin", only: [ :index, :show ]
   before_action :authenticate_usuario!
   before_action :exigir_admin
   around_action :horario_local, only: :index

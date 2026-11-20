@@ -6,7 +6,7 @@ class ProdutosDestaqueTest < ActionDispatch::IntegrationTest
 
   setup do
     @admin = Usuario.create!(nome: "Admin", email: "destaques@example.com", telefone: "85999999999", password: "senha-teste-123", role: :admin)
-    @produto = Produto.create!(nome: "Perfume selecionado", categoria: :unissex, variantes_attributes: [{ tamanho: :tamanho_5ml, preco: 50, estoque: 5 }])
+    @produto = Produto.create!(nome: "Perfume selecionado", categoria: :unissex, variantes_attributes: [ { tamanho: :tamanho_5ml, preco: 50, estoque: 5 } ])
   end
 
   test "admin destaca produto sem vendas e pode retirar da home" do
@@ -18,11 +18,11 @@ class ProdutosDestaqueTest < ActionDispatch::IntegrationTest
     assert @produto.reload.destaque?
     get root_path
     assert_response :success
-    assert_select '#selecao-maison h4', text: @produto.nome
+    assert_select "#selecao-maison h4", text: @produto.nome
     patch produto_path(@produto), params: { produto: { destaque: "0" } }
     assert_not @produto.reload.destaque?
     get root_path
-    assert_select '#selecao-maison', count: 0
+    assert_select "#selecao-maison", count: 0
   end
 
   test "visitante nao pode destacar produto" do

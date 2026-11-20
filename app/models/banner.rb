@@ -4,9 +4,9 @@ class Banner < ApplicationRecord
   otimizar_anexos :imagem, limite: 2400
 
   ATALHOS = {
-    "atalho_masculino" => ["Decantes Masculinos", "male"],
-    "atalho_feminino" => ["Decantes Femininos", "female"],
-    "atalho_nicho" => ["Decantes Nicho", "diamond"]
+    "atalho_masculino" => [ "Decantes Masculinos", "male" ],
+    "atalho_feminino" => [ "Decantes Femininos", "female" ],
+    "atalho_nicho" => [ "Decantes Nicho", "diamond" ]
   }.freeze
 
   validates :chave, presence: true, uniqueness: true

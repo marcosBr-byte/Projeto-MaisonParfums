@@ -12,7 +12,7 @@ class RecomendadorPerfumes
 
     @produtos.filter_map do |produto|
       next if produto.cuidados_corporais?
-      next unless @quiz.categoria == "qualquer" || [@quiz.categoria, "unissex"].include?(produto.categoria)
+      next unless @quiz.categoria == "qualquer" || [ @quiz.categoria, "unissex" ].include?(produto.categoria)
       ofertas = produto.variantes.select { |v| v.preco&.positive? && v.disponivel? }
       variante = ofertas.min_by(&:preco)
       preco = variante&.preco_venda(@configuracao)
@@ -37,6 +37,6 @@ class RecomendadorPerfumes
       end
       motivos << "Tamanho dentro do seu orçamento" if @quiz.limite
       Resultado.new(produto: produto, variante: variante, preco: preco, pontos: pontos, motivos: motivos)
-    end.sort_by { |r| [-r.pontos, r.preco, r.produto.nome.to_s] }.first(3)
+    end.sort_by { |r| [ -r.pontos, r.preco, r.produto.nome.to_s ] }.first(3)
   end
 end

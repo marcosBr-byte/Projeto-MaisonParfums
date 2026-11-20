@@ -6,7 +6,7 @@ class ModeracaoAutomaticaTest < ActionDispatch::IntegrationTest
 
   setup do
     @cliente = Usuario.create!(nome: "Cliente", email: "moderacao@example.com", telefone: "85999999999", password: "senha-teste-123")
-    @produto = Produto.create!(nome: "Perfume", variantes_attributes: [{ tamanho: :tamanho_5ml, preco: 50, estoque: 5 }])
+    @produto = Produto.create!(nome: "Perfume", variantes_attributes: [ { tamanho: :tamanho_5ml, preco: 50, estoque: 5 } ])
     sign_in @cliente
   end
 
@@ -14,10 +14,10 @@ class ModeracaoAutomaticaTest < ActionDispatch::IntegrationTest
     post produto_avaliacoes_path(@produto), params: { avaliacao: { nota: 1, comentario: "Não gostei, a fixação é ruim e o cheiro é péssimo.", publicada: false } }
     assert @produto.avaliacoes.sole.publicada?
     get produto_path(@produto)
-    assert_select '.review-count', text: "(1)"
-    assert_select '.reviews-average strong', text: "1,0"
+    assert_select ".review-count", text: "(1)"
+    assert_select ".reviews-average strong", text: "1,0"
     get root_path
-    assert_select '.home-testimonial-comment', text: /fixação é ruim/
+    assert_select ".home-testimonial-comment", text: /fixação é ruim/
   end
 
   test "ofensa fica oculta mesmo tentando publicar e cliente pode corrigir" do
@@ -25,16 +25,16 @@ class ModeracaoAutomaticaTest < ActionDispatch::IntegrationTest
     avaliacao = @produto.avaliacoes.sole
     assert_not avaliacao.publicada?
     get produto_path(@produto)
-    assert_select '.review-card', count: 0
-    assert_select '#avaliar-produto form[action=?]', produto_avaliacao_path(@produto)
+    assert_select ".review-card", count: 0
+    assert_select "#avaliar-produto form[action=?]", produto_avaliacao_path(@produto)
     get root_path
-    assert_select '.home-testimonial', count: 0
+    assert_select ".home-testimonial", count: 0
     patch produto_avaliacao_path(@produto), params: { avaliacao: { nota: 2, comentario: "Não gostei da fragrância." } }
     assert avaliacao.reload.publicada?
     assert_equal 1, @produto.avaliacoes.count
     get produto_path(@produto)
-    assert_select '.review-comment', text: "Não gostei da fragrância."
-    assert_select '.reviews-average strong', text: "2,0"
+    assert_select ".review-comment", text: "Não gostei da fragrância."
+    assert_select ".reviews-average strong", text: "2,0"
   end
 
   test "outro cliente nao altera avaliacao e admin nao publica conteudo ofensivo" do

@@ -6,7 +6,7 @@ class LinksPublicosTest < ActionDispatch::IntegrationTest
 
   setup do
     @produto = Produto.create!(nome: "Fragrância Especial", categoria: :unissex,
-      variantes_attributes: [{ tamanho: :tamanho_5ml, preco: 50, estoque: 5 }])
+      variantes_attributes: [ { tamanho: :tamanho_5ml, preco: 50, estoque: 5 } ])
     @produto.imagem.attach(io: File.open(Rails.root.join("public/icon.png")), filename: "produto.png", content_type: "image/png")
     @cliente = Usuario.create!(nome: "Cliente", email: "links-cliente@example.com", telefone: "85999999999", password: "senha-teste-123")
   end
@@ -22,8 +22,8 @@ class LinksPublicosTest < ActionDispatch::IntegrationTest
     assert_redirected_to produto_path(@produto)
     get produto_path(@produto)
     assert_response :success
-    assert_select '.product-main-photo img[src=?]', foto_path(chave: @produto.imagem.blob.key, tamanho: :detalhe)
-    assert_select '.product-main-photo a[href=?]', foto_path(chave: @produto.imagem.blob.key, tamanho: :detalhe)
+    assert_select ".product-main-photo img[src=?]", foto_path(chave: @produto.imagem.blob.key, tamanho: :detalhe)
+    assert_select ".product-main-photo a[href=?]", foto_path(chave: @produto.imagem.blob.key, tamanho: :detalhe)
     assert_select 'input[name="produto_id"][value=?]', @produto.slug
     assert_no_match %r{/rails/active_storage/}, response.body
     antigo = produto_path(@produto)
@@ -49,7 +49,7 @@ class LinksPublicosTest < ActionDispatch::IntegrationTest
     assert_redirected_to edit_produto_path(@produto)
     get edit_produto_path(@produto)
     assert_response :success
-    assert_select 'form[action=?]', produto_path(@produto)
+    assert_select "form[action=?]", produto_path(@produto)
     assert_select 'a[aria-current="page"]', text: /Produtos/
     @cliente.update!(role: :cliente)
     post produto_avaliacoes_path(@produto), params: { avaliacao: { nota: 5, comentario: "Gostei" } }

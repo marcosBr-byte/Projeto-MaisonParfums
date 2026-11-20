@@ -21,7 +21,7 @@ class LoginSocialControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "telas de login e cadastro oferecem botoes POST sem turbo" do
-    [new_usuario_session_path, new_usuario_registration_path].each do |path|
+    [ new_usuario_session_path, new_usuario_registration_path ].each do |path|
       get path
       assert_response :success
       %w[google_oauth2 facebook].each do |provider|

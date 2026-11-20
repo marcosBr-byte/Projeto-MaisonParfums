@@ -7,14 +7,14 @@ class ProdutoOrigemFiltrosTest < ActionDispatch::IntegrationTest
     %w[feminino masculino unissex].each do |categoria|
       Produto::ORIGENS.each_key do |origem|
         Produto.create!(nome: "Perfume #{categoria} #{origem}", categoria: categoria, origem: origem,
-          variantes_attributes: [{ tamanho: "tamanho_5ml", preco: 20, estoque: 5 }])
+          variantes_attributes: [ { tamanho: "tamanho_5ml", preco: 20, estoque: 5 } ])
       end
     end
   end
 
   test "menu aponta para origem dentro de cada categoria" do
     get root_path
-    [decants_femininos_path, decants_masculinos_path, decants_unissex_path].each do |path|
+    [ decants_femininos_path, decants_masculinos_path, decants_unissex_path ].each do |path|
       assert_select "a[href='#{path}?origem=arabe']", text: "Árabes"
       assert_select "a[href='#{path}?origem=importado']", text: "Importados"
     end

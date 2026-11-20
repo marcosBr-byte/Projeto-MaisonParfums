@@ -103,5 +103,4 @@ class OperacaoPedidosTest < ActionDispatch::IntegrationTest
     assert_equal 125, pedido.valor_total
     assert_equal 25, pedido.valor_frete
   end
-
 end

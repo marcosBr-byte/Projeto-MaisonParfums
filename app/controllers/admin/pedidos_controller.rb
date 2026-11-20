@@ -58,7 +58,7 @@ module Admin
     end
 
     def show
-      @pedido = Pedido.includes(:usuario, itens_pedidos: [:produto, :variante]).find(params[:id])
+      @pedido = Pedido.includes(:usuario, itens_pedidos: [ :produto, :variante ]).find(params[:id])
     end
   end
 end

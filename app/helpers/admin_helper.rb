@@ -29,9 +29,9 @@ module AdminHelper
 
   def badge_estoque(ml)
     texto, classes =
-      if ml <= 0 then ["Esgotado", "bg-red-100 text-red-800"]
-      elsif ml < ESTOQUE_BAIXO_ML then ["Baixo", "bg-amber-100 text-amber-800"]
-      else ["Ok", "bg-emerald-100 text-emerald-800"]
+      if ml <= 0 then [ "Esgotado", "bg-red-100 text-red-800" ]
+      elsif ml < ESTOQUE_BAIXO_ML then [ "Baixo", "bg-amber-100 text-amber-800" ]
+      else [ "Ok", "bg-emerald-100 text-emerald-800" ]
       end
     tag.span(texto, class: "inline-flex rounded-full px-3 py-1 text-xs font-semibold #{classes}")
   end

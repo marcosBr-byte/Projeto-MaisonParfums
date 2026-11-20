@@ -34,7 +34,7 @@ class Configuracao < ApplicationRecord
 
   def url_pagamento_valida?
     uri = URI.parse(pagamento_site_url.to_s)
-    uri.is_a?(URI::HTTPS) && uri.host.present? && uri.userinfo.nil? && uri.query.nil? && uri.fragment.nil? && ["", "/"].include?(uri.path)
+    uri.is_a?(URI::HTTPS) && uri.host.present? && uri.userinfo.nil? && uri.query.nil? && uri.fragment.nil? && [ "", "/" ].include?(uri.path)
   rescue URI::InvalidURIError
     false
   end
@@ -79,9 +79,9 @@ class Configuracao < ApplicationRecord
     "SP" => 10..199, "RJ" => 200..289, "ES" => 290..299, "MG" => 300..399,
     "BA" => 400..489, "SE" => 490..499, "PE" => 500..569, "AL" => 570..579,
     "PB" => 580..589, "RN" => 590..599, "CE" => 600..639, "PI" => 640..649,
-    "MA" => 650..659, "PA" => 660..688, "AP" => 689..689, "AM" => [690..692, 694..698],
-    "RR" => 693..693, "AC" => 699..699, "DF" => [700..727, 730..736],
-    "GO" => [728..729, 737..767], "RO" => 768..769, "TO" => 770..779,
+    "MA" => 650..659, "PA" => 660..688, "AP" => 689..689, "AM" => [ 690..692, 694..698 ],
+    "RR" => 693..693, "AC" => 699..699, "DF" => [ 700..727, 730..736 ],
+    "GO" => [ 728..729, 737..767 ], "RO" => 768..769, "TO" => 770..779,
     "MT" => 780..788, "MS" => 790..799, "PR" => 800..879, "SC" => 880..899, "RS" => 900..999
   }.freeze
 

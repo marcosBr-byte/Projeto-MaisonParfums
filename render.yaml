@@ -4,8 +4,9 @@ services:
     runtime: docker
     plan: starter
     region: virginia
+    autoDeployTrigger: checksPass
     healthCheckPath: /up
-    dockerCommand: ./bin/docker-entrypoint ./bin/rails server
+    dockerCommand: ./bin/docker-entrypoint ./bin/rails server --binding=0.0.0.0
     disk:
       name: uploads
       mountPath: /rails/storage
@@ -25,6 +26,8 @@ services:
         generateValue: true
       - key: SOLID_QUEUE_IN_PUMA
         value: "true"
+      - key: WEB_CONCURRENCY
+        value: "0"
 
 databases:
   - name: maison-parfum-db

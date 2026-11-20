@@ -9,10 +9,10 @@ class ImagemOtimizada
   LIMITE_PIXELS = 40_000_000
   LIMITE_SALVO = 700.kilobytes
   TAMANHOS = {
-    "miniatura" => [160, 160],
-    "catalogo" => [480, 480],
-    "detalhe" => [1200, 1200],
-    "banner" => [1920, 1920]
+    "miniatura" => [ 160, 160 ],
+    "catalogo" => [ 480, 480 ],
+    "detalhe" => [ 1200, 1200 ],
+    "banner" => [ 1920, 1920 ]
   }.freeze
 
   def self.preparar(anexo, limite: 1600)
@@ -38,7 +38,7 @@ class ImagemOtimizada
     imagem = Vips::Image.thumbnail_buffer(bytes, limite, height: limite, size: :down)
     saida = imagem.webpsave_buffer(Q: 82, strip: true, effort: 4)
     if saida.bytesize > LIMITE_SALVO
-      imagem = Vips::Image.thumbnail_buffer(bytes, [limite, 1200].min, height: [limite, 1200].min, size: :down)
+      imagem = Vips::Image.thumbnail_buffer(bytes, [ limite, 1200 ].min, height: [ limite, 1200 ].min, size: :down)
       saida = imagem.webpsave_buffer(Q: 76, strip: true, effort: 4)
     end
     raise Invalida, "a imagem tem detalhes demais; envie uma versão menor" if saida.bytesize > LIMITE_SALVO

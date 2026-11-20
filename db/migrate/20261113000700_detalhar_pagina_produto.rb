@@ -18,7 +18,7 @@ class DetalharPaginaProduto < ActiveRecord::Migration[8.1]
       t.boolean :publicada, default: false, null: false
       t.timestamps
     end
-    add_index :avaliacoes, [:produto_id, :usuario_id], unique: true
+    add_index :avaliacoes, [ :produto_id, :usuario_id ], unique: true
     add_check_constraint :avaliacoes, "nota BETWEEN 1 AND 5", name: "avaliacao_nota_valida"
   end
 end

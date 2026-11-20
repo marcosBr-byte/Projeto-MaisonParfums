@@ -13,7 +13,7 @@ class UsuarioControllerTest < ActionDispatch::IntegrationTest
   test "administrador altera telefone na edicao da conta e ve o numero salvo no perfil" do
     get edit_usuario_registration_path
     assert_response :success
-    assert_select '#endereco', count: 0
+    assert_select "#endereco", count: 0
     assert_select 'input[name="usuario[cep]"]', count: 0
     assert_select 'input[type="tel"][name="usuario[telefone]"][value="83999999999"]'
     put usuario_registration_path, params: { usuario: { telefone: "(83) 98888-7777", current_password: "senha-perfil-123" } }

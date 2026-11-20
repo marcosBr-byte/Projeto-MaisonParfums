@@ -7,7 +7,7 @@ class Usuario < ApplicationRecord
   has_many :pedidos, dependent: :destroy
   has_one_attached :imagem
   otimizar_anexos :imagem, limite: 800
-   
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -28,7 +28,6 @@ class Usuario < ApplicationRecord
   validates :telefone, presence: true, unless: -> { admin? || identidades_sociais.any? }
 
   def perfil_completo?
-    [telefone, cep, estado, cidade, bairro, rua, numero_casa].all?(&:present?)
+    [ telefone, cep, estado, cidade, bairro, rua, numero_casa ].all?(&:present?)
   end
-  
 end

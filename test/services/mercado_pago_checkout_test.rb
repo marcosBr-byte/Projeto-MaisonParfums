@@ -87,7 +87,7 @@ class MercadoPagoCheckoutTest < ActiveSupport::TestCase
 
   test "nao aprova valor moeda ou ambiente divergente nem pagamento pendente" do
     @servico.criar(@pedido)
-    [{ "total_amount" => "1.00" }, { "currency" => "USD" }, { "id" => "ORD01MAISON123" }, { "external_reference" => "outro" }, { "total_paid_amount" => "1.00" }].each do |alteracao|
+    [ { "total_amount" => "1.00" }, { "currency" => "USD" }, { "id" => "ORD01MAISON123" }, { "external_reference" => "outro" }, { "total_paid_amount" => "1.00" } ].each do |alteracao|
       @http.corpo = pagamento.merge(alteracao)
       assert_raises(MercadoPagoCheckout::Erro) { @servico.atualizar(@pedido.pagamento_order_id) }
       assert @pedido.reload.pendente?
@@ -180,7 +180,7 @@ class MercadoPagoCheckoutTest < ActiveSupport::TestCase
     { "id" => @pedido.pagamento_order_id, "external_reference" => @pedido.pagamento_referencia,
       "type" => "online", "currency" => "BRL", "total_amount" => "120.00", "total_paid_amount" => "120.00",
       "status" => "processed", "status_detail" => "accredited",
-      "transactions" => { "payments" => [{ "id" => "PAY01MAISON123", "status" => "processed", "status_detail" => "accredited",
-        "paid_amount" => "120.00", "payment_method" => { "id" => "pix" } }] } }
+      "transactions" => { "payments" => [ { "id" => "PAY01MAISON123", "status" => "processed", "status_detail" => "accredited",
+        "paid_amount" => "120.00", "payment_method" => { "id" => "pix" } } ] } }
   end
 end

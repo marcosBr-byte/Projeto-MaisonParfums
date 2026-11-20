@@ -15,7 +15,7 @@ Para quem compra, a loja facilita a descoberta de fragrâncias com busca por nom
 
 | Área | Tecnologia |
 | --- | --- |
-| Linguagens e templates | Ruby 3.3.6, JavaScript, HTML, CSS e ERB |
+| Linguagens e templates | Ruby 3.3.14, JavaScript, HTML, CSS e ERB |
 | Framework e interface | Ruby on Rails 8.1, Tailwind CSS, Turbo e Stimulus |
 | Banco de dados | PostgreSQL |
 | Autenticação | Devise e OmniAuth |

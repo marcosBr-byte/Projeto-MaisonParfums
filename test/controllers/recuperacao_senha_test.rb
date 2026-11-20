@@ -66,16 +66,15 @@ class RecuperacaoSenhaTest < ActionDispatch::IntegrationTest
 
   test "recuperacao usa remetente da loja e ignora Gmail pessoal" do
     chaves = %w[SMTP_FROM SMTP_USERNAME GMAIL_USER]
-    anteriores = chaves.to_h { |chave| [chave, ENV[chave]] }
+    anteriores = chaves.to_h { |chave| [ chave, ENV[chave] ] }
     ENV["SMTP_FROM"] = "loja@example.com"
     ENV["SMTP_USERNAME"] = "loja@example.com"
     ENV["GMAIL_USER"] = "pessoal@example.com"
     @usuario.send_reset_password_instructions
     email = ActionMailer::Base.deliveries.last
-    assert_equal ["loja@example.com"], email.from
+    assert_equal [ "loja@example.com" ], email.from
     assert_not_includes email.from, "pessoal@example.com"
   ensure
     anteriores.each { |chave, valor| valor.nil? ? ENV.delete(chave) : ENV[chave] = valor }
   end
-
 end

@@ -7,9 +7,7 @@ Rails.application.routes.draw do
 }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  get "up" => "health#show", as: :rails_health_check
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
@@ -52,19 +50,19 @@ Rails.application.routes.draw do
   get "produtos/:produto_id/avaliar", to: "avaliacoes#new", as: :avaliar_produto
   post "produtos/:produto_id/avaliacoes", to: "avaliacoes#create", as: :produto_avaliacoes
   patch "produtos/:produto_id/avaliacao", to: "avaliacoes#update", as: :produto_avaliacao
-  resources :mensagens, only: [:new, :create]
+  resources :mensagens, only: [ :new, :create ]
 
   namespace :admin do
     get "avaliacoes", to: "avaliacoes#index", as: :avaliacoes
     patch "avaliacoes/:id", to: "avaliacoes#update", as: :avaliacao
     delete "avaliacoes/:id", to: "avaliacoes#destroy"
-    resources :pedidos, only: [:index, :show, :update] do
+    resources :pedidos, only: [ :index, :show, :update ] do
       post :cancelar, on: :member
       post :confirmar_pagamento, on: :member
       post :notificar_whatsapp, on: :member
     end
-    resources :mensagens, only: [:index, :show, :destroy]
-    resources :videos_home, only: [:create, :update, :destroy]
+    resources :mensagens, only: [ :index, :show, :destroy ]
+    resources :videos_home, only: [ :create, :update, :destroy ]
     get "customizar", to: "customizar#index", as: :customizar
     patch "customizar/:id", to: "customizar#update", as: :atualizar_banner
     get "analisar", to: "analisar#index", as: :analisar
@@ -72,12 +70,11 @@ Rails.application.routes.draw do
     patch "configuracoes", to: "configuracoes#update"
   end
 
-  resource :carrinho, only: [:show], controller: "carrinho" do
+  resource :carrinho, only: [ :show ], controller: "carrinho" do
     post "adicionar", to: "itens_carrinho#create", as: :adicionar
     post "finalizar", to: "carrinho#finalizar", as: :finalizar
     delete "limpar", to: "carrinho#limpar", as: :limpar
   end
 
-  resources :itens_carrinho, only: [:update, :destroy]
-  
+  resources :itens_carrinho, only: [ :update, :destroy ]
 end

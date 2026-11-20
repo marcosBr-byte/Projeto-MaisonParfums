@@ -35,7 +35,7 @@ Rails.application.configure do
   unless ENV["SECRET_KEY_BASE_DUMMY"].present?
     raise "Configure APP_HOST com o domínio público da loja, sem protocolo." unless dominio.match?(/\A[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?\z/i)
   end
-  config.hosts = [dominio.presence || "localhost"]
+  config.hosts = [ dominio.presence || "localhost" ]
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # Skip http-to-https redirect for the default health check endpoint.

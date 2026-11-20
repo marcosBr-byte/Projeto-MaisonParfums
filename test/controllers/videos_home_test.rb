@@ -22,7 +22,7 @@ class VideosHomeTest < ActionDispatch::IntegrationTest
     video = VideoHome.find_by!(titulo: "Novo vídeo")
     assert video.arquivo.attached?
     get root_path
-    assert_select '#video video', count: 1
+    assert_select "#video video", count: 1
     assert_select '#video video[aria-label="Novo vídeo"]'
     anterior = video.arquivo.blob_id
     patch admin_videos_home_path(video), params: { video_home: { titulo: "Substituído", ordem: 3, arquivo: upload } }
@@ -31,14 +31,14 @@ class VideosHomeTest < ActionDispatch::IntegrationTest
     assert_equal 3, video.ordem
     patch admin_videos_home_path(video), params: { video_home: { ativo: "0" } }
     get root_path
-    assert_select '.home-story-carousel', count: 0
+    assert_select ".home-story-carousel", count: 0
     delete admin_videos_home_path(video)
     assert_not VideoHome.exists?(video.id)
   end
 
   test "arquivos invalidos e ordem invalida nao sao salvos" do
     sign_in @admin
-    assert_no_difference 'VideoHome.count' do
+    assert_no_difference "VideoHome.count" do
       post admin_videos_home_index_path, params: { video_home: { titulo: "Imagem", ordem: 0, arquivo: fixture_file_upload(Rails.root.join("app/assets/images/slide-frete.jpeg"), "image/jpeg") } }
       post admin_videos_home_index_path, params: { video_home: { titulo: "Sem arquivo", ordem: 0 } }
     end
@@ -80,13 +80,13 @@ class VideosHomeTest < ActionDispatch::IntegrationTest
     segundo = VideoHome.create!(titulo: "Segundo", ordem: 2, arquivo_padrao: "video2.mp4")
     primeiro = VideoHome.create!(titulo: "Primeiro", ordem: 1, arquivo_padrao: "video1.mp4")
     get root_path
-    assert_select '#video video' do |videos|
-      assert_equal ["Primeiro", "Segundo"], videos.map { |v| v['aria-label'] }
+    assert_select "#video video" do |videos|
+      assert_equal [ "Primeiro", "Segundo" ], videos.map { |v| v["aria-label"] }
     end
     primeiro.destroy!
     segundo.destroy!
     get root_path
-    assert_select '#video video', count: 0
+    assert_select "#video video", count: 0
   end
 
   private

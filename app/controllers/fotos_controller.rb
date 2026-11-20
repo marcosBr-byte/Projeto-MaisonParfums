@@ -10,7 +10,7 @@ class FotosController < ApplicationController
 
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Cache-Control"] = "private, max-age=0, must-revalidate"
-    return unless stale?(etag: [blob.checksum, tamanho, "webp-v1"], last_modified: blob.created_at, public: false)
+    return unless stale?(etag: [ blob.checksum, tamanho, "webp-v1" ], last_modified: blob.created_at, public: false)
 
     # A transformação é gerada uma única vez e reaproveitada pelo Active Storage.
     if tamanho

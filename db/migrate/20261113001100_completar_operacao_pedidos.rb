@@ -9,6 +9,6 @@ class CompletarOperacaoPedidos < ActiveRecord::Migration[8.1]
     add_column :pedidos, :enviado_em, :datetime
     add_column :pedidos, :entregue_em, :datetime
     add_column :pedidos, :pagamento_requer_atencao, :boolean, default: false, null: false
-    add_index :pedidos, [:status, :reserva_expira_em]
+    add_index :pedidos, [ :status, :reserva_expira_em ]
   end
 end

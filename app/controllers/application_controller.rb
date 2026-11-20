@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
   def after_update_path_for(usuario)
     usuario.admin? ? admin_perfil_path : root_path
   end
-    
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[nome telefone estado cidade bairro])
 

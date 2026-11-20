@@ -68,9 +68,14 @@ test("categoria alterna origens comuns e de nicho sem conservar uma origem incom
   const c = controlador("produto_origem")
   c.comunsValue = { arabe: "Árabes", importado: "Importados" }
   c.nichoValue = { xerjoff: "Xerjoff", nishane: "Nishane", sospiro: "Sospiro" }
+  c.cuidadosValue = ["body_splash", "hidratante"]
+  c.campoPublicoTarget = { hidden: false }
+  c.publicoTarget = { disabled: false }
   c.categoriaTarget = { value: "masculino" }
   c.origemTarget = { value: "arabe", options: [], replaceChildren(...options) { this.options = options }, add(option) { this.options.push(option) } }
   c.connect()
+  assert.equal(c.campoPublicoTarget.hidden, true)
+  assert.equal(c.publicoTarget.disabled, true)
   assert.equal(c.origemTarget.value, "arabe")
   assert.deepEqual(c.origemTarget.options.map(o => o.value), ["", "arabe", "importado"])
   c.categoriaTarget.value = "nicho"
@@ -85,4 +90,8 @@ test("categoria alterna origens comuns e de nicho sem conservar uma origem incom
     c.atualizar()
     assert.deepEqual(c.origemTarget.options.map(o => o.value), ["", "arabe", "importado"])
   }
+  c.categoriaTarget.value = "body_splash"
+  c.atualizar()
+  assert.equal(c.campoPublicoTarget.hidden, false)
+  assert.equal(c.publicoTarget.disabled, false)
 })

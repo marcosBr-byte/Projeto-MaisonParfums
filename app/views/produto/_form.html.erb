@@ -127,10 +127,11 @@
           <label for="notas-fotos-<%= nivel %>">Selecionar fotos de <%= nome_grupo.downcase %></label>
           <input id="notas-fotos-<%= nivel %>" type="file" multiple accept="image/png,image/jpeg,image/webp" data-notes-upload-target="picker" data-action="change->notes-upload#addFiles">
           <p class="notes-upload-help">JPG, PNG ou WebP de até 5 MB por foto. Confira o nome em cada miniatura antes de salvar.</p>
-          <label for="notas-nomes-<%= nivel %>">Nomes das novas notas, na ordem das fotos (opcional)</label>
-          <textarea id="notas-nomes-<%= nivel %>" rows="2" placeholder="Ex.: Pera, Melão" data-notes-upload-target="names"></textarea>
+          <label for="notas-nomes-<%= nivel %>">Nomes das novas notas (opcional)</label>
+          <%= text_area_tag "produto[novas_notas_olfativas][#{nivel}]", nil, id: "notas-nomes-#{nivel}", rows: 2,
+            placeholder: "Ex.: Pera, Melão", data: { notes_upload_target: "names" } %>
           <button type="button" class="notes-upload-button" data-action="notes-upload#applyNames">Aplicar nomes à seleção</button>
-          <p class="notes-upload-help">Sem fotos selecionadas, a lista adiciona as notas apenas com os nomes.</p>
+          <p class="notes-upload-help">Para cadastrar apenas os nomes, escreva a lista e salve o produto. Para renomear fotos já selecionadas, aplique os nomes na ordem das fotos.</p>
           <p class="notes-upload-status" role="status" data-notes-upload-target="status"></p>
         </div>
         <div class="notes-upload-grid" data-notes-upload-target="rows">
@@ -186,7 +187,7 @@
     <h3 class="<%= titulo %>">Imagem</h3>
 
     <div class="flex items-center gap-4">
-      <% if produto.imagem.attached? %>
+      <% if produto.imagem.attached? && produto.imagem.blob.persisted? %>
         <%= image_tag imagem_loja(produto.imagem, tamanho: :miniatura), alt: produto.nome, class: "w-24 h-24 rounded-lg object-cover border border-[#E5E6E7]" %>
       <% end %>
       <div class="flex-1">

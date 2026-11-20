@@ -56,10 +56,20 @@ class Produto < ApplicationRecord
   accepts_nested_attributes_for :notas_olfativas, allow_destroy: true,
     reject_if: ->(atributos) { atributos["id"].blank? && atributos["nome"].blank? && atributos["imagem"].blank? }
 
+  def novas_notas_olfativas=(listas)
+    listas.each do |nivel, lista|
+      next unless lista.is_a?(String)
+
+      lista.split(/[,;\n]+/).map(&:strip).reject(&:blank?).each do |nome|
+        notas_olfativas.build(nivel: nivel, nome: nome)
+      end
+    end
+  end
+
   USOS = {
-    inverno: ["Inverno", "ac_unit"], primavera: ["Primavera", "local_florist"],
-    verao: ["Verão", "beach_access"], outono: ["Outono", "eco"],
-    dia: ["Dia", "light_mode"], noite: ["Noite", "dark_mode"]
+    inverno: [ "Inverno", "ac_unit" ], primavera: [ "Primavera", "local_florist" ],
+    verao: [ "Verão", "beach_access" ], outono: [ "Outono", "eco" ],
+    dia: [ "Dia", "light_mode" ], noite: [ "Noite", "dark_mode" ]
   }.freeze
   USOS.each_key do |campo|
     validates "uso_#{campo}", numericality: { only_integer: true, in: 0..100 }, allow_nil: true
@@ -189,12 +199,11 @@ class Produto < ApplicationRecord
     return fragrancias.join(", ") if campo.to_sym == :fragancia
        self.class.defined_enums[campo.to_s][public_send(campo)]
   end
-  
+
   private
 
   def sincronizar_preco
     menor = preco_minimo
     self.preco = menor if menor
   end
-
 end

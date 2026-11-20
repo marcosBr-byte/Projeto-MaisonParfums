@@ -43,7 +43,7 @@ class PagamentosTest < ActionDispatch::IntegrationTest
     get pagamento_pedido_path(@pedido), params: { status: "approved", payment_id: "123" }
     assert_response :success
     assert @pedido.reload.pendente?
-    assert_select 'form[action=?]', pagar_pedido_path(@pedido)
+    assert_select "form[action=?]", pagar_pedido_path(@pedido)
     sign_out @cliente
     post pagar_pedido_path(@pedido)
     assert_redirected_to new_usuario_session_path
@@ -98,11 +98,11 @@ class PagamentosTest < ActionDispatch::IntegrationTest
   end
 
   test "finalizar soma frete configurado e encaminha para pagamento sem aprovar" do
-    produto = Produto.create!(nome: "Perfume Pix", categoria: :unissex, variantes_attributes: [{ tamanho: :tamanho_5ml, preco: 100, estoque: 10 }])
+    produto = Produto.create!(nome: "Perfume Pix", categoria: :unissex, variantes_attributes: [ { tamanho: :tamanho_5ml, preco: 100, estoque: 10 } ])
     variante = produto.variantes.first
     post adicionar_carrinho_path, params: { produto_id: produto.id, variante_id: variante.id, quantidade: 1 }
     get carrinho_path
-    assert_select 'p', text: /Produtos:.*100,00.*Frete:.*25,00/
+    assert_select "p", text: /Produtos:.*100,00.*Frete:.*25,00/
     post finalizar_carrinho_path
     pedido = @cliente.pedidos.order(:id).last
     assert_redirected_to pagamento_pedido_path(pedido)
@@ -110,6 +110,6 @@ class PagamentosTest < ActionDispatch::IntegrationTest
     assert_equal 25, pedido.valor_frete
     assert pedido.pendente?
     get perfil_path
-    assert_select 'a[href=?]', pagamento_pedido_path(pedido)
+    assert_select "a[href=?]", pagamento_pedido_path(pedido)
   end
 end

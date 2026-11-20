@@ -4,7 +4,7 @@ module Admin
 
     before_action :authenticate_usuario!
     before_action :exigir_admin
-    before_action :set_mensagem, only: [:show, :destroy]
+    before_action :set_mensagem, only: [ :show, :destroy ]
 
     def index
       @mensagens = Mensagem.recentes
@@ -17,7 +17,7 @@ module Admin
 
     def destroy
       @mensagem.destroy
-      redirect_to admin_mensagens_path,notice: "Mensagem excluída com sucesso!"
+      redirect_to admin_mensagens_path, notice: "Mensagem excluída com sucesso!"
     end
 
     private

@@ -16,7 +16,6 @@ export default class extends Controller {
     const names = this.names()
     const rows = Array.from(this.rowsTarget.querySelectorAll("[data-new-note]"))
     const withoutPhotos = rows.filter(row => !row.querySelector('input[type="file"]')?.files.length)
-    const offset = rows.length
     let added = 0
     let rejected = 0
     Array.from(this.pickerTarget.files).forEach(file => {
@@ -24,16 +23,18 @@ export default class extends Controller {
         rejected += 1
         return
       }
-      const name = names[offset + added] || file.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim()
+      const enteredName = names.shift()
+      const name = enteredName || file.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim()
       const row = withoutPhotos.shift()
       if (row) {
         const nameInput = row.querySelector('input[type="text"]')
-        if (!nameInput.value.trim()) nameInput.value = name.slice(0, 80)
+        if (enteredName || !nameInput.value.trim()) nameInput.value = name.slice(0, 80)
         this.attachImage(row, file)
       } else this.addRow(name, file)
       added += 1
     })
     this.pickerTarget.value = ""
+    if (added) this.namesTarget.value = names.join("\n")
     this.statusTarget.textContent = `${added} foto(s) adicionada(s).${rejected ? ` ${rejected} arquivo(s) recusado(s): use JPG, PNG ou WebP de até 5 MB.` : " Confira os nomes e salve o produto."}`
   }
 
@@ -48,6 +49,7 @@ export default class extends Controller {
       if (rows[index]) rows[index].querySelector('input[type="text"]').value = name
       else this.addRow(name)
     })
+    this.namesTarget.value = ""
     this.statusTarget.textContent = `${names.length} nome(s) aplicado(s). Confira a seleção e salve o produto.`
   }
 

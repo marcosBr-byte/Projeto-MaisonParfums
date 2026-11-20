@@ -12,7 +12,7 @@ class ProdutoOrigemTest < ActionDispatch::IntegrationTest
     get new_produto_path
     assert_select "select[name='produto[categoria]'] option[value='nicho']", text: "Nicho"
     post produtos_path, params: { produto: { nome: "Nicho exclusivo", marca: "Outra marca", categoria: "nicho", origem: "xerjoff",
-      variantes_attributes: [{ tamanho: "tamanho_5ml", preco: 90, estoque: 5 }] } }
+      variantes_attributes: [ { tamanho: "tamanho_5ml", preco: 90, estoque: 5 } ] } }
     assert_redirected_to admin_path
     produto = Produto.find_by!(nome: "Nicho exclusivo")
     assert_equal "xerjoff", produto.origem
@@ -33,7 +33,7 @@ class ProdutoOrigemTest < ActionDispatch::IntegrationTest
   test "origens respeitam a categoria e a vitrine filtra as marcas de nicho" do
     Produto::ORIGENS_NICHO.each do |origem, nome|
       post produtos_path, params: { produto: { nome: "Nicho #{nome}", categoria: "nicho", origem: origem,
-        variantes_attributes: [{ tamanho: "tamanho_5ml", preco: 80, estoque: 3 }] } }
+        variantes_attributes: [ { tamanho: "tamanho_5ml", preco: 80, estoque: 3 } ] } }
       assert_redirected_to admin_path
     end
     produto = Produto.find_by!(origem: "nishane")
@@ -66,7 +66,7 @@ class ProdutoOrigemTest < ActionDispatch::IntegrationTest
     end
 
     post produtos_path, params: { produto: { nome: "Perfume árabe", origem: "arabe",
-      variantes_attributes: [{ tamanho: "lacrado", preco: 100, estoque: 5 }] } }
+      variantes_attributes: [ { tamanho: "lacrado", preco: 100, estoque: 5 } ] } }
     assert_redirected_to admin_path
     produto = Produto.find_by!(nome: "Perfume árabe")
     assert_equal "arabe", produto.origem

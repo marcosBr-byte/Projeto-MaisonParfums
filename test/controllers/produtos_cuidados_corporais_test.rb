@@ -52,7 +52,7 @@ class ProdutosCuidadosCorporaisTest < ActionDispatch::IntegrationTest
     get body_splash_path
     assert_response :success
 
-    [:body_splash_path, :hidratantes_path].each do |rota|
+    [ :body_splash_path, :hidratantes_path ].each do |rota|
       Produto::PUBLICOS.each do |valor, nome|
         caminho = public_send(rota, publico: valor)
         assert_select "header > nav a[href='#{caminho}']", text: nome
@@ -86,6 +86,6 @@ class ProdutosCuidadosCorporaisTest < ActionDispatch::IntegrationTest
 
   def criar_produto(nome, categoria)
     Produto.create!(nome: nome, categoria: categoria, publico: :masculino,
-      variantes_attributes: [{ tamanho: :lacrado, volume_lacrado_ml: 200, preco: 60, estoque: 2 }])
+      variantes_attributes: [ { tamanho: :lacrado, volume_lacrado_ml: 200, preco: 60, estoque: 2 } ])
   end
 end

@@ -15,7 +15,7 @@ class ProdutoController < ApplicationController
     @nichos = Produto.nicho.order(:nome)
     @body_splashes = Produto.body_splash.order(:nome)
     @hidratantes = Produto.hidratante.order(:nome)
-    
+
     render "produto/produtos_todos"
   end
 
@@ -101,7 +101,7 @@ class ProdutoController < ApplicationController
   end
 
   private
-     
+
   def filtrar_publico(produtos)
     @publico = params[:publico].presence_in(Produto::PUBLICOS.keys)
     produtos = produtos.where(publico: @publico) if @publico
@@ -137,8 +137,9 @@ class ProdutoController < ApplicationController
       :nome, :marca, :descricao, :categoria, :publico, :origem, :fragancia, :intensidade,
       :momento, :piramide_olfativa, :concentracao, :imagem,
       :uso_inverno, :uso_primavera, :uso_verao, :uso_outono, :uso_dia, :uso_noite,
-      fotos: [], notas_olfativas_attributes: [:id, :nome, :nivel, :imagem, :_destroy],
-      variantes_attributes: [:id, :tamanho, :preco, :estoque, :volume_lacrado_ml]
+      fotos: [], notas_olfativas_attributes: [ :id, :nome, :nivel, :imagem, :_destroy ],
+      novas_notas_olfativas: NotaOlfativa.defined_enums.fetch("nivel").keys,
+      variantes_attributes: [ :id, :tamanho, :preco, :estoque, :volume_lacrado_ml ]
     )
     permitidos.delete(:fotos) if Array(permitidos[:fotos]).all?(&:blank?)
     permitidos

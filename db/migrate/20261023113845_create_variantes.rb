@@ -7,7 +7,7 @@
          t.integer :estoque, null: false, default: 0
          t.timestamps
        end
-       add_index :variantes, [:produto_id, :tamanho], unique: true
+       add_index :variantes, [ :produto_id, :tamanho ], unique: true
 
        execute <<~SQL
          INSERT INTO variantes (produto_id, tamanho, preco, estoque, created_at, updated_at)

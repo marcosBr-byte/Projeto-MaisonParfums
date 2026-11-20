@@ -8,7 +8,7 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
     @admin = Usuario.create!(nome: "Admin", email: "detalhes-admin@example.com", telefone: "85999999999", password: "senha-teste-123", role: :admin)
     @cliente = Usuario.create!(nome: "Ana Cliente", email: "detalhes-cliente@example.com", telefone: "85999999999", password: "senha-teste-123")
     @produto = Produto.create!(nome: "Fragrância de teste", categoria: :feminino, marca: "Maison", momento: :dia,
-      variantes_attributes: [{ tamanho: :tamanho_5ml, preco: 75, estoque: 5 }, { tamanho: :tamanho_10ml, preco: 120, estoque: 0 }])
+      variantes_attributes: [ { tamanho: :tamanho_5ml, preco: 75, estoque: 5 }, { tamanho: :tamanho_10ml, preco: 120, estoque: 0 } ])
   end
 
   test "cliente ve seu CEP e compra a quantidade escolhida respeitando estoque" do
@@ -51,7 +51,7 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
 
   test "visitante volta ao formulario depois do login e publica avaliacao automaticamente" do
     get produto_path(@produto)
-    assert_select '.reviews-toolbar a[href=?]', avaliar_produto_path(@produto)
+    assert_select ".reviews-toolbar a[href=?]", avaliar_produto_path(@produto)
     get avaliar_produto_path(@produto)
     assert_redirected_to new_usuario_session_path
     post usuario_session_path, params: { usuario: { email: @cliente.email, password: "senha-teste-123" } }
@@ -59,29 +59,66 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_redirected_to produto_path(@produto, anchor: "avaliar-produto")
     follow_redirect!
-    assert_select '#avaliar-produto form[action=?]', produto_avaliacoes_path(@produto)
+    assert_select "#avaliar-produto form[action=?]", produto_avaliacoes_path(@produto)
     assert_difference "Avaliacao.count", 1 do
       post produto_avaliacoes_path(@produto), params: { avaliacao: { nota: 5, comentario: "Minha avaliação real de teste" } }
     end
     assert_redirected_to produto_path(@produto, anchor: "avaliar-produto")
     follow_redirect!
-    assert_select '#avaliar-produto', text: /está publicada/
-    assert_select '.review-count', text: "(1)"
+    assert_select "#avaliar-produto", text: /está publicada/
+    assert_select ".review-count", text: "(1)"
     sign_out @cliente
     sign_in @admin
     avaliacao = @produto.avaliacoes.find_by!(usuario: @cliente)
     patch admin_avaliacao_path(avaliacao), params: { avaliacao: { publicada: true } }
     get produto_path(@produto)
-    assert_select '.review-count', text: "(1)"
-    assert_select '.reviews-average strong', text: "5,0"
+    assert_select ".review-count", text: "(1)"
+    assert_select ".reviews-average strong", text: "5,0"
     assert_select '.review-distribution-row meter[value="100"]', count: 1
-    assert_select '.review-comment', text: "Minha avaliação real de teste"
+    assert_select ".review-comment", text: "Minha avaliação real de teste"
     get root_path
     assert_select "[data-avaliacao='#{avaliacao.id}']"
   end
 
   def imagem
     Rack::Test::UploadedFile.new(Rails.root.join("public/icon.png"), "image/png")
+  end
+
+  test "cadastro sem preco reexibe o formulario sem miniatura de imagem nao salva" do
+    sign_in @admin
+    assert_no_difference "Produto.count" do
+      post produtos_path, params: { produto: { nome: "Perfume sem preço", categoria: "masculino", imagem: imagem } }
+    end
+    assert_response :unprocessable_entity
+    assert_select 'form[action=?] input[type=file][name="produto[imagem]"]', produtos_path
+    assert_select 'form[action=?] img[src^="/fotos/"]', produtos_path, count: 0
+  end
+
+  test "admin salva nomes digitados diretamente no cadastro e na edicao" do
+    sign_in @admin
+    get new_produto_path
+    assert_select 'textarea[name="produto[novas_notas_olfativas][topo]"]'
+
+    post produtos_path, params: { produto: {
+      nome: "Perfume com notas digitadas", categoria: "feminino",
+      variantes_attributes: [ { tamanho: "tamanho_5ml", preco: 75, estoque: 5 } ],
+      novas_notas_olfativas: { topo: " Pera, Melão\n Limão; ", coracao: "Frésia" }
+    } }
+    assert_redirected_to admin_path
+    produto = Produto.find_by!(nome: "Perfume com notas digitadas")
+
+    patch produto_path(produto), params: { produto: {
+      novas_notas_olfativas: { base: "Sândalo" },
+      notas_olfativas_attributes: { "0" => { nome: "Âmbar", nivel: "base", imagem: imagem } }
+    } }
+    assert_redirected_to admin_path
+    sign_out @admin
+    get produto_path(produto)
+    assert_response :success
+    %w[Pera Melão Limão Frésia Sândalo Âmbar].each do |nome|
+      assert_select ".notes-ingredients figcaption", text: nome, count: 1
+    end
+    assert_select '.notes-ingredients img[alt="Âmbar"]'
   end
 
   test "admin cadastra notas fotos e indicacoes que aparecem para visitante" do
@@ -92,25 +129,25 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
     assert_select 'input[name="produto[fotos][]"]'
     patch produto_path(@produto), params: { produto: {
       uso_inverno: 10, uso_primavera: 80, uso_verao: 60, uso_outono: 30, uso_dia: 100, uso_noite: 20,
-      fotos: [imagem], notas_olfativas_attributes: [{ nome: "Pera", nivel: "topo", imagem: imagem }, { nome: "Frésia", nivel: "coracao" }, { nome: "Patchouli", nivel: "base" }]
+      fotos: [ imagem ], notas_olfativas_attributes: [ { nome: "Pera", nivel: "topo", imagem: imagem }, { nome: "Frésia", nivel: "coracao" }, { nome: "Patchouli", nivel: "base" } ]
     } }
     assert_redirected_to admin_path
     assert_equal 3, @produto.notas_olfativas.count
     assert_equal 1, @produto.reload.fotos.count
-    patch produto_path(@produto), params: { produto: { nome: @produto.nome, fotos: [""] } }
+    patch produto_path(@produto), params: { produto: { nome: @produto.nome, fotos: [ "" ] } }
     assert_equal 1, @produto.reload.fotos.count
     sign_out @admin
     get produto_path(@produto)
     assert_response :success
     assert_select '.usage-inverno meter[value="10"]'
     assert_select '.usage-dia meter[value="100"]'
-    assert_select '.notes-ingredients figcaption', text: "Pera"
+    assert_select ".notes-ingredients figcaption", text: "Pera"
     assert_select '.notes-ingredients img[alt="Pera"]'
-    assert_select '.product-main-photo img', count: 1
+    assert_select ".product-main-photo img", count: 1
     assert_select '[data-variante-target="borrifadas"]', text: /80 borrifadas/
     assert_select 'input[name="variante_id"][disabled]', count: 1
-    assert_select '.reviews-average strong', text: "—"
-    assert_select '#avaliar-produto', text: /Entre na sua conta/
+    assert_select ".reviews-average strong", text: "—"
+    assert_select "#avaliar-produto", text: /Entre na sua conta/
   end
 
   test "admin envia varias fotos e nomes nos tres grupos de uma vez" do
@@ -126,9 +163,9 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
       "123456789012345678904" => { nivel: "base", nome: "Sândalo", imagem: imagem }
     } } }
     assert_redirected_to admin_path
-    assert_equal ["Pera", "Melão"], @produto.notas_olfativas.where(nivel: "topo").order(:id).pluck(:nome)
-    assert_equal ["Frésia"], @produto.notas_olfativas.where(nivel: "coracao").pluck(:nome)
-    assert_equal ["Sândalo"], @produto.notas_olfativas.where(nivel: "base").pluck(:nome)
+    assert_equal [ "Pera", "Melão" ], @produto.notas_olfativas.where(nivel: "topo").order(:id).pluck(:nome)
+    assert_equal [ "Frésia" ], @produto.notas_olfativas.where(nivel: "coracao").pluck(:nome)
+    assert_equal [ "Sândalo" ], @produto.notas_olfativas.where(nivel: "base").pluck(:nome)
     assert @produto.notas_olfativas.all? { |nota| nota.imagem.attached? }
     nota = @produto.notas_olfativas.find_by!(nome: "Melão")
     patch produto_path(@produto), params: { produto: { notas_olfativas_attributes: { "0" => { id: nota.id, _destroy: "1" } } } }
@@ -138,35 +175,35 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
   test "avaliacao com fotos publica automaticamente e cliente nao altera visibilidade" do
     sign_in @cliente
     assert_difference "Avaliacao.count", 1 do
-      post produto_avaliacoes_path(@produto), params: { avaliacao: { nota: 5, comentario: "Gostei da fragrância.", fotos: [imagem], publicada: true, usuario_id: @admin.id } }
+      post produto_avaliacoes_path(@produto), params: { avaliacao: { nota: 5, comentario: "Gostei da fragrância.", fotos: [ imagem ], publicada: true, usuario_id: @admin.id } }
     end
     avaliacao = Avaliacao.last
     assert_equal @cliente.id, avaliacao.usuario_id
     assert avaliacao.publicada?
     assert_equal 1, avaliacao.fotos.count
     get produto_path(@produto)
-    assert_select '.review-card', count: 1
-    assert_select '#avaliar-produto', text: /está publicada/
+    assert_select ".review-card", count: 1
+    assert_select "#avaliar-produto", text: /está publicada/
     patch admin_avaliacao_path(avaliacao), params: { avaliacao: { publicada: true } }
     assert avaliacao.reload.publicada?
     sign_out @cliente
     sign_in @admin
     get admin_avaliacoes_path
-    assert_select 'article', text: /Gostei da fragrância/
+    assert_select "article", text: /Gostei da fragrância/
     patch admin_avaliacao_path(avaliacao), params: { avaliacao: { publicada: true } }
     assert avaliacao.reload.publicada?
     sign_out @admin
     get produto_path(@produto)
-    assert_select '.review-card', count: 1
-    assert_select '.review-card .review-comment', text: "Gostei da fragrância."
-    assert_select '.review-photos img', count: 1
-    assert_select '.reviews-average strong', text: "5,0"
+    assert_select ".review-card", count: 1
+    assert_select ".review-card .review-comment", text: "Gostei da fragrância."
+    assert_select ".review-photos img", count: 1
+    assert_select ".reviews-average strong", text: "5,0"
     assert_select '.review-distribution-row meter[value="100"]', count: 1
-    assert_select '.verified-purchase', count: 0
+    assert_select ".verified-purchase", count: 0
   end
 
   test "filtro mostra somente fotos publicadas e calcula media sem pendentes" do
-    @produto.avaliacoes.create!(usuario: @cliente, nota: 5, comentario: "Com foto", publicada: true, fotos: [imagem])
+    @produto.avaliacoes.create!(usuario: @cliente, nota: 5, comentario: "Com foto", publicada: true, fotos: [ imagem ])
     segundo = Usuario.create!(nome: "Bia", email: "bia-detalhes@example.com", telefone: "85999999999", password: "senha-teste-123")
     terceiro = Usuario.create!(nome: "Caio", email: "caio-detalhes@example.com", telefone: "85999999999", password: "senha-teste-123")
     @produto.avaliacoes.create!(usuario: segundo, nota: 3, comentario: "Sem foto", publicada: true)
@@ -175,11 +212,11 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
     pedido.itens_pedidos.create!(produto: @produto, quantidade: 1, preco_unitario: 75)
     get produto_path(@produto), params: { avaliacoes: "com_fotos" }
     assert_response :success
-    assert_select '.review-card', count: 1
-    assert_select '.review-comment', text: "Com foto"
-    assert_select '.reviews-average strong', text: "4,0"
-    assert_select '.review-count', text: "(2)"
-    assert_select '.verified-purchase', count: 1
+    assert_select ".review-card", count: 1
+    assert_select ".review-comment", text: "Com foto"
+    assert_select ".reviews-average strong", text: "4,0"
+    assert_select ".review-count", text: "(2)"
+    assert_select ".verified-purchase", count: 1
     assert_select '.review-distribution-row meter[value="50"]', count: 2
   end
 
@@ -207,7 +244,7 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
     post produto_avaliacoes_path(@produto), params: { avaliacao: { nota: 5, comentario: "Teste" } }
     assert_redirected_to new_usuario_session_path
     sign_in @cliente
-    patch produto_path(@produto), params: { produto: { uso_dia: 99, notas_olfativas_attributes: [{ nome: "Falsa", nivel: "base" }] } }
+    patch produto_path(@produto), params: { produto: { uso_dia: 99, notas_olfativas_attributes: [ { nome: "Falsa", nivel: "base" } ] } }
     assert_nil @produto.reload.uso_dia
     assert_equal 0, @produto.notas_olfativas.count
   end

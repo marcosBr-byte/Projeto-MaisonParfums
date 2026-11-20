@@ -30,7 +30,7 @@ class MercadoPagoCheckout
         processing_mode: "manual",
         total_amount: total,
         external_reference: pedido.pagamento_referencia,
-        items: [{ title: "Pedido Maison Parfum ##{pedido.id}", quantity: 1, unit_price: total }],
+        items: [ { title: "Pedido Maison Parfum ##{pedido.id}", quantity: 1, unit_price: total } ],
         payer: { email: pedido.usuario.email },
         config: { online: { success_url: retorno, pending_url: retorno, failure_url: retorno, auto_return: "approved" } }
       }, chave: pedido.pagamento_referencia)

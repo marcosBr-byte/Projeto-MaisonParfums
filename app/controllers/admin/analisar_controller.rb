@@ -21,7 +21,7 @@ module Admin
       @comparacao = ResumoVendas.new(inicio: @mes.prev_month, fim: @mes.prev_month.end_of_month)
       @resumo_dia = ResumoVendas.new(inicio: @data_selecionada, fim: @data_selecionada)
       @evolucao = @resumo.evolucao
-      @pedidos_por_dia = @evolucao.to_h { |linha| [linha[:dia], linha[:pedidos]] }
+      @pedidos_por_dia = @evolucao.to_h { |linha| [ linha[:dia], linha[:pedidos] ] }
       @dias_calendario = (@mes.beginning_of_week(:sunday)..@mes.end_of_month.end_of_week(:sunday)).to_a
       @produtos_em_alta = @resumo.produtos_em_alta
       @ultimos_pedidos = @resumo_dia.pedidos.includes(:usuario).order(created_at: :desc).limit(50)

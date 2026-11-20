@@ -21,10 +21,10 @@ class WhatsAppPedido
       messaging_product: "whatsapp", to: configuracao.whatsapp_notificacao, type: "template",
       template: {
         name: ENV.fetch("WHATSAPP_TEMPLATE_NAME"), language: { code: ENV.fetch("WHATSAPP_TEMPLATE_LANGUAGE", "pt_BR") },
-        components: [{ type: "body", parameters: [
+        components: [ { type: "body", parameters: [
           { type: "text", text: pedido.id.to_s },
           { type: "text", text: format("R$ %.2f", pedido.valor_total).tr(".", ",") }
-        ] }]
+        ] } ]
       }
     }.to_json
     resposta = http.start(uri.host, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 10) { |cliente| cliente.request(requisicao) }

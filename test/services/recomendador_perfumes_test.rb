@@ -4,12 +4,12 @@ class RecomendadorPerfumesTest < ActiveSupport::TestCase
   self.fixture_table_names = []
 
   def quiz(**opcoes)
-    PerfumeQuiz.new({ categoria: "masculino", familias: ["amadeirada"], momento: "noite", intensidade: "alta", orcamento: "100" }.merge(opcoes))
+    PerfumeQuiz.new({ categoria: "masculino", familias: [ "amadeirada" ], momento: "noite", intensidade: "alta", orcamento: "100" }.merge(opcoes))
   end
 
   def produto(nome, **opcoes)
     Produto.create!({ nome: nome, categoria: :masculino, fragancia: :amadeirada, momento: :noite, intensidade: :alta,
-      variantes_attributes: [{ tamanho: :lacrado, preco: 50, estoque: 1 }] }.merge(opcoes))
+      variantes_attributes: [ { tamanho: :lacrado, preco: 50, estoque: 1 } ] }.merge(opcoes))
   end
 
   test "prioriza momento e intensidade e limita a tres sugestoes" do
@@ -20,8 +20,8 @@ class RecomendadorPerfumesTest < ActiveSupport::TestCase
   end
 
   test "inclui unissex e respeita limite exato do orçamento" do
-    perfume = produto("Unissex", categoria: :unissex, variantes_attributes: [{ tamanho: :lacrado, preco: 100, estoque: 1 }])
-    assert_equal [perfume.id], RecomendadorPerfumes.new(quiz).resultados.map { |r| r.produto.id }
+    perfume = produto("Unissex", categoria: :unissex, variantes_attributes: [ { tamanho: :lacrado, preco: 100, estoque: 1 } ])
+    assert_equal [ perfume.id ], RecomendadorPerfumes.new(quiz).resultados.map { |r| r.produto.id }
     assert_empty RecomendadorPerfumes.new(quiz(orcamento: "50")).resultados
   end
 
@@ -39,8 +39,8 @@ class RecomendadorPerfumesTest < ActiveSupport::TestCase
 
   test "reconhece familia com acento e permite sem limite e sem perfil" do
     perfume = produto("Citrico", fragancia: :cítrica, categoria: :feminino)
-    resultados = RecomendadorPerfumes.new(quiz(categoria: "qualquer", familias: ["citrica"], orcamento: "livre")).resultados
-    assert_equal [perfume.id], resultados.map { |r| r.produto.id }
+    resultados = RecomendadorPerfumes.new(quiz(categoria: "qualquer", familias: [ "citrica" ], orcamento: "livre")).resultados
+    assert_equal [ perfume.id ], resultados.map { |r| r.produto.id }
   end
 
   test "nao cria recomendacao para questionario invalido" do

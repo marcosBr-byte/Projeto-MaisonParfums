@@ -10,12 +10,13 @@ else
 fi
 
 if [ "$rails_command" = "./bin/rails" ] && [ "$rails_action" = "server" ]; then
+  echo "Preparando o banco de dados antes de iniciar o Rails..."
   if [ "${RENDER:-}" = "true" ]; then
     : "${DATABASE_URL:?Configure DATABASE_URL com a conexão interna do PostgreSQL do Render}"
-    ./bin/rails runner '%w[queue cache cable].each { |schema| ActiveRecord::Base.connection.execute("CREATE SCHEMA IF NOT EXISTS #{schema}") }'
+    ./bin/rails render:prepare
+  else
+    ./bin/rails db:prepare
   fi
-  echo "Preparando o banco de dados antes de iniciar o Rails..."
-  ./bin/rails db:prepare
 fi
 
 exec "${@}"

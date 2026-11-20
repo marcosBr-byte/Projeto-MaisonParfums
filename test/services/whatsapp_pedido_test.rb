@@ -5,7 +5,7 @@ class WhatsappPedidoTest < ActiveSupport::TestCase
   self.fixture_table_names = []
 
   setup do
-    @ambiente = WhatsAppPedido::CHAVES.to_h { |chave| [chave, ENV[chave]] }
+    @ambiente = WhatsAppPedido::CHAVES.to_h { |chave| [ chave, ENV[chave] ] }
     ENV["WHATSAPP_ACCESS_TOKEN"] = "token-simulado"
     ENV["WHATSAPP_PHONE_NUMBER_ID"] = "123456789"
     ENV["WHATSAPP_API_VERSION"] = "v99.0"
@@ -22,7 +22,7 @@ class WhatsappPedidoTest < ActiveSupport::TestCase
 
   class TransporteSimulado
     attr_reader :requisicao, :opcoes
-    def initialize(codigo: "200", corpo: { messages: [{ id: "wamid.simulado" }] }.to_json)
+    def initialize(codigo: "200", corpo: { messages: [ { id: "wamid.simulado" } ] }.to_json)
       @resposta = Struct.new(:code, :body).new(codigo, corpo)
     end
     def start(host, port, **opcoes)
@@ -41,7 +41,7 @@ class WhatsappPedidoTest < ActiveSupport::TestCase
     corpo = JSON.parse(http.requisicao.body)
     assert_equal "5583988383800", corpo["to"]
     assert_equal "template", corpo["type"]
-    assert_equal [@pedido.id.to_s, "R$ 199,00"], corpo.dig("template", "components", 0, "parameters").map { |p| p["text"] }
+    assert_equal [ @pedido.id.to_s, "R$ 199,00" ], corpo.dig("template", "components", 0, "parameters").map { |p| p["text"] }
     assert_equal true, http.opcoes[:use_ssl]
     assert_not_includes http.requisicao.body, @pedido.usuario.email
   end
@@ -56,7 +56,7 @@ class WhatsappPedidoTest < ActiveSupport::TestCase
 
   test "confirmacao de pagamento agenda aviso quando integrado e ativado" do
     @configuracao.update!(whatsapp_notificacoes_ativas: true)
-    assert_enqueued_with(job: NotificarPedidoWhatsappJob, args: [@pedido.id]) do
+    assert_enqueued_with(job: NotificarPedidoWhatsappJob, args: [ @pedido.id ]) do
       @pedido.update!(status: :pago)
     end
   end
@@ -98,7 +98,7 @@ class WhatsappPedidoTest < ActiveSupport::TestCase
         status: "approved", payment_method_id: metodo }
       http = TransporteSimulado.new(corpo: pagamento.to_json)
       servico = MercadoPagoCheckout.new(@configuracao, http: http)
-      assert_enqueued_with(job: NotificarPedidoWhatsappJob, args: [pedido.id]) do
+      assert_enqueued_with(job: NotificarPedidoWhatsappJob, args: [ pedido.id ]) do
         servico.atualizar(pagamento_id)
       end
       assert pedido.reload.pago?

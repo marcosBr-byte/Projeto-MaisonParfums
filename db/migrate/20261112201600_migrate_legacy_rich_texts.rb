@@ -1,6 +1,6 @@
 class MigrateLegacyRichTexts < ActiveRecord::Migration[8.1]
   def up
-    { "produtos" => ["Produto", "descricao"], "configuracaos" => ["Configuracao", "descricao"], "mensagems" => ["Mensagem", "conteudo"] }.each do |tabela, (tipo, campo)|
+    { "produtos" => [ "Produto", "descricao" ], "configuracaos" => [ "Configuracao", "descricao" ], "mensagems" => [ "Mensagem", "conteudo" ] }.each do |tabela, (tipo, campo)|
       execute <<~SQL
         INSERT INTO action_text_rich_texts (record_type, record_id, name, body, created_at, updated_at)
         SELECT #{connection.quote(tipo)}, id, #{connection.quote(campo)},

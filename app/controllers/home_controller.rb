@@ -8,6 +8,5 @@ class HomeController < ApplicationController
     @banners_carrossel = @banners.reject { |banner| %w[masculino feminino nicho experiencia atalho_mais_vendidos].include?(banner.chave) || Banner::ATALHOS.key?(banner.chave) }
     @banners_colecoes = @banners.select { |banner| %w[masculino feminino nicho].include?(banner.chave) && banner.imagem_exibicao.present? }
     @foto_experiencia = @banners.find { |banner| banner.chave == "experiencia" && banner.imagem.attached? }
-
   end
 end
