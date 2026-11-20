@@ -94,7 +94,7 @@ class ComercialTest < ActionDispatch::IntegrationTest
     assert_select '[data-variante-target="porMl"]', text: /8,00\/ml/
     assert_select '[data-variante-target="borrifadas"]', text: /160 borrifadas/
     assert_select "strong", text: "Descrição formatada"
-    assert_select "header a", text: "Maison Parfum"
+    assert_select "header a[href=?] img[alt='Maison Parfum']", root_path
     assert_select 'input[name="produto[frasco_mae_id]"]', count: 0
   end
 
