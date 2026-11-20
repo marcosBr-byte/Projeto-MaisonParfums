@@ -7,11 +7,15 @@ services:
     autoDeployTrigger: checksPass
     healthCheckPath: /up
     dockerCommand: ./bin/docker-entrypoint ./bin/rails server --binding=0.0.0.0
+    domains:
+      - www.maisonparfumoficial.com.br
     disk:
       name: uploads
       mountPath: /rails/storage
       sizeGB: 10
     envVars:
+      - key: APP_CUSTOM_HOST
+        value: www.maisonparfumoficial.com.br
       - key: DATABASE_URL
         fromDatabase:
           name: maison-parfum-db

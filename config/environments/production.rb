@@ -32,10 +32,15 @@ Rails.application.configure do
   config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
   dominio = (ENV["APP_HOST"].presence || ENV["RENDER_EXTERNAL_HOSTNAME"]).to_s.strip
+  dominio_personalizado = ENV["APP_CUSTOM_HOST"].to_s.strip.presence
+  formato_dominio = /\A[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?\z/i
   unless ENV["SECRET_KEY_BASE_DUMMY"].present?
-    raise "Configure APP_HOST com o domínio público da loja, sem protocolo." unless dominio.match?(/\A[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?\z/i)
+    raise "Configure APP_HOST com o domínio público da loja, sem protocolo." unless dominio.match?(formato_dominio)
   end
-  config.hosts = [ dominio.presence || "localhost" ]
+  if dominio_personalizado && !dominio_personalizado.match?(formato_dominio)
+    raise "Configure APP_CUSTOM_HOST com o domínio personalizado, sem protocolo."
+  end
+  config.hosts = [ dominio.presence || "localhost", dominio_personalizado ].compact.uniq
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # Skip http-to-https redirect for the default health check endpoint.

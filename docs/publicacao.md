@@ -2,7 +2,7 @@
 
 O Blueprint `render.yaml` configura um serviço Docker com 1 CPU e 2 GB de RAM (`1c-2g`), PostgreSQL Basic na mesma região e um disco persistente de 10 GB em `/rails/storage`. Os recursos são pagos. O Render gera os segredos do Rails e fornece a conexão interna ao serviço. O primeiro boot prepara o banco e os schemas da fila, do cache e do Action Cable. A fila Solid Queue roda dentro do Puma.
 
-Use a URL HTTPS fornecida pelo Render para configurar o Checkout Pro em modo de teste. Para um domínio próprio, vincule-o ao serviço e defina `APP_HOST` com o domínio, sem protocolo.
+Use a URL HTTPS fornecida pelo Render para configurar o Checkout Pro em modo de teste. O Blueprint também cadastra `www.maisonparfumoficial.com.br` como domínio personalizado. No Registro.br, adicione um CNAME `www` apontando para `maison-parfum.onrender.com`. Verifique o domínio no painel do Render e aguarde o certificado HTTPS. Depois de validar a nova URL, defina `APP_HOST` com o domínio sem protocolo se quiser usá-lo nos links gerados por e-mail.
 
 - No Mercado Pago, configure o evento **Order (Mercado Pago)** com a URL da loja seguida de `/pagamentos/mercado-pago/notificacoes`. Cadastre o token de teste e a assinatura do webhook no painel da loja ou em **Environment** no Render. Siga [a homologação de pagamentos](pagamentos.md).
 - No Render, adicione as variáveis da [integração WhatsApp](whatsapp.md). No painel da loja, configure o número de destino e ative os avisos. Confira a entrega de um aviso em um pedido pago elegível.
