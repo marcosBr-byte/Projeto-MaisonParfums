@@ -1,7 +1,7 @@
 body { font-weight: 500; }
 h1, h2, h3, .font-serif { font-weight: 700; }
 input, select, textarea, button { font-weight: 500; }
-.maison-logo { display: block; width: clamp(84px, 12vw, 114px); height: auto; border-radius: 8px; }
+.maison-logo { display: block; width: clamp(108px, 18vw, 156px); height: auto; border-radius: 8px; }
 .maison-logo--compact { width: 72px; }
 .maison-logo--full { width: 132px; }
 .trix-content { overflow-wrap: anywhere; }
