@@ -1,6 +1,6 @@
 # Publicação no Render
 
-O Blueprint `render.yaml` configura um serviço Docker Starter, PostgreSQL Basic na mesma região e um disco persistente de 10 GB em `/rails/storage`. Os recursos são pagos. O Render gera os segredos do Rails e fornece a conexão interna ao serviço. O primeiro boot prepara o banco e os schemas da fila, do cache e do Action Cable. A fila Solid Queue roda dentro do Puma.
+O Blueprint `render.yaml` configura um serviço Docker com 2 CPUs e 4 GB de RAM (`2c-4g`), PostgreSQL Basic na mesma região e um disco persistente de 10 GB em `/rails/storage`. Os recursos são pagos. O Render gera os segredos do Rails e fornece a conexão interna ao serviço. O primeiro boot prepara o banco e os schemas da fila, do cache e do Action Cable. A fila Solid Queue roda dentro do Puma.
 
 Use a URL HTTPS fornecida pelo Render para configurar o Checkout Pro em modo de teste. Para um domínio próprio, vincule-o ao serviço e defina `APP_HOST` com o domínio, sem protocolo.
 
