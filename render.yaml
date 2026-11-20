@@ -2,7 +2,7 @@ services:
   - type: web
     name: maison-parfum
     runtime: docker
-    plan: 2c-4g
+    plan: 1c-2g
     region: virginia
     autoDeployTrigger: checksPass
     healthCheckPath: /up
