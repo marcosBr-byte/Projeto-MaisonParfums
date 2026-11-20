@@ -21,8 +21,8 @@
 <aside class="admin-sidebar fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col overflow-y-auto border-r border-[#E5E6E7] bg-white px-5 py-6 transition-transform duration-300 peer-checked:translate-x-0 md:translate-x-0">
 
   <div class="admin-brand mb-10 flex items-center justify-between">
-    <%= link_to admin_path, class: "font-serif text-2xl tracking-wide text-[#485057]" do %>
-      Maison Parfum
+    <%= link_to admin_path, class: "rounded-md" do %>
+      <%= render "shared/maison_logo", classe: "maison-logo--full" %>
     <% end %>
 
     <label for="menu-admin" class="flex cursor-pointer items-center text-[#748A9C] md:hidden" aria-label="Fechar menu">

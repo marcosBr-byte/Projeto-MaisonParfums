@@ -17,9 +17,7 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <%= render "shared/maison_icons" %>
 
     <%# Ícones do dashboard %>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,9 +34,9 @@
   <body class="bg-[#F7F7F5]">
 
     <header class="bg-[#E5E6E7] border-b border-[#D0D3D6] shrink-0 <%= login_page ? "md:sticky md:top-0 md:z-50" : "sticky top-0 z-50" %>">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-6">
-        <%= link_to root_path, class: "shrink-0 font-bold rounded-md text-2xl tracking-wide text-[#748A9C]" do %>
-          Maison Parfum
+      <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-6">
+        <%= link_to root_path, class: "shrink-0 rounded-md" do %>
+          <%= render "shared/maison_logo" %>
         <% end %>
 
         <%= render "shared/perfume_search", identificador: "busca-desktop", classes: "hidden md:flex flex-1 max-w-md" %>
@@ -124,7 +122,9 @@
       <div class="max-w-7xl mx-auto px-6 py-12">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
-            <%= link_to "Maison Parfum", root_path,class: "font-serif text-2xl tracking-wide text-[#485057]" %>
+            <%= link_to root_path, class: "inline-block rounded-md" do %>
+              <%= render "shared/maison_logo", classe: "maison-logo--full" %>
+            <% end %>
             <div class="trix-content text-sm text-[#737980] leading-relaxed mt-4 max-w-xs">
               <%= configuracao_loja.descricao.presence ||
                   "Descubra novas fragrâncias e encontre o perfume que combina com você." %>

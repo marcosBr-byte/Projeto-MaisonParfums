@@ -7,7 +7,6 @@
 .admin-store-link .material-symbols-outlined { font-size: 18px; }
 .admin-shell .admin-sidebar { border-right-color: #e2e7eb; box-shadow: 4px 0 24px #35434d04; }
 .admin-brand { padding-bottom: 1.5rem; border-bottom: 1px solid #e8ecef; margin-bottom: 1.5rem; }
-.admin-brand > a { font-size: 1.4rem; letter-spacing: -.04em; }
 .admin-nav-label { padding: 0 1rem .75rem; font-size: .65rem; letter-spacing: .15em; text-transform: uppercase; color: #71808b; }
 .admin-nav-link { min-height: 46px; }
 .admin-nav-link[aria-current="page"] { background: #35434d; box-shadow: 0 4px 10px #35434d1a; color: white; }

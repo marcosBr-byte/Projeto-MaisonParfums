@@ -8,8 +8,7 @@
     <%= csp_meta_tag %>
     <%= yield :head %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <%= render "shared/maison_icons" %>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,7 +27,9 @@
       <label for="menu-admin" class="flex cursor-pointer items-center text-[#485057]" aria-label="Abrir menu">
         <span class="material-symbols-outlined">menu</span>
       </label>
-      <span class="font-serif text-lg text-[#485057]">Maison Parfum</span>
+      <%= link_to admin_path, class: "rounded-md" do %>
+        <%= render "shared/maison_logo", classe: "maison-logo--compact" %>
+      <% end %>
       <span class="w-6"></span>
     </header>
 
