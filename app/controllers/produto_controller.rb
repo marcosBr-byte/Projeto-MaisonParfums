@@ -5,16 +5,13 @@ class ProdutoController < ApplicationController
   before_action :set_produto, only: %i[show edit update destroy]
 
   def index
-    @produtos = Produto.all
+    @termo = params[:q].to_s.strip.first(120)
+    @produtos = produtos_da_busca(@termo, incluir_todos: true)
   end
 
   def pag_todos_prod
-    @masculinos = Produto.masculino.order(:nome)
-    @femininos = Produto.feminino.order(:nome)
-    @unissex = Produto.unissex.order(:nome)
-    @nichos = Produto.nicho.order(:nome)
-    @body_splashes = Produto.body_splash.order(:nome)
-    @hidratantes = Produto.hidratante.order(:nome)
+    @produtos = Produto.with_attached_imagem.includes(:variantes).por_nome
+    @agrupar_por_categoria = params[:visualizacao] == "categorias"
 
     render "produto/produtos_todos"
   end
@@ -113,8 +110,8 @@ class ProdutoController < ApplicationController
     @origem ? produtos.where(origem: @origem) : produtos
   end
 
-  def produtos_da_busca(termo)
-    return Produto.none if termo.blank?
+  def produtos_da_busca(termo, incluir_todos: false)
+    return Produto.none if termo.blank? && !incluir_todos
 
     texto = "translate(lower(concat_ws(' ', nome, marca, descricao, fragancia, categoria, origem, publico)), 'áàâãäéèêëíìîïóòôõöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')"
     palavras = I18n.transliterate(termo).downcase.split.first(8)
@@ -124,7 +121,7 @@ class ProdutoController < ApplicationController
       padrao = "%#{Produto.sanitize_sql_like(equivalentes.fetch(palavra, palavra))}%"
       produtos = produtos.where("#{texto} LIKE ?", padrao)
     end
-    produtos.with_attached_imagem.includes(:variantes).order(:nome)
+    produtos.with_attached_imagem.includes(:variantes).por_nome
   end
 
   def set_produto

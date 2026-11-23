@@ -88,6 +88,9 @@ class Produto < ApplicationRecord
     end
   end
   scope :em_destaque, -> { where(destaque: true).order(:nome, :id) }
+  scope :por_nome, -> {
+    order(Arel.sql("translate(lower(produtos.nome), 'áàâãäéèêëíìîïóòôõöúùûüç', 'aaaaaeeeeiiiiooooouuuuc')"), :id)
+  }
 
   accepts_nested_attributes_for :variantes,
     reject_if: ->(a) { a["id"].blank? && a["preco"].blank? }

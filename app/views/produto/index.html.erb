@@ -9,6 +9,15 @@
       <%= link_to "＋ Novo produto", new_produto_path, class: "inline-flex justify-center items-center rounded-xl bg-[#B8BDC3] text-[#485057] px-5 py-3 font-medium hover:bg-[#748A9C] hover:text-white transition duration-300" %>
     </div>
 
+    <%= form_with url: produtos_path, method: :get, role: "search", aria: { label: "Buscar produtos cadastrados" }, class: "mb-6 flex max-w-xl flex-wrap items-center gap-2" do |form| %>
+      <%= form.label :q, "Buscar por nome, marca ou fragrância", for: "busca-produtos-admin", class: "sr-only" %>
+      <%= form.search_field :q, id: "busca-produtos-admin", value: @termo, maxlength: 120, placeholder: "Nome, marca ou fragrância…", class: "min-w-0 flex-1 rounded-xl border border-[#C9CDD1] bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#748A9C]" %>
+      <%= form.submit "Buscar", class: "cursor-pointer rounded-xl bg-[#485057] px-4 py-3 text-sm font-medium text-white hover:bg-[#748A9C]" %>
+      <% if @termo.present? %>
+        <%= link_to "Limpar busca", produtos_path, class: "px-2 py-2 text-sm underline underline-offset-4" %>
+      <% end %>
+    <% end %>
+
     <% if @produtos.any? %>
       <div class="bg-white rounded-2xl border border-[#E5E6E7] overflow-hidden shadow-sm">
         <div class="p-5 sm:p-6 border-b border-[#E5E6E7]">
@@ -20,7 +29,7 @@
           <table class="w-full text-left">
             <thead class="bg-[#E5E6E7] text-[#485057]">
               <tr>
-                <th class="p-4 font-medium">Produto</th>
+                <th class="p-4 font-medium" aria-sort="ascending">Produto <span class="text-xs font-normal" aria-hidden="true">A–Z</span></th>
                 <th class="p-4 font-medium">Tamanhos e preços</th>
                 <th class="p-4 font-medium">Ações</th>
               </tr>
@@ -68,6 +77,10 @@
             </tbody>
           </table>
         </div>
+      </div>
+    <% elsif @termo.present? %>
+      <div class="bg-white border border-[#E5E6E7] rounded-2xl p-10 text-center shadow-sm">
+        <h2 class="text-2xl font-serif text-[#485057]">Nenhum produto encontrado</h2>
       </div>
     <% else %>
       <div class="bg-white border border-[#E5E6E7] rounded-2xl p-10 text-center shadow-sm">

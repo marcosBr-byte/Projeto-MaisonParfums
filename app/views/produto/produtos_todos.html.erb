@@ -1,18 +1,34 @@
 <div class="min-h-screen bg-[#F7F7F5]">
   <div class="max-w-7xl mx-auto px-6 py-12">
 
-    <div class="text-center mb-16">
+    <div class="text-center mb-8">
       <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C]">Maison Parfum</p>
       <h1 class="font-serif text-4xl md:text-5xl text-[#343A40] mt-3">Todos os Produtos</h1>
 
       <p class="text-[#748A9C] mt-4">Encontre sua próxima fragrância.</p>
     </div>
-    <% [["Decantes Masculinos", @masculinos], ["Decantes Femininos", @femininos], ["Decantes Unissex", @unissex],
-         ["Decantes Nicho", @nichos], ["Body Splash", @body_splashes], ["Hidratantes", @hidratantes]].each do |titulo, produtos| %>
-      <section class="mb-12">
-        <h2 class="font-serif text-3xl text-[#343A40] mb-8"><%= titulo %></h2>
-        <%= render "lista_categoria", produtos: produtos %>
-      </section>
+    <div class="mx-auto mb-8 max-w-xl">
+      <%= render "shared/perfume_search", identificador: "busca-catalogo", classes: "w-full" %>
+    </div>
+    <nav class="catalog-filters mb-8 justify-center" aria-label="Visualização do catálogo">
+      <%= link_to "A–Z", produtos_todos_path, class: class_names("catalog-filter", "catalog-filter--active": !@agrupar_por_categoria), aria: { current: ("page" unless @agrupar_por_categoria) } %>
+      <%= link_to "Por categoria", produtos_todos_path(visualizacao: "categorias"), class: class_names("catalog-filter", "catalog-filter--active": @agrupar_por_categoria), aria: { current: ("page" if @agrupar_por_categoria) } %>
+    </nav>
+    <% if @agrupar_por_categoria %>
+      <% por_categoria = @produtos.group_by(&:categoria) %>
+      <% { "masculino" => "Decantes Masculinos", "feminino" => "Decantes Femininos", "unissex" => "Decantes Unissex",
+           "nicho" => "Decantes Nicho", "body_splash" => "Body Splash", "hidratante" => "Hidratantes" }.each do |categoria, titulo| %>
+        <section class="mb-12">
+          <h2 class="font-serif text-3xl text-[#343A40] mb-8"><%= titulo %></h2>
+          <%= render "lista_categoria", produtos: por_categoria.fetch(categoria, []) %>
+        </section>
+      <% end %>
+    <% elsif @produtos.any? %>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <%= render partial: "produto/produtos", collection: @produtos, as: :produto, locals: { heading_tag: :h2 } %>
+      </div>
+    <% else %>
+      <p class="text-center text-[#485057]">Nenhum produto disponível.</p>
     <% end %>
   </div>
 </div>
