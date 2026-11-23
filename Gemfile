@@ -83,7 +83,7 @@ gem "devise", "~> 5.0"
 
 gem "devise-argon2", "~> 2.0"
 
-gem "omniauth", "~> 2.3", ">= 2.3.1"
+gem "omniauth", "~> 2.4"
 gem "omniauth-google-oauth2", "~> 1.2"
 gem "omniauth-facebook", "~> 11.0"
 gem "omniauth-rails_csrf_protection", "~> 2.0"
