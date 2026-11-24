@@ -22,6 +22,13 @@ class QuizPaginasTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "quem somos permite a incorporação direta do mapa da loja" do
+    get sobre_path
+    assert_response :success
+    assert_select 'iframe[src^="https://www.google.com/maps/embed?"][src$="7738986536258988493"]', count: 1
+    assert_includes response.headers["Content-Security-Policy"], "frame-src 'self' https://www.google.com/maps/embed"
+  end
+
   test "quiz funciona sem login e resultado tem produto e motivos" do
     produto = perfume
     get quiz_path

@@ -1,6 +1,6 @@
 class PaginasController < ApplicationController
   content_security_policy(only: :sobre) do |policy|
-    policy.frame_src :self, "https://www.google.com/maps"
+    policy.frame_src :self, "https://www.google.com/maps/embed"
   end
 
   def perguntas_frequentes; end
