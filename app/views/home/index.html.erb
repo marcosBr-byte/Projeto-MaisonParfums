@@ -114,12 +114,12 @@
       <% { "masculino" => "Masculino", "feminino" => "Feminino", "unissex" => "Unissex" }.each do |categoria, titulo| %>
         <% produtos = destaques_por_categoria.fetch(categoria, []) %>
         <% next if produtos.empty? %>
-        <div class="mb-12 last:mb-0" data-categoria="<%= categoria %>" data-controller="auto-scroll" data-action="mouseenter->auto-scroll#pause mouseleave->auto-scroll#resume focusin->auto-scroll#pause focusout->auto-scroll#resume">
+        <section class="mb-12 last:mb-0" data-categoria="<%= categoria %>" aria-labelledby="destaques-<%= categoria %>-titulo">
           <h3 id="destaques-<%= categoria %>-titulo" class="font-serif text-2xl text-[#485057] mb-6"><%= titulo %></h3>
-          <div data-auto-scroll-target="track" tabindex="0" aria-labelledby="destaques-<%= categoria %>-titulo" class="home-products-track">
+          <div class="home-products-grid">
             <%= render partial: "home/produto_destaque", collection: produtos, as: :produto %>
           </div>
-        </div>
+        </section>
       <% end %>
     </section>
   <% end %>
