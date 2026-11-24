@@ -4,7 +4,7 @@
   <div class="text-center mt-8 mb-8">
     <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C]">Seu perfil olfativo</p>
     <h1 class="font-serif text-3xl md:text-4xl text-[#485057] mt-3">Uma fragrância que combina com você</h1>
-    <p class="text-[#748A9C] mt-4">Cinco perguntas para descobrir sugestões do nosso catálogo. Sem cadastro, no seu ritmo.</p>
+    <p class="text-[#748A9C] mt-4">Quatro perguntas para descobrir sugestões do nosso catálogo. Sem cadastro, no seu ritmo.</p>
   </div>
   <%= form_with model: @quiz, url: quiz_path, method: :post, novalidate: true, class: "rounded-2xl border border-[#E5E6E7] bg-white p-6 sm:p-9 shadow-sm", data: { controller: "quiz", action: "submit->quiz#enviar" } do |form| %>
     <% if @quiz.errors.any? %>
@@ -15,7 +15,7 @@
     <% end %>
     <div hidden data-quiz-target="progresso" class="mb-7" aria-live="polite">
       <p data-quiz-target="contador" class="text-sm text-[#748A9C] mb-3"></p>
-      <progress data-quiz-target="barra" max="5" value="1" aria-label="Progresso do quiz" class="w-full h-2 accent-[#485057]"></progress>
+      <progress data-quiz-target="barra" max="<%= PerfumeQuiz::PERGUNTAS.size %>" value="1" aria-label="Progresso do quiz" class="w-full h-2 accent-[#485057]"></progress>
     </div>
     <% PerfumeQuiz::PERGUNTAS.each_with_index do |(campo, pergunta), index| %>
       <fieldset data-quiz-target="etapa" data-campo="<%= campo %>" class="mb-8">

@@ -9,7 +9,7 @@ vm.runInContext(fonte.replace(/^import .*\n/, "").replace("export default class"
 
 function preparar() {
   const quiz = new contexto.Quiz()
-  quiz.etapaTargets = ["categoria", "familias", "momento", "intensidade", "orcamento"].map(campo => ({
+  quiz.etapaTargets = ["categoria", "familias", "momento", "intensidade"].map(campo => ({
     dataset: { campo }, marcadas: 0, hidden: false,
     querySelectorAll() { return Array(this.marcadas).fill({}) },
     querySelector() { return { focus() {} } }
@@ -40,14 +40,14 @@ test("exige resposta antes de avançar e limita familias a tres", () => {
 test("navega ate resultado e voltar preserva escolhas", () => {
   const quiz = preparar()
   quiz.etapaTargets.forEach(etapa => { etapa.marcadas = 1 })
-  for (let i = 0; i < 4; i++) quiz.proximo()
+  for (let i = 0; i < 3; i++) quiz.proximo()
   assert.equal(quiz.enviarTarget.hidden, false)
   assert.equal(quiz.proximoTarget.hidden, true)
-  assert.equal(quiz.barraTarget.value, 5)
+  assert.equal(quiz.barraTarget.value, 4)
   quiz.anterior()
-  assert.equal(quiz.indice, 3)
+  assert.equal(quiz.indice, 2)
   assert.equal(quiz.enviarTarget.hidden, true)
-  assert.equal(quiz.etapaTargets[4].marcadas, 1)
+  assert.equal(quiz.etapaTargets[3].marcadas, 1)
 })
 
 test("impede envio incompleto e permite questionario valido", () => {

@@ -6,28 +6,21 @@ class PerfumeQuiz
     categoria: { titulo: "Qual perfil você procura?", ajuda: "Escolha como prefere explorar o catálogo.", opcoes: { "masculino" => "Masculino", "feminino" => "Feminino", "unissex" => "Unissex", "qualquer" => "Quero explorar todos" } },
     familias: { titulo: "Quais aromas mais combinam com você?", ajuda: "Escolha de uma a três famílias. Você pode misturar preferências.", opcoes: { "floral" => "Floral · flores e delicadeza", "citrica" => "Cítrica · frescor e energia", "amadeirada" => "Amadeirada · madeira e elegância", "oriental" => "Oriental · calor e especiarias", "fougere" => "Fougère · verde e clássico", "chipre" => "Chipre · terroso e sofisticado", "gourmand" => "Gourmand · doce e aconchegante", "aromatica" => "Aromática · ervas e frescor", "aquatica" => "Aquática · leveza e frescor" } },
     momento: { titulo: "Quando você pretende usar?", ajuda: "Pense na ocasião mais comum da sua rotina.", opcoes: { "dia" => "Durante o dia", "noite" => "À noite", "ambos" => "Quero versatilidade" } },
-    intensidade: { titulo: "Que presença você prefere?", ajuda: "A intensidade é a classificação cadastrada pela loja, não uma promessa de duração.", opcoes: { "baixa" => "Discreta e suave", "media" => "Equilibrada", "alta" => "Marcante e intensa", "qualquer" => "Sem preferência" } },
-    orcamento: { titulo: "Quanto quer investir?", ajuda: "Consideramos o preço de um tamanho disponível, sem frete.", opcoes: { "50" => "Até R$ 50", "100" => "Até R$ 100", "200" => "Até R$ 200", "livre" => "Sem limite definido" } }
+    intensidade: { titulo: "Que presença você prefere?", ajuda: "A intensidade é a classificação cadastrada pela loja, não uma promessa de duração.", opcoes: { "baixa" => "Discreta e suave", "media" => "Equilibrada", "alta" => "Marcante e intensa", "qualquer" => "Sem preferência" } }
   }.freeze
 
   attribute :categoria, :string
   attribute :momento, :string
   attribute :intensidade, :string
-  attribute :orcamento, :string
   attr_accessor :familias
 
   validates :categoria, inclusion: { in: PERGUNTAS[:categoria][:opcoes].keys }
   validates :momento, inclusion: { in: PERGUNTAS[:momento][:opcoes].keys }
   validates :intensidade, inclusion: { in: PERGUNTAS[:intensidade][:opcoes].keys }
-  validates :orcamento, inclusion: { in: PERGUNTAS[:orcamento][:opcoes].keys }
   validate :familias_validas
 
   def respostas
     attributes.merge("familias" => Array(familias).reject(&:blank?).uniq)
-  end
-
-  def limite
-    orcamento == "livre" ? nil : orcamento.to_i
   end
 
   private

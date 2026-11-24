@@ -4,7 +4,7 @@ class QuizPaginasTest < ActionDispatch::IntegrationTest
   self.fixture_table_names = []
 
   def respostas
-    { categoria: "masculino", familias: [ "amadeirada" ], momento: "noite", intensidade: "alta", orcamento: "100" }
+    { categoria: "masculino", familias: [ "amadeirada" ], momento: "noite", intensidade: "alta" }
   end
 
   def perfume(nome: "Perfume recomendado", preco: 60, estoque: 2, fragancia: :amadeirada, categoria: :masculino, **outros)
@@ -26,7 +26,7 @@ class QuizPaginasTest < ActionDispatch::IntegrationTest
     produto = perfume
     get quiz_path
     assert_response :success
-    assert_select "fieldset", count: 5
+    assert_select "fieldset", count: 4
     post quiz_path, params: { perfume_quiz: respostas }
     assert_redirected_to resultado_quiz_path
     follow_redirect!
@@ -56,9 +56,8 @@ class QuizPaginasTest < ActionDispatch::IntegrationTest
     assert_select "input[checked]", count: 0
   end
 
-  test "nao recomenda esgotados nem fora do orçamento ou perfil" do
+  test "nao recomenda esgotados nem fora do perfil" do
     perfume(nome: "Esgotado", estoque: 0)
-    perfume(nome: "Caro", preco: 150)
     perfume(nome: "Outro perfil", categoria: :feminino)
     perfume(nome: "Outra familia", fragancia: :floral)
     post quiz_path, params: { perfume_quiz: respostas }

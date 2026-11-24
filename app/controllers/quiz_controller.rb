@@ -1,13 +1,13 @@
 class QuizController < ApplicationController
   def new
     respostas = params[:revisar] == "1" ? session[:perfume_quiz] : {}
-    @quiz = PerfumeQuiz.new(respostas || {})
+    @quiz = PerfumeQuiz.new((respostas || {}).except("orcamento", :orcamento))
   end
 
   def create
     entrada = params[:perfume_quiz]
     entrada = ActionController::Parameters.new unless entrada.is_a?(ActionController::Parameters)
-    respostas = entrada.permit(:categoria, :momento, :intensidade, :orcamento, familias: [])
+    respostas = entrada.permit(:categoria, :momento, :intensidade, familias: [])
     @quiz = PerfumeQuiz.new(respostas)
     if @quiz.valid?
       session[:perfume_quiz] = @quiz.respostas
@@ -18,7 +18,7 @@ class QuizController < ApplicationController
   end
 
   def resultado
-    @quiz = PerfumeQuiz.new(session[:perfume_quiz] || {})
+    @quiz = PerfumeQuiz.new((session[:perfume_quiz] || {}).except("orcamento", :orcamento))
     unless @quiz.valid?
       redirect_to quiz_path, alert: "Responda ao quiz para descobrir suas sugestões."
       return

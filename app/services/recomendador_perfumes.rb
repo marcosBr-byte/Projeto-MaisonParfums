@@ -19,7 +19,7 @@ class RecomendadorPerfumes
       if produto.variantes.empty? && produto.disponivel?
         preco = produto.preco_venda(@configuracao)
       end
-      next unless !preco.nil? && preco >= 0 && (@quiz.limite.nil? || preco <= @quiz.limite)
+      next unless !preco.nil? && preco >= 0
 
       familias = produto.fragrancias.map { |familia| I18n.transliterate(familia).downcase }
       combinacoes = familias & Array(@quiz.familias)
@@ -35,7 +35,6 @@ class RecomendadorPerfumes
         pontos += 2
         motivos << "Intensidade de sua preferência"
       end
-      motivos << "Tamanho dentro do seu orçamento" if @quiz.limite
       Resultado.new(produto: produto, variante: variante, preco: preco, pontos: pontos, motivos: motivos)
     end.sort_by { |r| [ -r.pontos, r.preco, r.produto.nome.to_s ] }.first(3)
   end

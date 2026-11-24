@@ -4,7 +4,7 @@ class RecomendadorPerfumesTest < ActiveSupport::TestCase
   self.fixture_table_names = []
 
   def quiz(**opcoes)
-    PerfumeQuiz.new({ categoria: "masculino", familias: [ "amadeirada" ], momento: "noite", intensidade: "alta", orcamento: "100" }.merge(opcoes))
+    PerfumeQuiz.new({ categoria: "masculino", familias: [ "amadeirada" ], momento: "noite", intensidade: "alta" }.merge(opcoes))
   end
 
   def produto(nome, **opcoes)
@@ -19,10 +19,9 @@ class RecomendadorPerfumesTest < ActiveSupport::TestCase
     assert_equal melhores.map(&:id), resultados.map { |r| r.produto.id }
   end
 
-  test "inclui unissex e respeita limite exato do orçamento" do
-    perfume = produto("Unissex", categoria: :unissex, variantes_attributes: [ { tamanho: :lacrado, preco: 100, estoque: 1 } ])
+  test "inclui unissex mesmo acima das antigas faixas de preço" do
+    perfume = produto("Unissex", categoria: :unissex, variantes_attributes: [ { tamanho: :lacrado, preco: 250, estoque: 1 } ])
     assert_equal [ perfume.id ], RecomendadorPerfumes.new(quiz).resultados.map { |r| r.produto.id }
-    assert_empty RecomendadorPerfumes.new(quiz(orcamento: "50")).resultados
   end
 
   test "seleciona tamanho disponivel sem usar preco do tamanho esgotado" do
@@ -37,9 +36,9 @@ class RecomendadorPerfumesTest < ActiveSupport::TestCase
     assert_equal 90, resultado.preco
   end
 
-  test "reconhece familia com acento e permite sem limite e sem perfil" do
+  test "reconhece familia com acento e permite explorar todos os perfis" do
     perfume = produto("Citrico", fragancia: :cítrica, categoria: :feminino)
-    resultados = RecomendadorPerfumes.new(quiz(categoria: "qualquer", familias: [ "citrica" ], orcamento: "livre")).resultados
+    resultados = RecomendadorPerfumes.new(quiz(categoria: "qualquer", familias: [ "citrica" ])).resultados
     assert_equal [ perfume.id ], resultados.map { |r| r.produto.id }
   end
 

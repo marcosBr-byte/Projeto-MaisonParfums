@@ -32,7 +32,7 @@ class ProdutoFragranciasTest < ActionDispatch::IntegrationTest
 
   test "quiz recomenda perfume pela segunda familia cadastrada" do
     @produto.update!(fragancia: "Cítrica, Amadeirada")
-    quiz = PerfumeQuiz.new(categoria: "masculino", familias: [ "amadeirada" ], momento: "dia", intensidade: "qualquer", orcamento: "100")
+    quiz = PerfumeQuiz.new(categoria: "masculino", familias: [ "amadeirada" ], momento: "dia", intensidade: "qualquer")
     assert_equal [ @produto.id ], RecomendadorPerfumes.new(quiz).resultados.map { |r| r.produto.id }
   end
 end

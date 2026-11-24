@@ -175,8 +175,8 @@ class ComercialTest < ActionDispatch::IntegrationTest
     assert_equal 20, @configuracao.reload.desconto_percentual
   end
 
-  test "quiz considera desconto ao limitar orçamento" do
-    quiz = PerfumeQuiz.new(categoria: "masculino", familias: [ "amadeirada" ], momento: "dia", intensidade: "qualquer", orcamento: "100")
+  test "quiz exibe o preço com desconto" do
+    quiz = PerfumeQuiz.new(categoria: "masculino", familias: [ "amadeirada" ], momento: "dia", intensidade: "qualquer")
     @variante.update!(preco: 120)
     resultado = RecomendadorPerfumes.new(quiz).resultados.first
     assert_equal 96, resultado.preco
