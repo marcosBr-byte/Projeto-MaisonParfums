@@ -53,6 +53,7 @@ class Produto < ApplicationRecord
   otimizar_anexos :imagem, :fotos
   has_many :notas_olfativas, class_name: "NotaOlfativa", dependent: :destroy
   has_many :avaliacoes, class_name: "Avaliacao", dependent: :destroy
+  has_many :avaliacoes_publicadas, -> { publicadas.select(:id, :produto_id, :nota) }, class_name: "Avaliacao"
   accepts_nested_attributes_for :notas_olfativas, allow_destroy: true,
     reject_if: ->(atributos) { atributos["id"].blank? && atributos["nome"].blank? && atributos["imagem"].blank? }
 

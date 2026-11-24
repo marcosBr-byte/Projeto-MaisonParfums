@@ -182,6 +182,28 @@ class ComercialTest < ActionDispatch::IntegrationTest
     assert_equal 96, resultado.preco
   end
 
+  test "card exibe avaliação publicada e calcula a prévia de pagamento sobre o preço vigente" do
+    @produto.avaliacoes.create!(usuario: @usuario, nota: 5, comentario: "Gostei do perfume", publicada: true)
+
+    get produtos_todos_path
+    assert_response :success
+    assert_select "#produto_#{@produto.id}" do
+      assert_select ".catalog-card__name + .catalog-card__rating", text: /★★★★★\s*\(1\)/
+      assert_select ".catalog-card__promotion", text: "20% OFF"
+      assert_select ".catalog-card__discount del", text: "R$ 100,00"
+      assert_select ".catalog-card__price strong", text: "R$ 80,00"
+      assert_select ".catalog-card__installments", text: "3x de R$ 26,67 sem juros"
+      assert_select ".catalog-card__pix strong", text: "R$ 73,20"
+    end
+
+    @configuracao.update!(desconto_ativo: false)
+    get produtos_todos_path
+    assert_select "#produto_#{@produto.id}" do
+      assert_select ".catalog-card__promotion, .catalog-card__discount", count: 0
+      assert_select ".catalog-card__pix strong", text: "R$ 91,50"
+    end
+  end
+
   test "volume do lacrado e opcional e estoque nao pode ser negativo" do
     lacrado = @produto.variantes.create!(tamanho: :lacrado, preco: 200, estoque: 1)
     assert_nil lacrado.preco_por_ml(@configuracao)

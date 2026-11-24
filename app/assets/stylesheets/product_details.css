@@ -65,14 +65,15 @@
 .usage-item meter::-webkit-meter-optimum-value { background: var(--usage-color); border-radius: 5px; }
 .usage-item meter::-moz-meter-bar { background: var(--usage-color); }
 .usage-unset > .material-symbols-outlined { color: #d3d8da; }
-.product-notes { margin-top: 50px; border-top: 1px solid #e9ece9; padding-top: 44px; text-align: center; }
+.product-notes { scroll-margin-top: 180px; margin-top: 50px; border-top: 1px solid #e9ece9; padding-top: 44px; text-align: center; }
 .notes-levels { margin-top: 30px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .notes-level { border: 1px solid #eeefeb; border-radius: 16px; padding: 25px 16px; }
 .notes-level h3 { font-family: var(--app-font); font-size: 20px; }
 .notes-ingredients { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 22px; }
 .notes-ingredients figure { width: 85px; }
 .notes-ingredients img, .note-illustration { width: 78px; height: 78px; margin: auto; object-fit: contain; }
-.note-illustration { display: grid; place-items: center; font-size: 42px; background: #f8f7f1; border-radius: 50%; }
+@font-face { font-family: "Noto Color Emoji"; src: url("notas-emoji.woff2") format("woff2"); font-display: swap; }
+.note-illustration { font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif; display: grid; place-items: center; font-size: 42px; background: #f8f7f1; border-radius: 50%; }
 .notes-ingredients figcaption { font-size: 12px; margin-top: 10px; overflow-wrap: anywhere; }
 .notes-empty { color: #9ba2a6; font-size: 12px; padding: 30px 10px; }
 .product-reviews { border-top: 1px solid #e9ece9; margin-top: 55px; padding-top: 44px; scroll-margin-top: 180px; }

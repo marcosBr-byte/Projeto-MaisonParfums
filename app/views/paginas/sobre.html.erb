@@ -6,4 +6,38 @@
     <p class="text-sm leading-relaxed text-[#748A9C] mt-3">Você prefere aromas frescos, florais, doces ou amadeirados? Nosso quiz ajuda a encontrar opções do catálogo a partir das suas preferências. Se quiser conversar antes de escolher, nosso atendimento está disponível pelos canais da loja.</p>
     <div class="flex flex-wrap gap-4 mt-8"><%= link_to "Descobrir meu perfume", quiz_path, class: "rounded-full bg-[#485057] text-white px-6 py-3 text-sm" %><%= link_to "Ver o catálogo", produtos_todos_path, class: "rounded-full border border-[#B8BDC3] px-6 py-3 text-sm" %></div>
   </div>
+  <section aria-labelledby="galeria-loja" class="mt-10">
+    <h2 id="galeria-loja" class="mb-5 font-serif text-2xl text-[#485057]">Por dentro da Maison</h2>
+    <div class="grid gap-2 overflow-hidden rounded-2xl bg-[#E5E6E7] sm:grid-cols-2">
+      <div class="relative aspect-[4/3] sm:aspect-auto">
+        <%= image_tag "quem_somos/interior.jpeg", alt: "Interior da Maison Parfum com prateleiras iluminadas",
+          loading: "lazy", decoding: "async", class: "absolute inset-0 h-full w-full object-cover" %>
+      </div>
+      <div class="grid min-w-0 grid-cols-2 gap-2">
+        <%= image_tag "quem_somos/decants.jpeg", alt: "Decants da Maison Parfum em uma bandeja dourada",
+          loading: "lazy", decoding: "async", class: "block aspect-[3/4] w-full object-cover" %>
+        <%= image_tag "quem_somos/perfumes.jpeg", alt: "Prateleiras com a seleção de perfumes da loja",
+          loading: "lazy", decoding: "async", class: "block aspect-[3/4] w-full object-cover" %>
+        <%= image_tag "quem_somos/letreiro.jpeg", alt: "Letreiro dourado da Maison na parede da loja",
+          loading: "lazy", decoding: "async", class: "col-span-2 block aspect-[9/4] w-full object-cover object-[50%_42%]" %>
+      </div>
+    </div>
+  </section>
+  <section aria-labelledby="endereco-loja" class="mt-8 rounded-2xl border border-[#E5E6E7] bg-white p-6 sm:p-9 text-[#485057]">
+    <% endereco = "Maison Parfum, Rua Costa Beiriz, 33, Guarabira, PB" %>
+    <% destino = ERB::Util.url_encode(endereco) %>
+    <h2 id="endereco-loja" class="font-serif text-2xl">Visite nossa loja</h2>
+    <address class="mt-3 not-italic">Rua Costa Beiriz, 33<br>Guarabira – PB</address>
+    <iframe
+      src="https://www.google.com/maps?q=<%= destino %>&amp;output=embed"
+      title="Mapa da Maison Parfum em Guarabira"
+      class="mt-5 block w-full rounded-xl border border-[#E5E6E7]"
+      height="320"
+      loading="lazy"
+      allowfullscreen></iframe>
+    <div class="mt-5 flex flex-wrap gap-3">
+      <%= link_to "Como chegar pelo Google Maps", "https://www.google.com/maps/dir/?api=1&destination=#{destino}", class: "rounded-full bg-[#485057] px-6 py-3 text-sm text-white" %>
+      <%= link_to "Ver a loja no Google Maps", "https://www.google.com/maps?cid=7738986536258988493", class: "rounded-full border border-[#B8BDC3] px-6 py-3 text-sm" %>
+    </div>
+  </section>
 </section>

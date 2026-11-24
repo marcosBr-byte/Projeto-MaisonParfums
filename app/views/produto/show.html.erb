@@ -1,6 +1,7 @@
 <% variantes = @produto.variantes.sort_by { |v| v.preco || 0 } %>
 <% inicial = variantes.find(&:disponivel?) %>
 <% imagens = (@produto.imagem.attached? ? [@produto.imagem] : []) + @produto.fotos.to_a %>
+<% notas_olfativas = @produto.notas_olfativas.includes(imagem_attachment: :blob).reject(&:new_record?) %>
 <% detalhes = { "Categoria" => @produto.rotulo(:categoria), "Público" => Produto::PUBLICOS[@produto.publico], "Fragrância" => @produto.rotulo(:fragancia), "Intensidade" => @produto.rotulo(:intensidade), "Momento" => @produto.rotulo(:momento) }.select { |_, valor| valor.present? } %>
 <% content_for :title, "#{@produto.nome} | Maison Parfum" %>
 <div class="product-page">
@@ -44,6 +45,9 @@
           <%= estrelas_avaliacao(@media_avaliacoes || 0) %>
           <span><%= @total_avaliacoes.positive? ? "#{@total_avaliacoes} avaliações" : "Seja o primeiro a avaliar" %></span>
         </a>
+        <% if notas_olfativas.any? %>
+          <p><%= link_to "Ver notas olfativas ↓", "#notas-olfativas", class: "product-rating-link" %></p>
+        <% end %>
         <div class="product-price-block">
           <% if configuracao_loja.percentual_vigente.positive? %>
             <p class="product-original-price">De <del data-variante-target="original"><%= inicial ? moeda_loja(inicial.preco) : "—" %></del></p>
@@ -113,7 +117,7 @@
     <% if @produto.descricao.present? %>
       <section class="product-description product-description-full"><h2>Sobre a fragrância</h2><div class="trix-content"><%= @produto.descricao %></div></section>
     <% end %>
-    <%= render "produto/notas_olfativas" %>
+    <%= render "produto/notas_olfativas", notas: notas_olfativas %>
     <%= render "produto/avaliacoes" %>
   </div>
 </div>

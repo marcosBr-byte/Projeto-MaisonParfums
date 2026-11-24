@@ -102,7 +102,7 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
     post produtos_path, params: { produto: {
       nome: "Perfume com notas digitadas", categoria: "feminino",
       variantes_attributes: [ { tamanho: "tamanho_5ml", preco: 75, estoque: 5 } ],
-      novas_notas_olfativas: { topo: " Pera, Melão\n Limão; ", coracao: "Frésia" }
+      novas_notas_olfativas: { topo: " Pera, Melão\n Limão; Tangerina, Abacaxi ", coracao: "Frésia" }
     } }
     assert_redirected_to admin_path
     produto = Produto.find_by!(nome: "Perfume com notas digitadas")
@@ -115,10 +115,13 @@ class DetalhesProdutoTest < ActionDispatch::IntegrationTest
     sign_out @admin
     get produto_path(produto)
     assert_response :success
-    %w[Pera Melão Limão Frésia Sândalo Âmbar].each do |nome|
+    %w[Pera Melão Limão Tangerina Abacaxi Frésia Sândalo Âmbar].each do |nome|
       assert_select ".notes-ingredients figcaption", text: nome, count: 1
     end
     assert_select '.notes-ingredients img[alt="Âmbar"]'
+    assert_select 'a[href="#notas-olfativas"]', text: /Ver notas olfativas/
+    assert_select '[aria-label="Notas de topo"] .note-illustration', text: "🍊"
+    assert_select '[aria-label="Notas de topo"] .note-illustration', text: "🍍"
   end
 
   test "admin cadastra notas fotos e indicacoes que aparecem para visitante" do

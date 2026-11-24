@@ -28,8 +28,12 @@ module ProdutoHelper
 
   def ilustracao_nota(nome)
     normalizado = I18n.transliterate(nome.to_s).downcase
-    { "pera" => "🍐", "melao" => "🍈", "rosa" => "🌹", "fresia" => "🌼", "jasmim" => "🌼",
-      "laranja" => "🍊", "bergamota" => "🍊", "limao" => "🍋", "baunilha" => "🌿",
-      "patchouli" => "🌿", "sandalo" => "🪵", "cedro" => "🪵", "ambar" => "🟠", "lavanda" => "🪻" }.find { |ingrediente, _| normalizado.include?(ingrediente) }&.last || "🌿"
+    { "flor de laranjeira" => "🌼", "pera" => "🍐", "melao" => "🍈", "abacaxi" => "🍍", "maca" => "🍎",
+      "tangerina" => "🍊", "mandarina" => "🍊", "laranja" => "🍊", "bergamota" => "🍊", "toranja" => "🍊",
+      "limao" => "🍋", "coco" => "🥥", "pessego" => "🍑", "cereja" => "🍒",
+      "pimenta-preta" => "⚫", "pimenta preta" => "⚫", "gengibre" => "🫚", "noz-moscada" => "🌰",
+      "rosa" => "🌹", "fresia" => "🌼", "jasmim" => "🌼", "neroli" => "🌼", "lavanda" => "🪻",
+      "incenso" => "💨", "olibano" => "💨", "sandalo" => "🪵", "cedro" => "🪵", "madeira" => "🪵",
+      "oud" => "🪵", "ambar" => "🟠", "cafe" => "☕", "cacau" => "🍫", "amendoa" => "🌰" }.find { |ingrediente, _| normalizado.include?(ingrediente) }&.last || "🌿"
   end
 end

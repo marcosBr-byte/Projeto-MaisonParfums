@@ -10,7 +10,7 @@ class ProdutoController < ApplicationController
   end
 
   def pag_todos_prod
-    @produtos = Produto.with_attached_imagem.includes(:variantes).por_nome
+    @produtos = Produto.with_attached_imagem.includes(:variantes, :avaliacoes_publicadas).por_nome
     @agrupar_por_categoria = params[:visualizacao] == "categorias"
 
     render "produto/produtos_todos"
@@ -30,7 +30,7 @@ class ProdutoController < ApplicationController
 
   def decants_nicho
     @origem = params[:origem].presence_in(Produto::ORIGENS_NICHO.keys)
-    @produtos = Produto.nicho.order(:nome)
+    @produtos = Produto.nicho.includes(:avaliacoes_publicadas).order(:nome)
     @produtos = @produtos.where(origem: @origem) if @origem
   end
 
@@ -102,11 +102,12 @@ class ProdutoController < ApplicationController
   def filtrar_publico(produtos)
     @publico = params[:publico].presence_in(Produto::PUBLICOS.keys)
     produtos = produtos.where(publico: @publico) if @publico
-    produtos.order(:nome)
+    produtos.includes(:avaliacoes_publicadas).order(:nome)
   end
 
   def filtrar_origem(produtos)
     @origem = params[:origem].presence_in(Produto::ORIGENS.keys)
+    produtos = produtos.includes(:avaliacoes_publicadas)
     @origem ? produtos.where(origem: @origem) : produtos
   end
 
@@ -121,7 +122,7 @@ class ProdutoController < ApplicationController
       padrao = "%#{Produto.sanitize_sql_like(equivalentes.fetch(palavra, palavra))}%"
       produtos = produtos.where("#{texto} LIKE ?", padrao)
     end
-    produtos.with_attached_imagem.includes(:variantes).por_nome
+    produtos.with_attached_imagem.includes(:variantes, :avaliacoes_publicadas).por_nome
   end
 
   def set_produto

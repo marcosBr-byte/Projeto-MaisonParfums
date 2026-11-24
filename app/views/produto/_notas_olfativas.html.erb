@@ -4,7 +4,6 @@
     <h2 id="notas-titulo">Pirâmide olfativa</h2>
     <p class="product-caption">Conheça as notas que compõem esta fragrância.</p>
   </header>
-  <% notas = @produto.notas_olfativas.includes(imagem_attachment: :blob).reject(&:new_record?) %>
   <div class="notes-levels">
     <% { "topo" => ["Notas de topo", "A primeira impressão"], "coracao" => ["Notas de coração", "A personalidade do perfume"], "base" => ["Notas de base", "O que permanece na pele"] }.each do |nivel, (titulo, descricao)| %>
       <section class="notes-level" aria-label="<%= titulo %>">
