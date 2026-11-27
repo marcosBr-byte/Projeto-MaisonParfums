@@ -7,6 +7,7 @@ class CatalogoTest < ActionDispatch::SystemTestCase
   driven_by :selenium, using: :headless_chrome, screen_size: [ 390, 844 ] do |options|
     options.add_argument("--no-sandbox") if Process.uid.zero?
     options.binary = ENV["SE_BROWSER_PATH"] if ENV["SE_BROWSER_PATH"].present?
+    options.browser_version = ENV["SE_BROWSER_VERSION"] if ENV["SE_BROWSER_VERSION"].present?
   end
 
   test "salva notas digitadas no painel e mostra a piramide na loja" do

@@ -133,6 +133,7 @@ jobs:
         env:
           RAILS_ENV: test
           MAISON_PARFUM_DATABASE_PASSWORD: postgres
+          SE_BROWSER_VERSION: "157.0.8103.78"
           # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           # REDIS_URL: redis://localhost:6379/0
         run: |
