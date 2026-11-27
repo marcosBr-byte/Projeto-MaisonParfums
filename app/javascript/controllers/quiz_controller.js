@@ -1,19 +1,30 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["etapa", "progresso", "contador", "barra", "anterior", "proximo", "enviar", "erro"]
+  static targets = ["introducao", "inicio", "formulario", "etapa", "progresso", "contador", "barra", "anterior", "proximo", "enviar", "erro"]
+
+  static values = { revisar: Boolean }
 
   connect() {
     this.indice = 0
     this.progressoTarget.hidden = false
+    this.introducaoTarget.hidden = this.revisarValue
+    this.inicioTarget.hidden = false
+    this.formularioTarget.hidden = !this.revisarValue
     this.mostrar()
+  }
+
+  iniciar() {
+    this.introducaoTarget.hidden = true
+    this.formularioTarget.hidden = false
+    this.mostrar(true)
   }
 
   mostrar(focar = false) {
     this.etapaTargets.forEach((etapa, indice) => { etapa.hidden = indice !== this.indice })
-    this.contadorTarget.textContent = `Etapa ${this.indice + 1} de ${this.etapaTargets.length}`
+    this.contadorTarget.textContent = `Pergunta ${this.indice + 1} de ${this.etapaTargets.length}`
     this.barraTarget.value = this.indice + 1
-    this.anteriorTarget.hidden = this.indice === 0
+    this.anteriorTarget.hidden = this.indice === 0 && this.revisarValue
     this.proximoTarget.hidden = this.indice === this.etapaTargets.length - 1
     this.enviarTarget.hidden = !this.proximoTarget.hidden
     this.limparErro()
@@ -39,7 +50,13 @@ export default class extends Controller {
   }
 
   anterior() {
-    this.indice = Math.max(0, this.indice - 1)
+    if (this.indice === 0) {
+      this.formularioTarget.hidden = true
+      this.introducaoTarget.hidden = false
+      this.inicioTarget.focus()
+      return
+    }
+    this.indice -= 1
     this.mostrar(true)
   }
 

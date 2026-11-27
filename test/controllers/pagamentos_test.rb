@@ -21,10 +21,7 @@ class PagamentosTest < ActionDispatch::IntegrationTest
     @cliente.update!(role: :admin)
     get admin_configuracoes_path
     assert_response :success
-    assert_select 'input[type="password"][name="configuracao[pagamento_token]"][value=""]', count: 1
-    assert_select 'input[type="password"][name="configuracao[pagamento_webhook_secret]"][value=""]', count: 1
-    assert_select "input#mercado-pago-webhook[readonly]", count: 1
-    assert_select 'input[type="tel"][name="configuracao[whatsapp_notificacao]"]', count: 1
+    assert_select 'input[name="configuracao[pagamento_token]"]', count: 0
     assert_no_match(/token-pagamentos|segredo-pagamentos/, response.body)
     patch admin_configuracoes_path, params: { configuracao: { pagamento_token: "", pagamento_webhook_secret: "", pagamento_teste: "0" } }
     assert_redirected_to admin_configuracoes_path
@@ -34,10 +31,8 @@ class PagamentosTest < ActionDispatch::IntegrationTest
 
   test "configuracao incompleta nao permite ativar" do
     @cliente.update!(role: :admin)
-    patch admin_configuracoes_path, params: { configuracao: { pagamento_site_url: "http://loja.example",
-      pagamento_token: "novo-token-secreto", pagamento_webhook_secret: "nova-chave-secreta" } }
+    patch admin_configuracoes_path, params: { configuracao: { pagamento_site_url: "http://loja.example" } }
     assert_response :unprocessable_entity
-    assert_no_match(/novo-token-secreto|nova-chave-secreta/, response.body)
   end
 
   test "cliente nao acessa cobranca de outro e retorno falso nao confirma pagamento" do

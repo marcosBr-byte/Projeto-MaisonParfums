@@ -1,43 +1,51 @@
 <% content_for :title, "Descubra seu perfume · Maison Parfum" %>
-<section class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
-  <%= link_to "← Voltar à loja", root_path, class: "text-sm text-[#748A9C]" %>
-  <div class="text-center mt-8 mb-8">
-    <p class="text-xs uppercase tracking-[0.3em] text-[#748A9C]">Seu perfil olfativo</p>
-    <h1 class="font-serif text-3xl md:text-4xl text-[#485057] mt-3">Uma fragrância que combina com você</h1>
-    <p class="text-[#748A9C] mt-4">Quatro perguntas para descobrir sugestões do nosso catálogo. Sem cadastro, no seu ritmo.</p>
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12" data-controller="quiz" data-quiz-revisar-value="<%= params[:revisar] == "1" || @quiz.errors.any? %>">
+  <%= link_to "← Voltar à loja", root_path, class: "text-sm text-[#485057] hover:underline" %>
+
+  <div data-quiz-target="introducao" class="mt-5 rounded-3xl border border-[#E5E6E7] bg-[#F7F7F5] px-6 py-12 sm:px-12 sm:py-16 text-center">
+    <span class="material-symbols-outlined text-[#748A9C]" style="font-size: 40px" aria-hidden="true">water_drop</span>
+    <h1 class="font-serif text-4xl sm:text-5xl font-semibold text-[#485057] mt-4">Descubra seu perfume</h1>
+    <p class="mx-auto mt-4 max-w-sm text-[#485057]">Responda a quatro perguntas e encontre sugestões de fragrâncias da Maison para o seu perfil.</p>
+    <button hidden type="button" data-quiz-target="inicio" data-action="quiz#iniciar" class="mt-7 rounded-full bg-[#485057] px-7 py-3.5 font-semibold text-white hover:bg-[#617787] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#485057]">Começar o quiz <span aria-hidden="true">→</span></button>
   </div>
-  <%= form_with model: @quiz, url: quiz_path, method: :post, novalidate: true, class: "rounded-2xl border border-[#E5E6E7] bg-white p-6 sm:p-9 shadow-sm", data: { controller: "quiz", action: "submit->quiz#enviar" } do |form| %>
+
+  <%= form_with model: @quiz, url: quiz_path, method: :post, novalidate: true, class: "mt-5 rounded-3xl border border-[#E5E6E7] bg-white p-5 sm:p-9 shadow-sm", data: { quiz_target: "formulario", action: "submit->quiz#enviar" } do |form| %>
     <% if @quiz.errors.any? %>
       <div role="alert" class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-700">
         <p>Revise suas respostas antes de continuar:</p>
         <ul class="list-disc pl-5"><% @quiz.errors.full_messages.each do |erro| %><li><%= erro %></li><% end %></ul>
       </div>
     <% end %>
-    <div hidden data-quiz-target="progresso" class="mb-7" aria-live="polite">
-      <p data-quiz-target="contador" class="text-sm text-[#748A9C] mb-3"></p>
+    <div hidden data-quiz-target="progresso" class="mb-7 rounded-2xl bg-[#F0F1F2] p-4 sm:p-5" aria-live="polite">
+      <p data-quiz-target="contador" class="text-sm font-semibold text-[#485057] mb-2"></p>
       <progress data-quiz-target="barra" max="<%= PerfumeQuiz::PERGUNTAS.size %>" value="1" aria-label="Progresso do quiz" class="w-full h-2 accent-[#485057]"></progress>
     </div>
-    <% PerfumeQuiz::PERGUNTAS.each_with_index do |(campo, pergunta), index| %>
+    <% PerfumeQuiz::PERGUNTAS.each do |campo, pergunta| %>
       <fieldset data-quiz-target="etapa" data-campo="<%= campo %>" class="mb-8">
-        <legend tabindex="-1" class="font-serif text-2xl text-[#485057]"><%= index + 1 %>. <%= pergunta[:titulo] %></legend>
-        <p class="text-sm text-[#748A9C] mt-3 mb-5"><%= pergunta[:ajuda] %></p>
+        <legend tabindex="-1" class="font-serif text-2xl sm:text-3xl font-semibold text-[#485057]"><%= pergunta[:titulo] %></legend>
+        <p class="text-sm text-[#485057] mt-3 mb-5"><%= pergunta[:ajuda] %></p>
         <div class="grid sm:grid-cols-2 gap-3">
           <% pergunta[:opcoes].each do |valor, rotulo| %>
-            <label class="relative cursor-pointer">
+            <label class="group relative cursor-pointer">
               <% if campo == :familias %>
                 <%= check_box_tag "perfume_quiz[familias][]", valor, Array(@quiz.familias).include?(valor), id: "quiz_familia_#{valor}", class: "peer sr-only", data: { action: "change->quiz#limparErro" } %>
               <% else %>
                 <%= form.radio_button campo, valor, required: true, class: "peer sr-only", data: { action: "change->quiz#limparErro" } %>
               <% end %>
-              <span class="block h-full rounded-xl border border-[#D9DADD] px-4 py-4 text-sm text-[#485057] hover:bg-[#F7F7F5] peer-checked:border-[#485057] peer-checked:bg-[#485057] peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-[#748A9C] peer-focus-visible:ring-offset-2"><%= rotulo %></span>
+              <span class="flex h-full items-center gap-3 rounded-xl border border-[#D9DADD] bg-[#F7F7F5] px-4 py-3.5 text-sm font-medium text-[#485057] hover:border-[#748A9C] peer-checked:border-[#485057] peer-checked:bg-[#485057] peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-[#748A9C] peer-focus-visible:ring-offset-2">
+                <span aria-hidden="true" class="flex size-5 shrink-0 items-center justify-center border border-current <%= campo == :familias ? "rounded-sm" : "rounded-full" %>">
+                  <span class="text-xs invisible group-has-checked:visible">✓</span>
+                </span>
+                <span><%= rotulo %></span>
+              </span>
             </label>
           <% end %>
         </div>
       </fieldset>
     <% end %>
     <p data-quiz-target="erro" role="alert" class="text-sm text-red-700 mb-4"></p>
-    <div class="flex items-center justify-between gap-3 border-t border-[#E5E6E7] pt-6">
-      <button hidden type="button" data-quiz-target="anterior" data-action="quiz#anterior" class="rounded-full border border-[#D9DADD] px-5 py-3 text-sm text-[#485057]">Voltar</button>
+    <div class="flex flex-wrap items-center justify-between gap-3 border-t border-[#E5E6E7] pt-6">
+      <button hidden type="button" data-quiz-target="anterior" data-action="quiz#anterior" class="rounded-full border border-[#D9DADD] px-5 py-3 text-sm text-[#485057]"><span aria-hidden="true">←</span> Voltar</button>
       <button hidden type="button" data-quiz-target="proximo" data-action="quiz#proximo" class="ml-auto rounded-full bg-[#485057] px-6 py-3 text-sm text-white">Continuar →</button>
       <%= form.submit "Descobrir minhas sugestões", class: "ml-auto cursor-pointer rounded-full bg-[#485057] px-6 py-3 text-sm text-white", data: { quiz_target: "enviar", turbo_submits_with: "Buscando suas fragrâncias…" } %>
     </div>
