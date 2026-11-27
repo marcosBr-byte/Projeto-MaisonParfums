@@ -9,15 +9,17 @@ vm.runInContext(fonte.replace(/^import .*\n/, "").replace("export default class"
 
 function preparar() {
   const quiz = new contexto.Quiz()
+  quiz.revisarValue = false
   quiz.etapaTargets = ["categoria", "familias", "momento", "intensidade"].map(campo => ({
     dataset: { campo }, marcadas: 0, hidden: false,
     querySelectorAll() { return Array(this.marcadas).fill({}) },
     querySelector() { return { focus() {} } }
   }))
-  for (const nome of ["progresso", "contador", "barra", "anterior", "proximo", "enviar", "erro"]) {
+  for (const nome of ["introducao", "inicio", "formulario", "progresso", "contador", "barra", "anterior", "proximo", "enviar", "erro"]) {
     quiz[`${nome}Target`] = { hidden: true, textContent: "" }
   }
   quiz.connect()
+  quiz.iniciar()
   return quiz
 }
 
