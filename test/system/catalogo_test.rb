@@ -5,7 +5,7 @@ class CatalogoTest < ActionDispatch::SystemTestCase
   self.fixture_table_names = []
 
   driven_by :selenium, using: :headless_chrome, screen_size: [ 390, 844 ] do |options|
-    options.add_argument("--no-sandbox") if Process.uid.zero?
+    options.add_argument("--no-sandbox") if Process.uid.zero? || ENV["GITHUB_ACTIONS"] == "true"
     options.binary = ENV["SE_BROWSER_PATH"] if ENV["SE_BROWSER_PATH"].present?
     options.browser_version = ENV["SE_BROWSER_VERSION"] if ENV["SE_BROWSER_VERSION"].present?
   end
