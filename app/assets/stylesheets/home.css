@@ -56,7 +56,8 @@
 
 .maison-home .home-products-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
 @media (min-width: 768px) {
-  .maison-home .home-products-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 68%; }
+  .maison-home .home-products-grid { display: flex; flex-wrap: wrap; justify-content: center; max-width: 68%; margin-inline: auto; }
+  .maison-home .home-products-grid > .home-product-card { flex: 0 0 calc((100% - 3rem) / 3); height: auto; }
 }
 .maison-home .home-carousel-controls { display: flex; justify-content: flex-end; gap: .5rem; margin: -.25rem 0 1rem; }
 .maison-home .home-carousel-controls button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #cdd5db; border-radius: 50%; background: #fff; color: #485057; cursor: pointer; }
